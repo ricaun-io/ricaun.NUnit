@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ricaun.NUnit", "ricaun.NUnit\ricaun.NUnit.csproj", "{EBDE7FEE-0D1E-4034-9B44-4C5F4E24F52A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Build", "Build\Build.csproj", "{851351FC-9467-44D5-BE86-E59FFC3F07A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{09BFC454-8566-456C-83F0-80E77F05BA14}"
+	ProjectSection(SolutionItems) = preProject
+		CHANGELOG.md = CHANGELOG.md
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EBDE7FEE-0D1E-4034-9B44-4C5F4E24F52A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBDE7FEE-0D1E-4034-9B44-4C5F4E24F52A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBDE7FEE-0D1E-4034-9B44-4C5F4E24F52A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBDE7FEE-0D1E-4034-9B44-4C5F4E24F52A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{851351FC-9467-44D5-BE86-E59FFC3F07A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{851351FC-9467-44D5-BE86-E59FFC3F07A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{851351FC-9467-44D5-BE86-E59FFC3F07A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{851351FC-9467-44D5-BE86-E59FFC3F07A9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7B63455-B00E-4DDF-BE13-5E1B8A84615D}
+	EndGlobalSection
+EndGlobal
