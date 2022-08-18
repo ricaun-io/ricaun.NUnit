@@ -76,13 +76,13 @@ namespace ricaun.NUnit.Services
                     return testType;
                 }
 
-                var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttribute<OneTimeSetUpAttribute>);
-                var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttribute<OneTimeTearDownAttribute>);
+                var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
+                var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
 
-                var methodSetUp = methods.FirstOrDefault(AnyAttribute<SetUpAttribute>);
-                var methodTearDown = methods.FirstOrDefault(AnyAttribute<TearDownAttribute>);
+                var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
+                var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
 
-                var testMethods = methods.Where(AnyAttribute<TestAttribute>);
+                var testMethods = methods.Where(AnyAttributeName<TestAttribute>);
 
                 var upOneResult = await InvokeResultInstance(methodOneTimeSetUp);
                 if (upOneResult.Success)
@@ -107,63 +107,16 @@ namespace ricaun.NUnit.Services
             return testType;
         }
 
-        /*
-        /// <summary>
-        /// Test
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<TestModel>> Test()
-        {
-            var methods = type.GetMethods();
-
-            if (IgnoreTest(type, out string ignoreMessage))
-            {
-                AddTestModel(type.Name, true, ignoreMessage);
-                return Enumerable.Empty<TestModel>();
-            }
-
-            var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttribute<OneTimeSetUpAttribute>);
-            var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttribute<OneTimeTearDownAttribute>);
-
-            var methodSetUp = methods.FirstOrDefault(AnyAttribute<SetUpAttribute>);
-            var methodTearDown = methods.FirstOrDefault(AnyAttribute<TearDownAttribute>);
-
-            var testMethods = methods.Where(AnyAttribute<TestAttribute>);
-
-            if (await InvokeInstance(methodOneTimeSetUp))
-            {
-                foreach (var testMethod in testMethods)
-                {
-                    await InvokeInstance(testMethod, methodSetUp, methodTearDown);
-                }
-            }
-            await InvokeInstance(methodOneTimeTearDown);
-
-            return TestModels;
-        }
-        */
         #endregion
 
         #region private
-        private void AddTestModel(string name, bool success, string message = "")
-        {
-            var textModel = new TestModel()
-            {
-                Name = name,
-                Success = success,
-                Message = message,
-                Console = consoleWriter.GetString(),
-                Time = consoleWriter.GetMillis()
-            };
 
-            TestModels.Add(textModel);
-        }
         private bool IgnoreTest(MemberInfo memberInfo, out string ignoreMessage)
         {
             ignoreMessage = "";
             foreach (var ignoreAttribute in IgnoreAttributes)
             {
-                if (HasAttribute(memberInfo, ignoreAttribute))
+                if (HasAttributeName(memberInfo, ignoreAttribute))
                 {
                     ignoreMessage = $"IgnoreTest: '{memberInfo.Name}' => '{ignoreAttribute.Name}'";
                     return true;
@@ -172,37 +125,6 @@ namespace ricaun.NUnit.Services
             return false;
         }
 
-        /*
-        private async Task<bool> InvokeInstance(MethodInfo method, MethodInfo methodSetUp = null, MethodInfo methodTearDown = null)
-        {
-            if (method is null)
-                return true;
-
-            if (IgnoreTest(method, out string messageIgnore))
-            {
-                AddTestModel(method.Name, true, messageIgnore);
-                return true;
-            }
-
-            var upResult = await InvokeResultInstance(methodSetUp);
-            var methodResult = upResult;
-            if (upResult.Success)
-            {
-                methodResult = await InvokeResultInstance(method);
-            }
-            var downResult = await InvokeResultInstance(methodTearDown);
-
-            var success = upResult.Success & methodResult.Success & downResult.Success;
-
-            var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
-
-            //message += $"{upResult.Success} {methodResult.Success} {downResult.Success}";
-
-            AddTestModel(method.Name, success, message);
-
-            return success;
-        }
-        */
         private async Task<TestModel> InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown)
         {
             var test = new TestModel();
@@ -238,7 +160,6 @@ namespace ricaun.NUnit.Services
 
             return test;
         }
-
 
         #endregion
 

@@ -28,10 +28,6 @@ namespace ricaun.NUnit
                 try
                 {
                     ValidateTestAssemblyNUnitVersion(location);
-                    //if (CanTestAssembly(location) == false)
-                    //{
-                    //    throw new Exception($"nunit.framework {Version}");
-                    //}
 
                     testAssemblyModel.FileName = Path.GetFileName(location);
                     var testAssembly = new TestAssemblyService(location, parameters);
@@ -84,6 +80,16 @@ namespace ricaun.NUnit
 
             if (nunitReference.Version != Version)
             {
+                var fileReference = Directory.GetFiles(Path.GetDirectoryName(location), $"{reference}.dll")
+                    .FirstOrDefault();
+
+                if (fileReference is not null)
+                {
+                    var assemblyLoad = Assembly.LoadFile(fileReference);
+                    Console.WriteLine($"Assembly.LoadFile {assemblyLoad}");
+                    return;
+                }
+
                 throw new FileLoadException($"'{reference}' version {nunitReference.Version} is not allow. Use the version {Version}.");
             }
         }

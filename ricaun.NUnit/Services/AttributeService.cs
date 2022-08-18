@@ -13,6 +13,19 @@ namespace ricaun.NUnit.Services
         #region Attribute
 
         /// <summary>
+        /// AnyAttributeName
+        /// </summary>
+        /// <typeparam name="TCustomAttributeType"></typeparam>
+        /// <param name="customAttributeProvider"></param>
+        /// <returns></returns>
+        public bool AnyAttributeName<TCustomAttributeType>(ICustomAttributeProvider customAttributeProvider) where TCustomAttributeType : Attribute
+        {
+            return customAttributeProvider
+                .GetCustomAttributes(true)
+                .Any(e => e.GetType().Name.Equals(typeof(TCustomAttributeType).Name));
+        }
+
+        /// <summary>
         /// AnyAttribute
         /// </summary>
         /// <typeparam name="TCustomAttributeType"></typeparam>
@@ -39,6 +52,18 @@ namespace ricaun.NUnit.Services
                 return false;
 
             return func.Invoke(attribute);
+        }
+
+        /// <summary>
+        /// HasAttributeName
+        /// </summary>
+        /// <param name="customAttributeProvider"></param>
+        /// <param name="attributeType"></param>
+        /// <returns></returns>
+        public bool HasAttributeName(ICustomAttributeProvider customAttributeProvider, Type attributeType)
+        {
+            return customAttributeProvider.GetCustomAttributes(true)
+                .Any(e => e.GetType().Name.Equals(attributeType.Name));
         }
 
         /// <summary>

@@ -44,7 +44,7 @@ namespace ricaun.NUnit.Services
         public TestAssemblyService(string location, params object[] parameters) :
             this(Assembly.LoadFile(location), parameters)
         {
-            //this.assembly = Assembly.ReflectionOnlyLoadFrom(location);
+
         }
 
         private IEnumerable<Type> GetTestTypes()
@@ -56,7 +56,7 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                if (type.GetMethods().Any(AnyAttribute<TestAttribute>))
+                if (type.GetMethods().Any(AnyAttributeName<TestAttribute>))
                 {
                     types.Add(type);
                 }
@@ -71,7 +71,6 @@ namespace ricaun.NUnit.Services
         public async Task<IEnumerable<TestTypeModel>> Test()
         {
             var result = new List<TestTypeModel>();
-
             var types = GetTestTypes();
 
             foreach (var type in types)

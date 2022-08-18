@@ -3,6 +3,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 
@@ -15,7 +16,11 @@ namespace ricaun.NUnit.Revit.Commands
         {
             UIApplication uiapp = commandData.Application;
 
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            var nunits = AppDomain.CurrentDomain.GetAssemblies().Where(e => e.GetName().Name.Equals("nunit.framework"));
+            foreach (var item in nunits)
+            {
+                Console.WriteLine($"{item} \t{item.Location}");
+            }
 
             Console.WriteLine(TestEngine.Version);
 
@@ -50,16 +55,11 @@ namespace ricaun.NUnit.Revit.Commands
             Console.WriteLine(test3);
             Console.WriteLine(test3.Message);
 
-            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+            Clipboard.SetText(Newtonsoft.Json.JsonConvert.SerializeObject(test3));
 
             return Result.Succeeded;
         }
 
-        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            Console.WriteLine($"AssemblyResolve {args.Name}");
-            return null;
-        }
     }
 }
 #endif

@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.0] / 2022-08-18
 ### Features
+- Test Assembly with diferent NUnit Version with LoadFile
+- Test Methods with Attribute Name
 - Test if Assembly contain the same NUnit Version
 - Test Method with custom parameters
 - Test Instance with custom parameters
