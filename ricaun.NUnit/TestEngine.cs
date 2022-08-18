@@ -32,6 +32,8 @@ namespace ricaun.NUnit
                     testAssemblyModel.FileName = Path.GetFileName(location);
                     var testAssembly = new TestAssemblyService(location, parameters);
 
+                    // var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(location);
+
                     testAssemblyModel.Name = testAssembly.Assembly.GetName().Name;
                     testAssemblyModel.Version = testAssembly.Assembly.GetName().Version.ToString(3);
                     try
@@ -72,6 +74,7 @@ namespace ricaun.NUnit
         {
             string reference = "nunit.framework";
             var assembly = Assembly.ReflectionOnlyLoadFrom(location);
+
             var nunitReference = assembly.GetReferencedAssemblies()
                 .FirstOrDefault(e => e.Name.Equals(reference));
 
@@ -85,9 +88,12 @@ namespace ricaun.NUnit
 
                 if (fileReference is not null)
                 {
-                    var assemblyLoad = Assembly.LoadFile(fileReference);
-                    Console.WriteLine($"Assembly.LoadFile {assemblyLoad}");
-                    return;
+                    if (Assembly.ReflectionOnlyLoadFrom(fileReference).GetName().Version == nunitReference.Version)
+                    {
+                        var assemblyLoad = Assembly.LoadFile(fileReference);
+                        Console.WriteLine($"Assembly.LoadFile({assemblyLoad})");
+                        return;
+                    }
                 }
 
                 throw new FileLoadException($"'{reference}' version {nunitReference.Version} is not allow. Use the version {Version}.");
