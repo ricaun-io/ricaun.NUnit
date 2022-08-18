@@ -21,11 +21,6 @@ namespace ricaun.NUnit.Models
         /// SuccessHate
         /// </summary>
         public double SuccessHate => GetSuccessHate();
-        //public string Name { get; set; }
-        //public double Time { get; set; }
-        //public bool Success { get { return GetSuccess(); } }
-        //public string Message { get; set; } = "";
-        //public string Console { get; set; } = "";
 
         /// <summary>
         /// Tests
@@ -56,7 +51,7 @@ namespace ricaun.NUnit.Models
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Name} {TestCount} {Success} {SuccessHate * 100}% {Time}ms";
+            return $"{Name} {TestCount} {Success} {Math.Round(SuccessHate * 100, 2)}% {Time}ms";
         }
     }
 }

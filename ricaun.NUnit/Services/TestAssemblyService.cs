@@ -47,8 +47,6 @@ namespace ricaun.NUnit.Services
             //this.assembly = Assembly.ReflectionOnlyLoadFrom(location);
         }
 
-        private string[] References = new[] { "nunit.framework", "RevitAPI" };
-
         private IEnumerable<Type> GetTestTypes()
         {
             var types = new List<Type>();

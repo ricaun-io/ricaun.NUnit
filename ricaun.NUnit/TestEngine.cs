@@ -1,8 +1,10 @@
-﻿using ricaun.NUnit.Models;
+﻿using NUnit.Framework;
+using ricaun.NUnit.Models;
 using ricaun.NUnit.Services;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ricaun.NUnit
@@ -25,6 +27,12 @@ namespace ricaun.NUnit
             {
                 try
                 {
+                    ValidateTestAssemblyNUnitVersion(location);
+                    //if (CanTestAssembly(location) == false)
+                    //{
+                    //    throw new Exception($"nunit.framework {Version}");
+                    //}
+
                     testAssemblyModel.FileName = Path.GetFileName(location);
                     var testAssembly = new TestAssemblyService(location, parameters);
 
@@ -43,16 +51,41 @@ namespace ricaun.NUnit
                     var tests = task.GetAwaiter().GetResult();
 
                     testAssemblyModel.Tests.AddRange(tests);
+                    testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);
                 }
                 catch (Exception ex)
                 {
-                    testAssemblyModel.Message = ex.Message;
+                    if (string.IsNullOrEmpty(testAssemblyModel.Name))
+                        testAssemblyModel.Name = ex.GetType().Name;
+
+                    testAssemblyModel.Success = false;
+                    testAssemblyModel.Message = ex.ToString();
                 }
                 testAssemblyModel.Console = console.GetString();
                 testAssemblyModel.Time = console.GetMillis();
-                testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);
             }
             return testAssemblyModel;
+        }
+
+        /// <summary>
+        /// Version of <see cref="NUnitAttribute"/>
+        /// </summary>
+        public static Version Version => typeof(NUnitAttribute).Assembly.GetName().Version;
+
+        private static void ValidateTestAssemblyNUnitVersion(string location)
+        {
+            string reference = "nunit.framework";
+            var assembly = Assembly.ReflectionOnlyLoadFrom(location);
+            var nunitReference = assembly.GetReferencedAssemblies()
+                .FirstOrDefault(e => e.Name.Equals(reference));
+
+            if (nunitReference is null)
+                return;
+
+            if (nunitReference.Version != Version)
+            {
+                throw new FileLoadException($"'{reference}' version {nunitReference.Version} is not allow. Use the version {Version}.");
+            }
         }
     }
 }

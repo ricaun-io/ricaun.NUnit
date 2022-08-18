@@ -184,7 +184,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="*" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
   </ItemGroup>
   
   <ItemGroup>
@@ -207,39 +207,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="ILRepack.MSBuild.Task" Version="*" IncludeAssets="build; compile" PrivateAssets="All" />
-  </ItemGroup>
-
-  <Target Name="ILRepacker" AfterTargets="Build" Condition="!$(Configuration.Contains('Debug'))">
-    <PropertyGroup>
-      <WorkingDirectory>$(MSBuildThisFileDirectory)$(OutDir)</WorkingDirectory>
-    </PropertyGroup>
-    <ItemGroup>
-      <InputAssemblies Include="$(TargetPath)" />
-      <InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'nunit.framework'" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <!-- Must be a fully qualified name -->
-      <!--
-      <DoNotInternalizeAssemblies Include="ExampleAssemblyToMerge3" />
-      -->
-    </ItemGroup>
-
-    <!-- https://github.com/peters/ILRepack.MSBuild.Task/blob/master/src/ILRepack.MSBuild.Task/ILRepack.cs -->
-    <ILRepack XmlDocumentation="true" 
-              AllowDuplicateResources="true" 
-              Union="false" DebugInfo="true" 
-              CopyAttributes="true" Parallel="true" 
-              Internalize="false" 
-              OutputType="$(OutputType)" MainAssembly="$(AssemblyName).dll" 
-              OutputAssembly="$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" 
-              WilcardInputAssemblies="true" InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)" 
-              WorkingDirectory="$(WorkingDirectory)" />
-  </Target>
- 
-  
-  
-  
 </Project>
