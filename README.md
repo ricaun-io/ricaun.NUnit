@@ -72,7 +72,8 @@ public class TestSampleClass
 
 ### Optional Parameters
 
-Is possible to add optional parameters in the class or method tested.
+Is possible to add optional parameters in the class or method tested. 
+The custom arguments is selected based in the `Type` of the argument, if the `Type` is not found the test gonna execute with `null` argument.
 
 ```C#
 var location = Assembly.GetExecutingAssembly().Location;
