@@ -23,16 +23,28 @@ The tests use the NUnit Attributes `[Test]` to execute a method test.
 ```C#
 public class TestSampleClass
 {
-    [SetUp]
-    public void RunBeforeTest()
+    [OneTimeSetUp]
+    public void OneBeforeTest()
     {
-        Console.WriteLine("Execute RunBeforeTest");
+        Console.WriteLine("Execute OneBeforeTest");
+    }
+
+    [OneTimeTearDown]
+    public void OneAfterTest()
+    {
+        Console.WriteLine("Execute OneAfterTest");
+    }
+
+    [SetUp]
+    public void BeforeTest()
+    {
+        Console.WriteLine("Execute BeforeTest");
     }
 
     [TearDown]
-    public void RunAfterTest()
+    public void AfterTest()
     {
-        Console.WriteLine("Execute RunAfterTest");
+        Console.WriteLine("Execute AfterTest");
     }
 
     [Test]
