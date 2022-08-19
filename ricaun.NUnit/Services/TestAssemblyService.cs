@@ -75,24 +75,29 @@ namespace ricaun.NUnit.Services
 
             foreach (var type in types)
             {
-                var testModel = new TestTypeModel();
-                try
+                using (var console = new ConsoleWriterDateTime())
                 {
-                    using (var test = new TestService(type, parameters))
+                    var testTypeModel = new TestTypeModel();
+                    try
                     {
-                        testModel = await test.Test();
+                        using (var test = new TestService(type, parameters))
+                        {
+                            testTypeModel = await test.Test();
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    testModel = testModel ?? new TestTypeModel();
-                    testModel.Name = type.Name;
-                    testModel.Message = testModel.Message + Environment.NewLine + ex.ToString();
-                    testModel.Success = false;
-                }
-                finally
-                {
-                    result.Add(testModel);
+                    catch (Exception ex)
+                    {
+                        testTypeModel = testTypeModel ?? new TestTypeModel();
+                        testTypeModel.Name = type.Name;
+                        testTypeModel.Message = testTypeModel.Message + Environment.NewLine + ex.ToString();
+                        testTypeModel.Success = false;
+                    }
+                    finally
+                    {
+                        result.Add(testTypeModel);
+                    }
+                    testTypeModel.Console = console.GetString();
+                    testTypeModel.Time = console.GetMillis();
                 }
             }
 

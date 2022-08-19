@@ -16,8 +16,6 @@ namespace ricaun.NUnit.Services
         private readonly Type type;
         private readonly object[] parameters;
         private object instance;
-        private List<TestModel> TestModels { get; } = new();
-        private ConsoleWriterDateTime consoleWriter = new();
 
         /// <summary>
         /// IgnoreAttributes
@@ -48,7 +46,6 @@ namespace ricaun.NUnit.Services
         /// </summary>
         public void Dispose()
         {
-            consoleWriter.Dispose();
             TryForceDispose(this.instance);
         }
         #endregion
@@ -66,13 +63,10 @@ namespace ricaun.NUnit.Services
             testType.Name = type.FullName;
             testType.Success = true;
 
-            using (var console = new ConsoleWriterDateTime())
             {
                 if (IgnoreTest(type, out string ignoreMessage))
                 {
                     testType.Message = ignoreMessage;
-                    testType.Console = console.GetString();
-                    testType.Time = console.GetMillis();
                     return testType;
                 }
 
@@ -100,8 +94,6 @@ namespace ricaun.NUnit.Services
 
                 testType.Success = success & !testType.Tests.Any(e => e.Success == false);
                 testType.Message = message;
-                testType.Console = console.GetString();
-                testType.Time = console.GetMillis();
             }
 
             return testType;

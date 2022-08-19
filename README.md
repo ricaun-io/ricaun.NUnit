@@ -1,5 +1,7 @@
 # ricaun.NUnit
 
+ricaun.NUnit is a package to manage the Load and Test assemblies using the NUnit Attributes as patterns.
+
 [![Visual Studio 2022](https://img.shields.io/badge/Visual%20Studio-2022-blue)](../..)
 [![Nuke](https://img.shields.io/badge/Nuke-Build-blue)](https://nuke.build/)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -55,6 +57,40 @@ public class TestSampleClass
     }
 }
 ```
+
+### Optional Parameters
+
+Is possible to add optional parameters in the class or method tested.
+
+```C#
+var location = Assembly.GetExecutingAssembly().Location;
+var test = TestEngine.TestAssembly(location, "This is a custom string parameter.");
+```
+
+The sample below show some implementation with a method with argument and `Constructor/IDisposable`.
+
+```C#
+public class TestParameterClass : IDisposable
+{
+    public TestParameterClass(string parameter)
+    {
+        Console.WriteLine($"Constructor TestParameterClass: {parameter}");
+    }
+
+    [Test]
+    public void ParameterTest(string parameter)
+    {
+        Console.WriteLine($"ParameterTest: {parameter}");
+        Assert.IsNotNull(parameter);
+    }
+
+    public void Dispose()
+    {
+        Console.WriteLine($"Dispose TestParameterClass");
+    }
+}
+```
+
 
 ## Release
 
