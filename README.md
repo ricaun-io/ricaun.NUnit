@@ -11,6 +11,51 @@ var location = Assembly.GetExecutingAssembly().Location;
 var test = TestEngine.TestAssembly(location);
 ```
 
+### Test Attributes
+
+The tests use the NUnit Attributes `[Test]` to execute a method test. 
+* The attribute `[SetUp]` and `[TearDown]` is executed for each method with the attribute `[Test]`.
+* The attribute `[OneTimeSetUp]` and `[OneTimeTearDown]` is executed one time before each method with the attribute `[Test]`.
+* The attribute `[Ignore]`, `[TestCase]`, and `[Explicit]` makes the class or method to be ignored.
+
+```C#
+public class TestSampleClass
+{
+    [SetUp]
+    public void RunBeforeTest()
+    {
+        Console.WriteLine("Execute RunBeforeTest");
+    }
+
+    [TearDown]
+    public void RunAfterTest()
+    {
+        Console.WriteLine("Execute RunAfterTest");
+    }
+
+    [Test]
+    public void NormalTest()
+    {
+        Console.WriteLine("Execute NormalTest");
+        Assert.True(true);
+    }
+
+    [Test]
+    public void FailTest()
+    {
+        Console.WriteLine("Execute FailTest");
+        Assert.True(false, "This is a custom fail message.");
+    }
+
+    [Test]
+    public void PassTest()
+    {
+        Console.WriteLine("Execute PassTest");
+        Assert.Pass("This is a custom pass message.");
+    }
+}
+```
+
 ## Release
 
 * [Latest release](../../releases/latest)
