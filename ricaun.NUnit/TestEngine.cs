@@ -12,7 +12,7 @@ namespace ricaun.NUnit
     /// <summary>
     /// TestEngine
     /// </summary>
-    public class TestEngine
+    public static class TestEngine
     {
         /// <summary>
         /// Test Assembly
@@ -32,15 +32,14 @@ namespace ricaun.NUnit
                     testAssemblyModel.FileName = Path.GetFileName(location);
                     var testAssembly = new TestAssemblyService(location, parameters);
 
-                    // var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(location);
-
                     testAssemblyModel.Name = testAssembly.Assembly.GetName().Name;
                     testAssemblyModel.Version = testAssembly.Assembly.GetName().Version.ToString(3);
-                    try
+
+                    if (testAssemblyModel.Name.EndsWith(testAssemblyModel.Version))
                     {
-                        testAssemblyModel.Name = testAssembly.Assembly.GetTypes().FirstOrDefault().Namespace;
+                        testAssemblyModel.Name = testAssemblyModel.Name
+                            .Substring(0, testAssemblyModel.Name.Length - testAssemblyModel.Version.Length).Trim('.');
                     }
-                    catch { }
 
                     var task = Task.Run(async () =>
                     {
