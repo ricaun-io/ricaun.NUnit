@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace ricaun.NUnit.Services
         {
             this.assembly = assembly;
             this.parameters = parameters;
+            this.assembly.LoadReferencedAssemblies();
         }
 
         /// <summary>
