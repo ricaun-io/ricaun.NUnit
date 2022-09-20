@@ -2,10 +2,10 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using ricaun.Revit.UI;
-using System;
 
 namespace ricaun.NUnit.Revit
 {
+
     [AppLoader]
     public class App : IExternalApplication
     {

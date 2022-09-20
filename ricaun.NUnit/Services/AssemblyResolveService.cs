@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 
 namespace ricaun.NUnit.Services
@@ -22,7 +24,25 @@ namespace ricaun.NUnit.Services
         {
             var requestedAssemblyName = new AssemblyName(args.Name);
 
+            Debug.WriteLine($"Debug AssemblyResolve: {requestedAssemblyName}");
+
             Assembly assembly = ReadExistingAssembly(requestedAssemblyName);
+
+            if (assembly is not null) return assembly;
+
+            try
+            {
+                foreach (var assemblyFile in Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll"))
+                {
+                    var assemblyName = AssemblyName.GetAssemblyName(assemblyFile);
+                    if (requestedAssemblyName.ToString() == assemblyName.ToString())
+                    {
+                        Console.WriteLine($"Load File: {assemblyName}");
+                        return Assembly.LoadFile(assemblyFile);
+                    }
+                }
+            }
+            catch { }
 
             return assembly;
         }

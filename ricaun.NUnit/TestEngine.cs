@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using ricaun.NUnit.Services;
 using System;
@@ -17,40 +18,44 @@ namespace ricaun.NUnit
         /// <summary>
         /// Test Assembly
         /// </summary>
-        /// <param name="location">Assembly location</param>
+        /// <param name="assemblyFile">Assembly location</param>
         /// <param name="parameters">Parameters to create classes and methods</param>
         /// <returns></returns>
-        public static TestAssemblyModel TestAssembly(string location, params object[] parameters)
+        public static TestAssemblyModel TestAssembly(string assemblyFile, params object[] parameters)
         {
             var testAssemblyModel = new TestAssemblyModel();
             using (var console = new ConsoleWriterDateTime())
             {
                 try
                 {
-                    using (new AssemblyResolveService(Path.GetDirectoryName(location)))
+                    //using (AppDomain.CurrentDomain.GetAssemblyResolveDisposable())
                     {
-                        ValidateTestAssemblyNUnitVersion(location);
-
-                        testAssemblyModel.FileName = Path.GetFileName(location);
-                        var testAssembly = new TestAssemblyService(location, parameters);
-
-                        testAssemblyModel.Name = testAssembly.Assembly.GetName().Name;
-                        testAssemblyModel.Version = testAssembly.Assembly.GetName().Version.ToString(3);
-
-                        if (testAssemblyModel.Name.EndsWith(testAssemblyModel.Version))
+                        using (new AssemblyResolveService(Path.GetDirectoryName(assemblyFile)))
                         {
-                            testAssemblyModel.Name = testAssemblyModel.Name
-                                .Substring(0, testAssemblyModel.Name.Length - testAssemblyModel.Version.Length).Trim('.');
+                            //ValidateTestAssemblyNUnitVersion(assemblyFile);
+
+                            testAssemblyModel.FileName = Path.GetFileName(assemblyFile);
+                            var testAssembly = new TestAssemblyService(assemblyFile, parameters);
+
+                            testAssemblyModel.Name = testAssembly.Assembly.GetName().Name;
+                            testAssemblyModel.Version = testAssembly.Assembly.GetName().Version.ToString(3);
+
+                            if (testAssemblyModel.Name.EndsWith(testAssemblyModel.Version))
+                            {
+                                testAssemblyModel.Name = testAssemblyModel.Name
+                                    .Substring(0, testAssemblyModel.Name.Length - testAssemblyModel.Version.Length).Trim('.');
+                            }
+
+                            var task = Task.Run(async () =>
+                            {
+                                return await testAssembly.Test();
+                            });
+                            var tests = task.GetAwaiter().GetResult();
+
+                            testAssemblyModel.Tests.AddRange(tests);
+                            testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);
                         }
 
-                        var task = Task.Run(async () =>
-                        {
-                            return await testAssembly.Test();
-                        });
-                        var tests = task.GetAwaiter().GetResult();
-
-                        testAssemblyModel.Tests.AddRange(tests);
-                        testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);
                     }
                 }
                 catch (Exception ex)
@@ -73,16 +78,16 @@ namespace ricaun.NUnit
         public static Version Version => typeof(NUnitAttribute).Assembly.GetName().Version;
 
         /// <summary>
-        /// Check <paramref name="location"/> assembly contain NUnit reference
+        /// Check <paramref name="assemblyFile"/> assembly contain NUnit reference
         /// </summary>
         /// <remarks>
         /// This method use <seealso cref="Assembly.ReflectionOnlyLoadFrom"/> 
         /// </remarks>
-        /// <param name="location"></param>
+        /// <param name="assemblyFile"></param>
         /// <returns></returns>
-        public static bool ContainNUnit(string location)
+        public static bool ContainNUnit(string assemblyFile)
         {
-            return GetReferencedAssemblyNUnit(location) is not null;
+            return GetReferencedAssemblyNUnit(assemblyFile) is not null;
         }
 
         #region nunit.framework
@@ -90,12 +95,14 @@ namespace ricaun.NUnit
         /// <summary>
         /// Get Referenced NUnit using <seealso cref="Assembly.ReflectionOnlyLoadFrom"/>
         /// </summary>
-        /// <param name="location"></param>
+        /// <param name="assemblyFile"></param>
         /// <returns></returns>
-        private static AssemblyName GetReferencedAssemblyNUnit(string location)
+        private static AssemblyName GetReferencedAssemblyNUnit(string assemblyFile)
         {
             string reference = NUNIT_ASSEMBLY;
-            var assembly = Assembly.ReflectionOnlyLoadFrom(location);
+            var assembly = ReflectionOnlyLoadFrom(assemblyFile);
+
+            if (assembly is null) return null;
 
             var nunitReference = assembly.GetReferencedAssemblies()
                 .FirstOrDefault(e => e.Name.Equals(reference));
@@ -103,11 +110,25 @@ namespace ricaun.NUnit
             return nunitReference;
         }
 
-        private static void ValidateTestAssemblyNUnitVersion(string location)
+        private static Assembly ReflectionOnlyLoadFrom(string assemblyFile)
+        {
+            try
+            {
+                return Assembly.ReflectionOnlyLoadFrom(assemblyFile);
+            }
+            catch
+            {
+                var assemblyName = AssemblyName.GetAssemblyName(assemblyFile);
+                return AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
+                    .FirstOrDefault(e => e.GetName().ToString().Equals(assemblyName.ToString()));
+            }
+        }
+
+        private static void ValidateTestAssemblyNUnitVersion(string assemblyFile)
         {
             string reference = NUNIT_ASSEMBLY;
 
-            var nunitReference = GetReferencedAssemblyNUnit(location);
+            var nunitReference = GetReferencedAssemblyNUnit(assemblyFile);
 
             if (nunitReference is null)
             {
@@ -116,12 +137,12 @@ namespace ricaun.NUnit
 
             if (nunitReference.Version != Version)
             {
-                var fileReference = Directory.GetFiles(Path.GetDirectoryName(location), $"{reference}.dll")
+                var fileReference = Directory.GetFiles(Path.GetDirectoryName(assemblyFile), $"{reference}.dll")
                     .FirstOrDefault();
 
                 if (fileReference is not null)
                 {
-                    if (Assembly.ReflectionOnlyLoadFrom(fileReference).GetName().Version == nunitReference.Version)
+                    if (ReflectionOnlyLoadFrom(fileReference).GetName().Version == nunitReference.Version)
                     {
                         var assemblyLoad = Assembly.LoadFile(fileReference);
                         // Console.WriteLine($"Assembly.LoadFile({assemblyLoad})");

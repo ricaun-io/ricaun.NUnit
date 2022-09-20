@@ -32,11 +32,6 @@ namespace ricaun.NUnit.Models
         /// </summary>
         public int TestCount => Tests.SelectMany(e => e.Tests).Count();
 
-        //private bool GetSuccess()
-        //{
-        //    return !Tests.Any(e => !e.Success);
-        //}
-
         private double GetSuccessHate()
         {
             var tests = Tests.SelectMany(e => e.Tests);
