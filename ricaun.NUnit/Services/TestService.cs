@@ -56,7 +56,7 @@ namespace ricaun.NUnit.Services
         /// Test
         /// </summary>
         /// <returns></returns>
-        public async Task<TestTypeModel> Test()
+        public TestTypeModel Test()
         {
             var methods = type.GetMethods();
             var testType = new TestTypeModel();
@@ -78,16 +78,16 @@ namespace ricaun.NUnit.Services
 
                 var testMethods = methods.Where(AnyAttributeName<TestAttribute>);
 
-                var upOneResult = await InvokeResultInstance(methodOneTimeSetUp);
+                var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
                 if (upOneResult.Success)
                 {
                     foreach (var testMethod in testMethods)
                     {
-                        var testModel = await InvokeTestInstance(testMethod, methodSetUp, methodTearDown);
+                        var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown);
                         testType.Tests.Add(testModel);
                     }
                 }
-                var downOneResult = await InvokeResultInstance(methodOneTimeTearDown);
+                var downOneResult = InvokeResultInstance(methodOneTimeTearDown);
 
                 var success = upOneResult.Success & downOneResult.Success;
                 var message = string.Join(Environment.NewLine, upOneResult.Message, downOneResult.Message).Trim();
@@ -117,7 +117,7 @@ namespace ricaun.NUnit.Services
             return false;
         }
 
-        private async Task<TestModel> InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown)
+        private TestModel InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown)
         {
             var test = new TestModel();
             test.Name = method.Name;
@@ -133,13 +133,13 @@ namespace ricaun.NUnit.Services
                     return test;
                 }
 
-                var upResult = await InvokeResultInstance(methodSetUp);
+                var upResult = InvokeResultInstance(methodSetUp);
                 var methodResult = upResult;
                 if (upResult.Success)
                 {
-                    methodResult = await InvokeResultInstance(method);
+                    methodResult = InvokeResultInstance(method);
                 }
-                var downResult = await InvokeResultInstance(methodTearDown);
+                var downResult = InvokeResultInstance(methodTearDown);
 
                 var success = upResult.Success & methodResult.Success & downResult.Success;
                 var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
@@ -162,7 +162,7 @@ namespace ricaun.NUnit.Services
             public bool Success { get; set; } = true;
             public string Message { get; set; }
         }
-        private async Task<InvokeResult> InvokeResultInstance(MethodInfo method)
+        private InvokeResult InvokeResultInstance(MethodInfo method)
         {
             var result = new InvokeResult();
             if (method is null)
@@ -176,7 +176,7 @@ namespace ricaun.NUnit.Services
 
             try
             {
-                await Invoke(this.instance, method, this.parameters);
+                Invoke(this.instance, method, this.parameters);
             }
             catch (Exception ex)
             {

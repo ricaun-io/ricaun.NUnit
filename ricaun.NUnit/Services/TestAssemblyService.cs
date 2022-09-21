@@ -70,7 +70,7 @@ namespace ricaun.NUnit.Services
         /// Test
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<TestTypeModel>> Test()
+        public IEnumerable<TestTypeModel> Test()
         {
             var result = new List<TestTypeModel>();
             var types = GetTestTypes();
@@ -84,7 +84,7 @@ namespace ricaun.NUnit.Services
                     {
                         using (var test = new TestService(type, parameters))
                         {
-                            testTypeModel = await test.Test();
+                            testTypeModel = test.Test();
                         }
                     }
                     catch (Exception ex)
