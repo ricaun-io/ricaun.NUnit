@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.0.5] / 2022-09-20
 ### Features
 - Remove await / async
+### Updated
+- Update Version and VersionNUnit
 - Ignore Task methods
 
 ## [1.0.4] / 2022-09-20

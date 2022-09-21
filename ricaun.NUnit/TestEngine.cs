@@ -69,9 +69,14 @@ namespace ricaun.NUnit
         }
 
         /// <summary>
+        /// Version of <see cref="TestEngine"/>
+        /// </summary>
+        public static Version Version => typeof(TestEngine).Assembly.GetName().Version;
+
+        /// <summary>
         /// Version of <see cref="NUnitAttribute"/>
         /// </summary>
-        public static Version Version => typeof(NUnitAttribute).Assembly.GetName().Version;
+        public static Version VersionNUnit => typeof(NUnitAttribute).Assembly.GetName().Version;
 
         /// <summary>
         /// Check <paramref name="assemblyFile"/> assembly contain NUnit reference
@@ -120,35 +125,35 @@ namespace ricaun.NUnit
             }
         }
 
-        private static void ValidateTestAssemblyNUnitVersion(string assemblyFile)
-        {
-            string reference = NUNIT_ASSEMBLY;
+        //private static void ValidateTestAssemblyNUnitVersion(string assemblyFile)
+        //{
+        //    string reference = NUNIT_ASSEMBLY;
 
-            var nunitReference = GetReferencedAssemblyNUnit(assemblyFile);
+        //    var nunitReference = GetReferencedAssemblyNUnit(assemblyFile);
 
-            if (nunitReference is null)
-            {
-                return;
-            }
+        //    if (nunitReference is null)
+        //    {
+        //        return;
+        //    }
 
-            if (nunitReference.Version != Version)
-            {
-                var fileReference = Directory.GetFiles(Path.GetDirectoryName(assemblyFile), $"{reference}.dll")
-                    .FirstOrDefault();
+        //    if (nunitReference.Version != Version)
+        //    {
+        //        var fileReference = Directory.GetFiles(Path.GetDirectoryName(assemblyFile), $"{reference}.dll")
+        //            .FirstOrDefault();
 
-                if (fileReference is not null)
-                {
-                    if (ReflectionOnlyLoadFrom(fileReference).GetName().Version == nunitReference.Version)
-                    {
-                        var assemblyLoad = Assembly.LoadFile(fileReference);
-                        // Console.WriteLine($"Assembly.LoadFile({assemblyLoad})");
-                        return;
-                    }
-                }
+        //        if (fileReference is not null)
+        //        {
+        //            if (ReflectionOnlyLoadFrom(fileReference).GetName().Version == nunitReference.Version)
+        //            {
+        //                var assemblyLoad = Assembly.LoadFile(fileReference);
+        //                // Console.WriteLine($"Assembly.LoadFile({assemblyLoad})");
+        //                return;
+        //            }
+        //        }
 
-                throw new FileLoadException($"'{reference}' version {nunitReference.Version} is not allow. Use the version {Version}.");
-            }
-        }
+        //        throw new FileLoadException($"'{reference}' version {nunitReference.Version} is not allow. Use the version {Version}.");
+        //    }
+        //}
         #endregion
     }
 }
