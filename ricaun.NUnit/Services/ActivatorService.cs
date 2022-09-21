@@ -48,7 +48,41 @@ namespace ricaun.NUnit.Services
         /// <param name="method"></param>
         /// <param name="possibleParams"></param>
         /// <returns></returns>
-        public async Task Invoke(object obj, MethodInfo method, params object[] possibleParams)
+        public void Invoke(object obj, MethodInfo method, params object[] possibleParams)
+        {
+            if (method is null)
+                return;
+
+            var methodParams = GetMethodOrderParameters(method, possibleParams);
+
+            if (method.ReturnType == typeof(Task))
+            {
+                var taskInvoke = (Task)method.Invoke(obj, methodParams);
+                if (!taskInvoke.Wait(2000))
+                {
+                    Console.WriteLine("Task 2000ms Timeout");
+                };
+
+                //var task = Task.Run(async () =>
+                //{
+                //    await taskInvoke;
+                //});
+                //task.GetAwaiter().GetResult();
+
+                return;
+            }
+
+            method.Invoke(obj, methodParams);
+        }
+
+        /// <summary>
+        /// InvokeAsync
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="method"></param>
+        /// <param name="possibleParams"></param>
+        /// <returns></returns>
+        public async Task InvokeAsync(object obj, MethodInfo method, params object[] possibleParams)
         {
             if (method is null)
                 return;
@@ -65,16 +99,16 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
-        /// Invoke
+        /// InvokeAsync
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="methodName"></param>
         /// <param name="possibleParams"></param>
         /// <returns></returns>
-        public async Task Invoke(object obj, string methodName, params object[] possibleParams)
+        public async Task InvokeAsync(object obj, string methodName, params object[] possibleParams)
         {
             var method = obj?.GetType().GetMethod(methodName);
-            await Invoke(obj, method, possibleParams);
+            await InvokeAsync(obj, method, possibleParams);
         }
         #endregion
 

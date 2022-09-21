@@ -46,11 +46,7 @@ namespace ricaun.NUnit
                                     .Substring(0, testAssemblyModel.Name.Length - testAssemblyModel.Version.Length).Trim('.');
                             }
 
-                            var task = Task.Run(async () =>
-                            {
-                                return await testAssembly.Test();
-                            });
-                            var tests = task.GetAwaiter().GetResult();
+                            var tests = testAssembly.Test();
 
                             testAssemblyModel.Tests.AddRange(tests);
                             testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);
