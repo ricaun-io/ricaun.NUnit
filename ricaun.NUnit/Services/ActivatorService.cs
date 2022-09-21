@@ -57,11 +57,13 @@ namespace ricaun.NUnit.Services
 
             if (method.ReturnType == typeof(Task))
             {
-                var taskInvoke = (Task)method.Invoke(obj, methodParams);
-                if (!taskInvoke.Wait(2000))
-                {
-                    Console.WriteLine("Task 2000ms Timeout");
-                };
+                throw new TaskCanceledException("Task method not supported!");
+
+                //var taskInvoke = (Task)method.Invoke(obj, methodParams);
+                //if (!taskInvoke.Wait(2000))
+                //{
+                //    Console.WriteLine("Task 2000ms Timeout");
+                //};
 
                 //var task = Task.Run(async () =>
                 //{
@@ -69,7 +71,7 @@ namespace ricaun.NUnit.Services
                 //});
                 //task.GetAwaiter().GetResult();
 
-                return;
+                //return;
             }
 
             method.Invoke(obj, methodParams);
