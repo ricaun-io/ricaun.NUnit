@@ -23,36 +23,43 @@ namespace ricaun.NUnit
         /// <returns></returns>
         public static TestAssemblyModel TestAssembly(string assemblyFile, params object[] parameters)
         {
+            return TestAssemblyOptions(assemblyFile, false, parameters);
+        }
+
+        /// <summary>
+        /// Test Assembly
+        /// </summary>
+        /// <param name="assemblyFile">Assembly location</param>
+        /// <param name="onlyReadTest"></param>
+        /// <param name="parameters">Parameters to create classes and methods</param>
+        /// <returns></returns>
+        public static TestAssemblyModel TestAssemblyOptions(string assemblyFile, bool onlyReadTest, params object[] parameters)
+        {
             var testAssemblyModel = new TestAssemblyModel();
             using (var console = new ConsoleWriterDateTime())
             {
                 try
                 {
-                    //using (AppDomain.CurrentDomain.GetAssemblyResolveDisposable())
+                    using (new AssemblyResolveService(Path.GetDirectoryName(assemblyFile)))
                     {
-                        using (new AssemblyResolveService(Path.GetDirectoryName(assemblyFile)))
+                        testAssemblyModel.FileName = Path.GetFileName(assemblyFile);
+                        var testAssembly = new TestAssemblyService(assemblyFile, parameters);
+
+                        testAssemblyModel.Name = testAssembly.Assembly.GetName().Name;
+                        testAssemblyModel.Version = testAssembly.Assembly.GetName().Version.ToString(3);
+
+                        if (testAssemblyModel.Name.EndsWith(testAssemblyModel.Version))
                         {
-                            //ValidateTestAssemblyNUnitVersion(assemblyFile);
-
-                            testAssemblyModel.FileName = Path.GetFileName(assemblyFile);
-                            var testAssembly = new TestAssemblyService(assemblyFile, parameters);
-
-                            testAssemblyModel.Name = testAssembly.Assembly.GetName().Name;
-                            testAssemblyModel.Version = testAssembly.Assembly.GetName().Version.ToString(3);
-
-                            if (testAssemblyModel.Name.EndsWith(testAssemblyModel.Version))
-                            {
-                                testAssemblyModel.Name = testAssemblyModel.Name
-                                    .Substring(0, testAssemblyModel.Name.Length - testAssemblyModel.Version.Length).Trim('.');
-                            }
-
-                            var tests = testAssembly.Test();
-
-                            testAssemblyModel.Tests.AddRange(tests);
-                            testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);
+                            testAssemblyModel.Name = testAssemblyModel.Name
+                                .Substring(0, testAssemblyModel.Name.Length - testAssemblyModel.Version.Length).Trim('.');
                         }
 
+                        var tests = testAssembly.Test(onlyReadTest);
+
+                        testAssemblyModel.Tests.AddRange(tests);
+                        testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);
                     }
+
                 }
                 catch (Exception ex)
                 {
@@ -68,6 +75,7 @@ namespace ricaun.NUnit
             return testAssemblyModel;
         }
 
+        #region NUnit
         /// <summary>
         /// Version of <see cref="TestEngine"/>
         /// </summary>
@@ -90,6 +98,7 @@ namespace ricaun.NUnit
         {
             return GetReferencedAssemblyNUnit(assemblyFile) is not null;
         }
+        #endregion
 
         #region nunit.framework
         private const string NUNIT_ASSEMBLY = "nunit.framework";
@@ -124,36 +133,6 @@ namespace ricaun.NUnit
                     .FirstOrDefault(e => e.GetName().ToString().Equals(assemblyName.ToString()));
             }
         }
-
-        //private static void ValidateTestAssemblyNUnitVersion(string assemblyFile)
-        //{
-        //    string reference = NUNIT_ASSEMBLY;
-
-        //    var nunitReference = GetReferencedAssemblyNUnit(assemblyFile);
-
-        //    if (nunitReference is null)
-        //    {
-        //        return;
-        //    }
-
-        //    if (nunitReference.Version != Version)
-        //    {
-        //        var fileReference = Directory.GetFiles(Path.GetDirectoryName(assemblyFile), $"{reference}.dll")
-        //            .FirstOrDefault();
-
-        //        if (fileReference is not null)
-        //        {
-        //            if (ReflectionOnlyLoadFrom(fileReference).GetName().Version == nunitReference.Version)
-        //            {
-        //                var assemblyLoad = Assembly.LoadFile(fileReference);
-        //                // Console.WriteLine($"Assembly.LoadFile({assemblyLoad})");
-        //                return;
-        //            }
-        //        }
-
-        //        throw new FileLoadException($"'{reference}' version {nunitReference.Version} is not allow. Use the version {Version}.");
-        //    }
-        //}
         #endregion
     }
 }

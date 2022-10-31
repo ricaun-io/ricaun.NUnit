@@ -13,7 +13,7 @@
         /// <summary>
         /// Test Success?
         /// </summary>
-        public bool Success { get; set; }
+        public bool Success { get; set; } = true;
 
         /// <summary>
         /// Message Output

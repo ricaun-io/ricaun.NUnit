@@ -66,11 +66,13 @@ namespace ricaun.NUnit.Services
             return types;
         }
 
+
         /// <summary>
         /// Test
         /// </summary>
+        /// <param name="onlyReadTest"></param>
         /// <returns></returns>
-        public IEnumerable<TestTypeModel> Test()
+        public IEnumerable<TestTypeModel> Test(bool onlyReadTest = false)
         {
             var result = new List<TestTypeModel>();
             var types = GetTestTypes();
@@ -82,7 +84,7 @@ namespace ricaun.NUnit.Services
                     var testTypeModel = new TestTypeModel();
                     try
                     {
-                        using (var test = new TestService(type, parameters))
+                        using (var test = new TestService(type, onlyReadTest, parameters))
                         {
                             testTypeModel = test.Test();
                         }
