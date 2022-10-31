@@ -66,6 +66,10 @@ namespace ricaun.NUnit.Services
             return types;
         }
 
+        private IEnumerable<MethodInfo> GetTestTypeMethods()
+        {
+            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyAttributeName<TestAttribute>));
+        }
 
         /// <summary>
         /// Test
