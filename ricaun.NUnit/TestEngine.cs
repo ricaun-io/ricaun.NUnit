@@ -23,18 +23,6 @@ namespace ricaun.NUnit
         /// <returns></returns>
         public static TestAssemblyModel TestAssembly(string assemblyFile, params object[] parameters)
         {
-            return TestAssemblyOptions(assemblyFile, false, parameters);
-        }
-
-        /// <summary>
-        /// Test Assembly
-        /// </summary>
-        /// <param name="assemblyFile">Assembly location</param>
-        /// <param name="onlyReadTest"></param>
-        /// <param name="parameters">Parameters to create classes and methods</param>
-        /// <returns></returns>
-        public static TestAssemblyModel TestAssemblyOptions(string assemblyFile, bool onlyReadTest, params object[] parameters)
-        {
             var testAssemblyModel = new TestAssemblyModel();
             using (var console = new ConsoleWriterDateTime())
             {
@@ -54,7 +42,7 @@ namespace ricaun.NUnit
                                 .Substring(0, testAssemblyModel.Name.Length - testAssemblyModel.Version.Length).Trim('.');
                         }
 
-                        var tests = testAssembly.Test(onlyReadTest);
+                        var tests = testAssembly.Test();
 
                         testAssemblyModel.Tests.AddRange(tests);
                         testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);

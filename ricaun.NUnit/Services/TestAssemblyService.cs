@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Internal;
 using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using System;
@@ -49,6 +50,11 @@ namespace ricaun.NUnit.Services
 
         }
 
+        private bool AnyTestAttribute(ICustomAttributeProvider customAttributeProvider)
+        {
+            return AnyAttributeName<TestAttribute>(customAttributeProvider); // || AnyAttributeName<TestCaseAttribute>(customAttributeProvider);
+        }
+
         private IEnumerable<Type> GetTestTypes()
         {
             var types = new List<Type>();
@@ -58,7 +64,7 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                if (type.GetMethods().Any(AnyAttributeName<TestAttribute>))
+                if (type.GetMethods().Any(AnyTestAttribute))
                 {
                     types.Add(type);
                 }
@@ -66,17 +72,40 @@ namespace ricaun.NUnit.Services
             return types;
         }
 
-        private IEnumerable<MethodInfo> GetTestTypeMethods()
+        /// <summary>
+        /// GetTestTypeMethods
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<MethodInfo> GetTestTypeMethods()
         {
-            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyAttributeName<TestAttribute>));
+            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute));
+        }
+
+        /// <summary>
+        /// GetMethodFullName
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public string GetMethodFullName(MethodInfo method)
+        {
+            return method.DeclaringType.FullName + "." + method.Name;
+        }
+
+        /// <summary>
+        /// GetTestTypeMethods
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
+        public MethodInfo GetTestTypeMethods(string fullName)
+        {
+            return GetTestTypeMethods().FirstOrDefault(e => GetMethodFullName(e) == fullName);
         }
 
         /// <summary>
         /// Test
         /// </summary>
-        /// <param name="onlyReadTest"></param>
         /// <returns></returns>
-        public IEnumerable<TestTypeModel> Test(bool onlyReadTest = false)
+        public IEnumerable<TestTypeModel> Test()
         {
             var result = new List<TestTypeModel>();
             var types = GetTestTypes();
@@ -88,7 +117,7 @@ namespace ricaun.NUnit.Services
                     var testTypeModel = new TestTypeModel();
                     try
                     {
-                        using (var test = new TestService(type, onlyReadTest, parameters))
+                        using (var test = new TestService(type, parameters))
                         {
                             testTypeModel = test.Test();
                         }

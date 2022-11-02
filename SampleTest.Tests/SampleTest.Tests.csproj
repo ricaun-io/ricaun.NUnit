@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net45</TargetFramework>
     <LangVersion>latest</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
@@ -25,18 +25,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DebugType>None</DebugType>
+    <!--
+    <DefineConstants>$(DefineConstants);FAIL</DefineConstants>
+    -->
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="*" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ricaun.NUnit\ricaun.NUnit.csproj" />
-    <ProjectReference Include="..\SampleTest.Tests\SampleTest.Tests.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0"/>
   </ItemGroup>
 
 </Project>

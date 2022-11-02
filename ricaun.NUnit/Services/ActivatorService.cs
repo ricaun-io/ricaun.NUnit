@@ -48,10 +48,11 @@ namespace ricaun.NUnit.Services
         /// <param name="method"></param>
         /// <param name="possibleParams"></param>
         /// <returns></returns>
-        public void Invoke(object obj, MethodInfo method, params object[] possibleParams)
+        /// <exception cref="TaskCanceledException"></exception>
+        public object Invoke(object obj, MethodInfo method, params object[] possibleParams)
         {
             if (method is null)
-                return;
+                return null;
 
             var methodParams = GetMethodOrderParameters(method, possibleParams);
 
@@ -74,7 +75,7 @@ namespace ricaun.NUnit.Services
                 //return;
             }
 
-            method.Invoke(obj, methodParams);
+            return method.Invoke(obj, methodParams);
         }
 
         /// <summary>

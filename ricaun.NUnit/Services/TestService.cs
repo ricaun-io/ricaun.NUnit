@@ -16,7 +16,6 @@ namespace ricaun.NUnit.Services
         private readonly Type type;
         private readonly object[] parameters;
         private object instance;
-        private bool onlyReadTest;
 
         /// <summary>
         /// IgnoreAttributes
@@ -32,16 +31,12 @@ namespace ricaun.NUnit.Services
         /// TestService
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="onlyReadTest"></param>
         /// <param name="parameters"></param>
-        public TestService(Type type, bool onlyReadTest, params object[] parameters)
+        public TestService(Type type, params object[] parameters)
         {
             this.type = type;
             this.parameters = parameters;
-            this.onlyReadTest = onlyReadTest;
-
-            if (!this.onlyReadTest)
-                this.instance = CreateInstance(type, this.parameters);
+            this.instance = CreateInstance(type, this.parameters);
         }
 
         /// <summary>
@@ -75,15 +70,15 @@ namespace ricaun.NUnit.Services
 
                 var testMethods = methods.Where(AnyAttributeName<TestAttribute>);
 
-                if (onlyReadTest)
-                {
-                    foreach (var testMethod in testMethods)
-                    {
-                        var testModel = new TestModel() { Name = testMethod.Name };
-                        testType.Tests.Add(testModel);
-                    }
-                    return testType;
-                }
+                //if (onlyReadTest)
+                //{
+                //    foreach (var testMethod in testMethods)
+                //    {
+                //        var testModel = new TestModel() { Name = testMethod.Name };
+                //        testType.Tests.Add(testModel);
+                //    }
+                //    return testType;
+                //}
 
                 var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
                 var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
