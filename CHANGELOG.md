@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.0.6] / 2022-10-31
 ### Features
 - Request Test onlyRead
+### Tests
+- Add `ricaun.NUnit.Tests`
 
 ## [1.0.5] / 2022-09-20
 ### Features
