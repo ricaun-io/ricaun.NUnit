@@ -89,6 +89,21 @@ namespace ricaun.NUnit.Services
                 .GetCustomAttributes(typeof(TCustomAttributeType), true)
                 .OfType<TCustomAttributeType>();
         }
+
+        /// <summary>
+        /// GetAttribute
+        /// </summary>
+        /// <typeparam name="TCustomAttributeType"></typeparam>
+        /// <param name="customAttributeProvider"></param>
+        /// <returns></returns>
+        public TCustomAttributeType GetAttribute<TCustomAttributeType>(ICustomAttributeProvider customAttributeProvider) where TCustomAttributeType : Attribute
+        {
+            return customAttributeProvider
+                .GetCustomAttributes(typeof(TCustomAttributeType), true)
+                .OfType<TCustomAttributeType>()
+                .FirstOrDefault();
+        }
+
         #endregion
     }
 }

@@ -31,8 +31,12 @@ namespace ricaun.NUnit.Tests
                     {
                         try
                         {
+                            var testAttribute = service.GetAttribute<TestAttribute>(method);
+                            var result = testAttribute.ExpectedResult ?? null;
                             var value = instence.Invoke(method);
-                            //Console.WriteLine($"\t {value} {value is null}");
+
+                            var equals = (value is not null) ? value.Equals(result) : result is null;
+                            Console.WriteLine($"\t {method.Name} {equals} \t {value} {value is null} {result}");
                         }
                         catch (Exception ex)
                         {
