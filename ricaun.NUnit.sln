@@ -14,9 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{09
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ricaun.NUnit.Tests", "ricaun.NUnit.Tests\ricaun.NUnit.Tests.csproj", "{56D14F0F-BE0D-4A56-8249-046A9162E740}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ricaun.NUnit.Tests", "ricaun.NUnit.Tests\ricaun.NUnit.Tests.csproj", "{56D14F0F-BE0D-4A56-8249-046A9162E740}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleTest.Tests", "SampleTest.Tests\SampleTest.Tests.csproj", "{A3F8A436-6412-4092-9807-7DF6CF7E176F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleTest.Tests", "SampleTest.Tests\SampleTest.Tests.csproj", "{A3F8A436-6412-4092-9807-7DF6CF7E176F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleTest", "SampleTest\SampleTest.csproj", "{C9C3CE2D-3D95-49A4-9733-152D38646759}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +42,10 @@ Global
 		{A3F8A436-6412-4092-9807-7DF6CF7E176F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3F8A436-6412-4092-9807-7DF6CF7E176F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3F8A436-6412-4092-9807-7DF6CF7E176F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9C3CE2D-3D95-49A4-9733-152D38646759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9C3CE2D-3D95-49A4-9733-152D38646759}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9C3CE2D-3D95-49A4-9733-152D38646759}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9C3CE2D-3D95-49A4-9733-152D38646759}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

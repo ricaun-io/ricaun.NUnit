@@ -198,6 +198,10 @@ namespace ricaun.NUnit.Services
                         result.Success = true;
                         result.Message = success.Message;
                         break;
+                    case IgnoreException ignore:
+                        result.Success = true;
+                        result.Message = ignore.Message;
+                        break;
                     case AssertionException assertion:
                         result.Message = assertion.Message + Environment.NewLine + assertion.ToString();
                         break;

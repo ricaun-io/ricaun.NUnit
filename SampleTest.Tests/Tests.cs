@@ -3,29 +3,6 @@ using System;
 
 namespace SampleTest.Tests
 {
-    public class TestConstructor : IDisposable
-    {
-        public TestConstructor()
-        {
-
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-        }
-
-        [Test]
-        public void Test()
-        {
-        }
-    }
-
     public class Tests
     {
         [Test]

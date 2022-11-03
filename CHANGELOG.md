@@ -6,10 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.6] / 2022-10-31
 ### Features
-- Add Tests Project
+- Add SampleTest Project
+- Local Test with `SampleTest` in Revit
 ### Tests
 - Add `ricaun.NUnit.Tests`
 - Add `SampleTest.Tests`
+### Added
+- Add `IgnoreException` feature
 
 ## [1.0.5] / 2022-09-20
 ### Features
