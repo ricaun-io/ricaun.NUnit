@@ -72,7 +72,7 @@ namespace ricaun.NUnit.Tests
             {
                 foreach (var t in test.Tests)
                 {
-                    Console.WriteLine(t);
+                    Console.WriteLine($"\t{t}");
                 }
             }
 

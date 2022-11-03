@@ -36,7 +36,7 @@
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Name} {Success}";
+            return $"{Name}\t{Success}";
         }
     }
 }

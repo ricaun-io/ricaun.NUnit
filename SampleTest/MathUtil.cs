@@ -20,8 +20,11 @@ namespace SampleTest
             return result / (1 + values.Length);
         }
 
-        public static int Invert(int value)
+        public static double Invert(double value)
         {
+            if (value == 0.0)
+                throw new DivideByZeroException();
+
             return 1 / value;
         }
     }

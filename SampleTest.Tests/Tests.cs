@@ -21,17 +21,9 @@ namespace SampleTest.Tests
         }
 
         [Test]
-        public void TestFail2()
-        {
-#if FAIL
-            Assert.Fail("Fail2 Message");
-#endif
-        }
-
-        [Test]
         public void TestIgnore()
         {
-            Assert.Ignore();
+            Assert.Ignore("Ignore Message");
         }
 
         [Test(ExpectedResult = 1)]

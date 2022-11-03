@@ -32,7 +32,14 @@ namespace SampleTest.Tests
         [Test]
         public void TestInvert()
         {
-            MathUtil.Invert(0);
+            var value = MathUtil.Invert(2);
+            Assert.AreEqual(value, 0.5);
+        }
+
+        [Test]
+        public void TestInvertThrows()
+        {
+            Assert.Throws<DivideByZeroException>(() => { MathUtil.Invert(0); });
         }
     }
 }
