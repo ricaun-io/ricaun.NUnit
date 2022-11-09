@@ -104,6 +104,23 @@ namespace ricaun.NUnit.Services
                 .FirstOrDefault();
         }
 
+        /// <summary>
+        /// TryGetAttribute
+        /// </summary>
+        /// <typeparam name="TCustomAttributeType"></typeparam>
+        /// <param name="customAttributeProvider"></param>
+        /// <param name="customAttributeType"></param>
+        /// <returns></returns>
+        public bool TryGetAttribute<TCustomAttributeType>(
+                ICustomAttributeProvider customAttributeProvider,
+                out TCustomAttributeType customAttributeType
+            )
+            where TCustomAttributeType : Attribute
+        {
+            customAttributeType = GetAttribute<TCustomAttributeType>(customAttributeProvider);
+            return customAttributeType is not null;
+        }
+
         #endregion
     }
 }

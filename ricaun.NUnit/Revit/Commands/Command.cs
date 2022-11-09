@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Microsoft.Win32;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 
 namespace ricaun.NUnit.Revit.Commands
 {
+    [DisplayName("Command - Load SampleTest")]
     [Transaction(TransactionMode.Manual)]
     public class Command : IExternalCommand
     {
