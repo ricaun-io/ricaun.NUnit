@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.6] / 2022-10-31
 ### Features
+- Add `TestEngineFilter` simple filter by method/test name
 - Add SampleTest Project
 - Local Test with `SampleTest` in Revit
 - Skipped Test Parameter

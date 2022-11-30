@@ -71,17 +71,18 @@ namespace ricaun.NUnit.Tests
         {
             Console.WriteLine(fileName);
             var json = TestEngine.TestAssembly(pathFile);
-            Console.WriteLine(json);
-
-            foreach (var test in json.Tests)
-            {
-                foreach (var t in test.Tests)
-                {
-                    Console.WriteLine($"\t{t}");
-                }
-            }
+            json.Show();
 
             Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
+        }
+
+        [Test]
+        public void TestAssemblyFilter()
+        {
+            TestEngineFilter.Add("Test1");
+            var json = TestEngine.TestAssembly(pathFile);
+            json.Show();
+            Assert.IsTrue(json.TestCount == 1, $"{fileName} with no Tests.");
         }
     }
 }

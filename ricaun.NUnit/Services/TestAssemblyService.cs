@@ -68,7 +68,7 @@ namespace ricaun.NUnit.Services
                     types.Add(type);
                 }
             }
-            return types;
+            return types.OrderBy(e => e.Name);
         }
 
         /// <summary>

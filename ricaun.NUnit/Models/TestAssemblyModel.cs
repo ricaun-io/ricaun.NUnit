@@ -48,5 +48,21 @@ namespace ricaun.NUnit.Models
         {
             return $"{Name} {TestCount} {Success} {Math.Round(SuccessHate * 100, 2)}% {Time}ms";
         }
+
+        /// <summary>
+        /// Show in the Console
+        /// </summary>
+        public void Show()
+        {
+            System.Console.WriteLine(this);
+            foreach (var test in this.Tests)
+            {
+                System.Console.WriteLine($"\t{test}");
+                foreach (var t in test.Tests)
+                {
+                    System.Console.WriteLine($"\t\t{t}");
+                }
+            }
+        }
     }
 }

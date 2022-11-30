@@ -51,12 +51,23 @@ namespace ricaun.NUnit.Services
         #region public
 
         /// <summary>
+        /// GetTestMethods
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private IEnumerable<MethodInfo> GetTestMethods(Type type)
+        {
+            var methods = type.GetMethods().OrderBy(e => e.Name);
+            return methods.Where(AnyTestAttribute).Where(e => TestEngineFilter.HasName(e.Name));
+        }
+
+        /// <summary>
         /// Test
         /// </summary>
         /// <returns></returns>
         public TestTypeModel Test()
         {
-            var methods = type.GetMethods();
+            var methods = GetTestMethods(type);
             var testType = new TestTypeModel();
             testType.Name = type.FullName;
             testType.Success = true;

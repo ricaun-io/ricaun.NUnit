@@ -17,28 +17,28 @@ namespace SampleTest.Tests
         }
 
         [Test]
-        public void TestSum()
+        public void TestMathSum()
         {
             var value = MathUtil.Sum(1, 2, 3);
             Assert.AreEqual(value, 6);
         }
 
         [Test]
-        public void TestAverage()
+        public void TestMathAverage()
         {
             var value = MathUtil.Average(1, 2, 3);
             Assert.AreEqual(value, 2);
         }
 
         [Test]
-        public void TestInvert()
+        public void TestMathInvert()
         {
             var value = MathUtil.Invert(2);
             Assert.AreEqual(value, 0.5);
         }
 
         [Test]
-        public void TestInvertThrows()
+        public void TestMathInvertThrows()
         {
             Assert.Throws<DivideByZeroException>(() => { MathUtil.Invert(0); });
         }
