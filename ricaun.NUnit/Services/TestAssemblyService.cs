@@ -13,7 +13,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// TestAssemblyService
     /// </summary>
-    public class TestAssemblyService : AttributeService
+    public class TestAssemblyService : TestAttributeService
     {
         private readonly Assembly assembly;
         private readonly object[] parameters;
@@ -51,16 +51,6 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
-        /// AnyTestAttribute
-        /// </summary>
-        /// <param name="customAttributeProvider"></param>
-        /// <returns></returns>
-        private bool AnyTestAttribute(ICustomAttributeProvider customAttributeProvider)
-        {
-            return AnyAttributeName<TestAttribute>(customAttributeProvider); // || AnyAttributeName<TestCaseAttribute>(customAttributeProvider);
-        }
-
-        /// <summary>
         /// Get Test Types
         /// </summary>
         /// <returns></returns>
@@ -73,7 +63,7 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                if (type.GetMethods().Any(AnyTestAttribute))
+                if (type.GetMethods().Any(this.AnyTestAttribute))
                 {
                     types.Add(type);
                 }

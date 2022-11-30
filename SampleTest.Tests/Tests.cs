@@ -48,5 +48,14 @@ namespace SampleTest.Tests
             }
             Assert.True(true);
         }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void TestCases(int i)
+        {
+            Assert.True(i > 0);
+        }
     }
 }
