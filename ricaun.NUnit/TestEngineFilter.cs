@@ -18,26 +18,20 @@ namespace ricaun.NUnit
         public static bool ExplicitEnabled { get; set; } = false;
 
         /// <summary>
-        /// Add
+        /// Add Test <paramref name="name"/> and enable <see cref="ExplicitEnabled"/>
         /// </summary>
         /// <param name="name"></param>
         public static void Add(string name)
         {
+            ExplicitEnabled = true;
             TestNames.Add(name);
         }
         /// <summary>
-        /// Clear
-        /// </summary>
-        public static void Clear()
-        {
-            TestNames.Clear();
-        }
-        /// <summary>
-        /// Reset
+        /// Reset and disable <see cref="ExplicitEnabled"/>
         /// </summary>
         public static void Reset()
         {
-            Clear();
+            TestNames.Clear();
             ExplicitEnabled = false;
         }
         /// <summary>
