@@ -77,7 +77,7 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public IEnumerable<MethodInfo> GetTestTypeMethods()
         {
-            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute));
+            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute)).OrderBy(e => GetMethodFullName(e));
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace ricaun.NUnit.Services
                     var name = testCaseAttribute.TestName ?? $"{method.Name}({string.Join(",", testCaseAttribute.Arguments)})";
                     return name;
                 }
-                return testCases.Select(GetTestCaseName).ToArray();
+                return testCases.Select(GetTestCaseName).OrderBy(e => e).ToArray();
             }
             return new[] { method.Name };
         }
