@@ -8,10 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Features
 - Add SampleTest Project
 - Local Test with `SampleTest` in Revit
+- Skipped Test Parameter
+- Test with `ExpectedResult` feature
 ### Tests
 - Add `ricaun.NUnit.Tests`
 - Add `SampleTest.Tests`
 ### Added
+- Add `IsValueExpectedResult` case expected result
+- Add `Skipped` feature
 - Add `IgnoreException` feature
 
 ## [1.0.5] / 2022-09-20

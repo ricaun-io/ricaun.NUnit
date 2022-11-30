@@ -191,7 +191,14 @@ namespace ricaun.NUnit.Services
 
             try
             {
-                Invoke(this.instance, method, this.parameters);
+                var value = Invoke(this.instance, method, this.parameters);
+
+                if (IsValueExpectedResult(method, value, out object expectedResult) == false)
+                {
+                    result.Success = false;
+                    result.Message = $"Expected:\t{expectedResult}\tBut was:\t{value}";
+                }
+
             }
             catch (Exception ex)
             {
@@ -215,6 +222,19 @@ namespace ricaun.NUnit.Services
                 }
             }
             return result;
+        }
+
+        private bool IsValueExpectedResult(MethodInfo method, object value, out object expectedResult)
+        {
+            expectedResult = null;
+            var testAttribute = GetAttribute<TestAttribute>(method);
+
+            if (testAttribute is null)
+                return true;
+
+            expectedResult = testAttribute.ExpectedResult ?? null;
+            var equals = (value is not null) ? value.Equals(expectedResult) : expectedResult is null;
+            return equals;
         }
         #endregion
     }

@@ -42,7 +42,7 @@
         public override string ToString()
         {
             var result = Skipped ? "Skipped" : Success ? "Passed" : "Failed";
-            return $"{Name}\t{result}";
+            return $"{Name}\t{result}\t{Message}";
             //return $"{Name}\t{Success}\t{Skipped}";
         }
     }
