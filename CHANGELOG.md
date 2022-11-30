@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add `ricaun.NUnit.Tests`
 - Add `SampleTest.Tests`
 ### Added
+- Add `GetMethodTestNames` - Get Test Names
 - Add `IsValueExpectedResult` case expected result
 - Add `Skipped` feature
 - Add `IgnoreException` feature

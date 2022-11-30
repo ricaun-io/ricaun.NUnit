@@ -49,8 +49,28 @@ namespace SampleTest.Tests
             Assert.True(true);
         }
 
+        public static int MyProperty { get; set; }
+
         [Test]
-        [TestCase(1)]
+        public void Test1()
+        {
+            Console.WriteLine($"Test1: {MyProperty++}");
+        }
+
+        [Test]
+        public void Test3()
+        {
+            Console.WriteLine($"Test3: {MyProperty++}");
+        }
+
+        [Test]
+        public void Test2()
+        {
+            Console.WriteLine($"Test2: {MyProperty++}");
+        }
+
+        [Test]
+        [TestCase(1, TestName = "TestName")]
         [TestCase(2)]
         [TestCase(3)]
         public void TestCases(int i)

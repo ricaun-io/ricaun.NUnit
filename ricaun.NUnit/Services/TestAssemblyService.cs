@@ -91,6 +91,26 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
+        /// GetMethodTestNames
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public string[] GetMethodTestNames(MethodInfo method)
+        {
+            var names = new List<string>();
+            if (TryGetAttributes<TestCaseAttribute>(method, out IEnumerable<TestCaseAttribute> testCases))
+            {
+                string GetTestCaseName(TestCaseAttribute testCaseAttribute)
+                {
+                    var name = testCaseAttribute.TestName ?? $"{method.Name}({string.Join(",", testCaseAttribute.Arguments)})";
+                    return name;
+                }
+                return testCases.Select(GetTestCaseName).ToArray();
+            }
+            return new[] { method.Name };
+        }
+
+        /// <summary>
         /// GetTestTypeMethods
         /// </summary>
         /// <param name="fullName"></param>
