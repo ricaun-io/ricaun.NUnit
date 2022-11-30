@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Internal;
 using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using System;
@@ -12,7 +13,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// TestAssemblyService
     /// </summary>
-    public class TestAssemblyService : AttributeService
+    public class TestAssemblyService : TestAttributeService
     {
         private readonly Assembly assembly;
         private readonly object[] parameters;
@@ -49,6 +50,10 @@ namespace ricaun.NUnit.Services
 
         }
 
+        /// <summary>
+        /// Get Test Types
+        /// </summary>
+        /// <returns></returns>
         private IEnumerable<Type> GetTestTypes()
         {
             var types = new List<Type>();
@@ -58,12 +63,61 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                if (type.GetMethods().Any(AnyAttributeName<TestAttribute>))
+                if (type.GetMethods().Where(e => TestEngineFilter.HasName(e.Name)).Any(this.AnyTestAttribute))
                 {
                     types.Add(type);
                 }
             }
-            return types;
+            return types.OrderBy(e => e.Name);
+        }
+
+        /// <summary>
+        /// GetTestTypeMethods
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<MethodInfo> GetTestTypeMethods()
+        {
+            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute));
+        }
+
+        /// <summary>
+        /// GetMethodFullName
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public string GetMethodFullName(MethodInfo method)
+        {
+            return method.DeclaringType.FullName + "." + method.Name;
+        }
+
+        /// <summary>
+        /// GetMethodTestNames
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public string[] GetMethodTestNames(MethodInfo method)
+        {
+            var names = new List<string>();
+            if (TryGetAttributes<TestCaseAttribute>(method, out IEnumerable<TestCaseAttribute> testCases))
+            {
+                string GetTestCaseName(TestCaseAttribute testCaseAttribute)
+                {
+                    var name = testCaseAttribute.TestName ?? $"{method.Name}({string.Join(",", testCaseAttribute.Arguments)})";
+                    return name;
+                }
+                return testCases.Select(GetTestCaseName).ToArray();
+            }
+            return new[] { method.Name };
+        }
+
+        /// <summary>
+        /// GetTestTypeMethods
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <returns></returns>
+        public MethodInfo GetTestTypeMethods(string fullName)
+        {
+            return GetTestTypeMethods().FirstOrDefault(e => GetMethodFullName(e) == fullName);
         }
 
         /// <summary>

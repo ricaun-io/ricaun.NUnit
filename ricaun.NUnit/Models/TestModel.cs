@@ -13,7 +13,12 @@
         /// <summary>
         /// Test Success?
         /// </summary>
-        public bool Success { get; set; }
+        public bool Success { get; set; } = true;
+
+        /// <summary>
+        /// Test Skipped
+        /// </summary>
+        public bool Skipped { get; set; } = false;
 
         /// <summary>
         /// Message Output
@@ -36,7 +41,9 @@
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Name} {Success}";
+            var result = Skipped ? "Skipped" : Success ? "Passed" : "Failed";
+            return $"{Name}\t{result}\t{Message}";
+            //return $"{Name}\t{Success}\t{Skipped}";
         }
     }
 }

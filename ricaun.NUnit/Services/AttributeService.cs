@@ -89,6 +89,53 @@ namespace ricaun.NUnit.Services
                 .GetCustomAttributes(typeof(TCustomAttributeType), true)
                 .OfType<TCustomAttributeType>();
         }
+
+        /// <summary>
+        /// TryGetAttributes
+        /// </summary>
+        /// <typeparam name="TCustomAttributeType"></typeparam>
+        /// <param name="customAttributeProvider"></param>
+        /// <param name="customAttributeTypes"></param>
+        /// <returns></returns>
+        public bool TryGetAttributes<TCustomAttributeType>(ICustomAttributeProvider customAttributeProvider,
+            out IEnumerable<TCustomAttributeType> customAttributeTypes)
+            where TCustomAttributeType : Attribute
+        {
+            customAttributeTypes = GetAttributes<TCustomAttributeType>(customAttributeProvider);
+            return customAttributeTypes.Any();
+        }
+
+        /// <summary>
+        /// GetAttribute
+        /// </summary>
+        /// <typeparam name="TCustomAttributeType"></typeparam>
+        /// <param name="customAttributeProvider"></param>
+        /// <returns></returns>
+        public TCustomAttributeType GetAttribute<TCustomAttributeType>(ICustomAttributeProvider customAttributeProvider) where TCustomAttributeType : Attribute
+        {
+            return customAttributeProvider
+                .GetCustomAttributes(typeof(TCustomAttributeType), true)
+                .OfType<TCustomAttributeType>()
+                .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// TryGetAttribute
+        /// </summary>
+        /// <typeparam name="TCustomAttributeType"></typeparam>
+        /// <param name="customAttributeProvider"></param>
+        /// <param name="customAttributeType"></param>
+        /// <returns></returns>
+        public bool TryGetAttribute<TCustomAttributeType>(
+                ICustomAttributeProvider customAttributeProvider,
+                out TCustomAttributeType customAttributeType
+            )
+            where TCustomAttributeType : Attribute
+        {
+            customAttributeType = GetAttribute<TCustomAttributeType>(customAttributeProvider);
+            return customAttributeType is not null;
+        }
+
         #endregion
     }
 }

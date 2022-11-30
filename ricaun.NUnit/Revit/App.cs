@@ -1,11 +1,9 @@
-#if DEBUG
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using ricaun.Revit.UI;
 
 namespace ricaun.NUnit.Revit
 {
-
     [AppLoader]
     public class App : IExternalApplication
     {
@@ -14,7 +12,7 @@ namespace ricaun.NUnit.Revit
         {
             ribbonPanel = application.CreatePanel("ricaun.NUnit");
             ribbonPanel.CreatePushButton<Commands.Command>()
-                .SetLargeImage(Properties.Resources.ricaun.GetBitmapSource());
+                .SetLargeImage("/UIFrameworkRes;component/ribbon/images/revit.ico");
             return Result.Succeeded;
         }
 
@@ -25,4 +23,3 @@ namespace ricaun.NUnit.Revit
         }
     }
 }
-#endif

@@ -26,8 +26,6 @@ namespace ricaun.NUnit.Services
             typeof(ExplicitAttribute)
         };
 
-
-
         #region Constructor
         /// <summary>
         /// TestService
@@ -53,12 +51,23 @@ namespace ricaun.NUnit.Services
         #region public
 
         /// <summary>
+        /// GetTestMethods
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private IEnumerable<MethodInfo> GetTestMethods(Type type)
+        {
+            var methods = type.GetMethods().OrderBy(e => e.Name);
+            return methods.Where(AnyTestAttribute).Where(e => TestEngineFilter.HasName(e.Name));
+        }
+
+        /// <summary>
         /// Test
         /// </summary>
         /// <returns></returns>
         public TestTypeModel Test()
         {
-            var methods = type.GetMethods();
+            var methods = GetTestMethods(type);
             var testType = new TestTypeModel();
             testType.Name = type.FullName;
             testType.Success = true;
@@ -67,16 +76,27 @@ namespace ricaun.NUnit.Services
                 if (IgnoreTest(type, out string ignoreMessage))
                 {
                     testType.Message = ignoreMessage;
+                    testType.Skipped = true;
                     return testType;
                 }
+
+                var testMethods = methods.Where(AnyAttributeName<TestAttribute>);
+
+                //if (onlyReadTest)
+                //{
+                //    foreach (var testMethod in testMethods)
+                //    {
+                //        var testModel = new TestModel() { Name = testMethod.Name };
+                //        testType.Tests.Add(testModel);
+                //    }
+                //    return testType;
+                //}
 
                 var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
                 var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
 
                 var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
                 var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
-
-                var testMethods = methods.Where(AnyAttributeName<TestAttribute>);
 
                 var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
                 if (upOneResult.Success)
@@ -90,9 +110,11 @@ namespace ricaun.NUnit.Services
                 var downOneResult = InvokeResultInstance(methodOneTimeTearDown);
 
                 var success = upOneResult.Success & downOneResult.Success;
+                var skipped = upOneResult.Skipped & downOneResult.Skipped;
                 var message = string.Join(Environment.NewLine, upOneResult.Message, downOneResult.Message).Trim();
 
                 testType.Success = success & !testType.Tests.Any(e => e.Success == false);
+                testType.Skipped = skipped & !testType.Tests.Any(e => e.Skipped == false);
                 testType.Message = message;
             }
 
@@ -130,6 +152,7 @@ namespace ricaun.NUnit.Services
                     test.Message = messageIgnore;
                     test.Console = console.GetString();
                     test.Time = console.GetMillis();
+                    test.Skipped = true;
                     return test;
                 }
 
@@ -145,6 +168,7 @@ namespace ricaun.NUnit.Services
                 var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
 
                 test.Success = success;
+                test.Skipped = methodResult.Skipped;
                 test.Message = message;
                 test.Console = console.GetString();
                 test.Time = console.GetMillis();
@@ -160,6 +184,7 @@ namespace ricaun.NUnit.Services
         private class InvokeResult
         {
             public bool Success { get; set; } = true;
+            public bool Skipped { get; set; } = false;
             public string Message { get; set; }
         }
         private InvokeResult InvokeResultInstance(MethodInfo method)
@@ -171,12 +196,20 @@ namespace ricaun.NUnit.Services
             if (IgnoreTest(method, out string message))
             {
                 result.Message = message;
+                result.Skipped = true;
                 return result;
             }
 
             try
             {
-                Invoke(this.instance, method, this.parameters);
+                var value = Invoke(this.instance, method, this.parameters);
+
+                if (IsValueExpectedResult(method, value, out object expectedResult) == false)
+                {
+                    result.Success = false;
+                    result.Message = $"Expected:\t{expectedResult}\tBut was:\t{value}";
+                }
+
             }
             catch (Exception ex)
             {
@@ -189,12 +222,30 @@ namespace ricaun.NUnit.Services
                         result.Success = true;
                         result.Message = success.Message;
                         break;
+                    case IgnoreException ignore:
+                        result.Success = true;
+                        result.Skipped = true;
+                        result.Message = ignore.Message;
+                        break;
                     case AssertionException assertion:
                         result.Message = assertion.Message + Environment.NewLine + assertion.ToString();
                         break;
                 }
             }
             return result;
+        }
+
+        private bool IsValueExpectedResult(MethodInfo method, object value, out object expectedResult)
+        {
+            expectedResult = null;
+            var testAttribute = GetAttribute<TestAttribute>(method);
+
+            if (testAttribute is null)
+                return true;
+
+            expectedResult = testAttribute.ExpectedResult ?? null;
+            var equals = (value is not null) ? value.Equals(expectedResult) : expectedResult is null;
+            return equals;
         }
         #endregion
     }
