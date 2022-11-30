@@ -130,6 +130,12 @@ namespace ricaun.NUnit.Services
             ignoreMessage = "";
             foreach (var ignoreAttribute in IgnoreAttributes)
             {
+                if (ignoreAttribute == typeof(ExplicitAttribute))
+                {
+                    if (TestEngineFilter.ExplicitEnabled)
+                        continue;
+                }
+
                 if (HasAttributeName(memberInfo, ignoreAttribute))
                 {
                     ignoreMessage = $"IgnoreTest: '{memberInfo.Name}' => '{ignoreAttribute.Name}'";

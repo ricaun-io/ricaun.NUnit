@@ -77,6 +77,19 @@ namespace ricaun.NUnit.Tests
             Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
         }
 
+        [Test]
+        public void TestAssemblyExplicit()
+        {
+            Console.WriteLine(fileName);
+            TestEngineFilter.ExplicitEnabled = true;
+            var json = TestEngine.TestAssembly(pathFile);
+            var text = json.AsString();
+            TestEngineFilter.Reset();
+            Console.WriteLine(text);
+
+            Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
+        }
+
         [TestCase("Test1")]
         [TestCase("Test2")]
         [TestCase("Test3")]
@@ -84,7 +97,7 @@ namespace ricaun.NUnit.Tests
         {
             TestEngineFilter.Add(testName);
             var json = TestEngine.TestAssembly(pathFile);
-            TestEngineFilter.Clear();
+            TestEngineFilter.Reset();
             var text = json.AsString();
             Console.WriteLine(text);
             Assert.AreEqual(1, json.TestCount, $"{fileName} with no Tests.");
