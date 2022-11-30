@@ -26,6 +26,13 @@ namespace SampleTest.Tests
             Assert.Ignore("Ignore Message");
         }
 
+        [Test]
+        [Explicit]
+        public void TestExplicit()
+        {
+
+        }
+
         [Test(ExpectedResult = 1)]
         public int TestReturn()
         {
@@ -47,26 +54,6 @@ namespace SampleTest.Tests
                 a += i;
             }
             Assert.True(true);
-        }
-
-        public static int MyProperty { get; set; }
-
-        [Test]
-        public void Test1()
-        {
-            Console.WriteLine($"Test1: {MyProperty++}");
-        }
-
-        [Test]
-        public void Test3()
-        {
-            Console.WriteLine($"Test3: {MyProperty++}");
-        }
-
-        [Test]
-        public void Test2()
-        {
-            Console.WriteLine($"Test2: {MyProperty++}");
         }
 
         [Test]
