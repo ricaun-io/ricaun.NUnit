@@ -71,7 +71,8 @@ namespace ricaun.NUnit.Tests
         {
             Console.WriteLine(fileName);
             var json = TestEngine.TestAssembly(pathFile);
-            json.Show();
+            var text = json.AsString();
+            Console.WriteLine(text);
 
             Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
         }
@@ -81,7 +82,8 @@ namespace ricaun.NUnit.Tests
         {
             TestEngineFilter.Add("Test1");
             var json = TestEngine.TestAssembly(pathFile);
-            json.Show();
+            var text = json.AsString();
+            Console.WriteLine(text);
             Assert.IsTrue(json.TestCount == 1, $"{fileName} with no Tests.");
         }
     }

@@ -52,17 +52,18 @@ namespace ricaun.NUnit.Models
         /// <summary>
         /// Show in the Console
         /// </summary>
-        public void Show()
+        public string AsString()
         {
-            System.Console.WriteLine(this);
+            var text = $"{this}\n";
             foreach (var test in this.Tests)
             {
-                System.Console.WriteLine($"\t{test}");
+                text += $"\t{test}\n";
                 foreach (var t in test.Tests)
                 {
-                    System.Console.WriteLine($"\t\t{t}");
+                    text += $"\t\t{t}\n";
                 }
             }
+            return text;
         }
     }
 }

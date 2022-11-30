@@ -63,7 +63,7 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                if (type.GetMethods().Any(this.AnyTestAttribute))
+                if (type.GetMethods().Where(e => TestEngineFilter.HasName(e.Name)).Any(this.AnyTestAttribute))
                 {
                     types.Add(type);
                 }
