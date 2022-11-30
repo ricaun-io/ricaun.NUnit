@@ -55,7 +55,13 @@ public interface ITest : ICompile, IHazContent
 
         });
 
-    void ReportTestCount(Project testProject, string configuration = "")
+    /// <summary>
+    /// ReportTestCount
+    /// </summary>
+    /// <param name="testProject"></param>
+    /// <param name="configuration"></param>
+    /// <returns>Return if fail some test</returns>
+    bool ReportTestCount(Project testProject, string configuration = "")
     {
         var testResultsDirectory = GetContentDirectory(testProject);
 
@@ -72,6 +78,8 @@ public interface ITest : ICompile, IHazContent
         var skippedTests = outcomes.Count(x => x == "NotExecuted");
 
         Serilog.Log.Logger.Warning($"Project: {testProject.Name} ({configuration}) \t Passed: {passedTests} \t Failed: {failedTests} \t Skipped: {skippedTests}");
+
+        return failedTests > 0;
     }
 
 }
