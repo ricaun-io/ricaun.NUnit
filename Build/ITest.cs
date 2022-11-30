@@ -6,6 +6,7 @@ using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Utilities.Collections;
 using ricaun.Nuke.Components;
 using ricaun.Nuke.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,6 +14,10 @@ public interface ITest : ICompile, IHazContent
 {
     [Parameter]
     bool TestResults => TryGetValue<bool?>(() => TestResults) ?? true;
+
+    [Parameter]
+    bool TestBuildStopWhenFailed => TryGetValue<bool?>(() => TestBuildStopWhenFailed) ?? true;
+
     [Parameter]
     string TestProjectName => TryGetValue<string>(() => TestProjectName) ?? "*.Tests";
 
@@ -20,6 +25,7 @@ public interface ITest : ICompile, IHazContent
         .TriggeredBy(Compile)
         .Executes(() =>
         {
+            var testFailed = false;
             var testProjects = Solution.GetProjects(TestProjectName);
 
             foreach (var testProject in testProjects)
@@ -49,8 +55,13 @@ public interface ITest : ICompile, IHazContent
                     }
 
                     if (TestResults)
-                        ReportTestCount(testProject, configuration);
+                        testFailed |= ReportTestCount(testProject, configuration);
                 }
+            }
+
+            if (testFailed & TestBuildStopWhenFailed)
+            {
+                throw new Exception($"Test Failed = {testFailed}");
             }
 
         });
