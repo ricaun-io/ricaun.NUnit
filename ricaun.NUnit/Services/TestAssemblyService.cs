@@ -50,11 +50,20 @@ namespace ricaun.NUnit.Services
 
         }
 
+        /// <summary>
+        /// AnyTestAttribute
+        /// </summary>
+        /// <param name="customAttributeProvider"></param>
+        /// <returns></returns>
         private bool AnyTestAttribute(ICustomAttributeProvider customAttributeProvider)
         {
             return AnyAttributeName<TestAttribute>(customAttributeProvider); // || AnyAttributeName<TestCaseAttribute>(customAttributeProvider);
         }
 
+        /// <summary>
+        /// Get Test Types
+        /// </summary>
+        /// <returns></returns>
         private IEnumerable<Type> GetTestTypes()
         {
             var types = new List<Type>();

@@ -29,7 +29,7 @@ namespace SampleTest.Tests
         [Test(ExpectedResult = 1)]
         public int TestReturn()
         {
-            return 1;
+            return 2;
         }
 
         [Test]

@@ -65,6 +65,7 @@ namespace ricaun.NUnit.Services
                 if (IgnoreTest(type, out string ignoreMessage))
                 {
                     testType.Message = ignoreMessage;
+                    testType.Skipped = true;
                     return testType;
                 }
 
@@ -86,7 +87,6 @@ namespace ricaun.NUnit.Services
                 var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
                 var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
 
-
                 var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
                 if (upOneResult.Success)
                 {
@@ -99,9 +99,11 @@ namespace ricaun.NUnit.Services
                 var downOneResult = InvokeResultInstance(methodOneTimeTearDown);
 
                 var success = upOneResult.Success & downOneResult.Success;
+                var skipped = upOneResult.Skipped & downOneResult.Skipped;
                 var message = string.Join(Environment.NewLine, upOneResult.Message, downOneResult.Message).Trim();
 
                 testType.Success = success & !testType.Tests.Any(e => e.Success == false);
+                testType.Skipped = skipped & !testType.Tests.Any(e => e.Skipped == false);
                 testType.Message = message;
             }
 
@@ -139,6 +141,7 @@ namespace ricaun.NUnit.Services
                     test.Message = messageIgnore;
                     test.Console = console.GetString();
                     test.Time = console.GetMillis();
+                    test.Skipped = true;
                     return test;
                 }
 
@@ -154,6 +157,7 @@ namespace ricaun.NUnit.Services
                 var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
 
                 test.Success = success;
+                test.Skipped = methodResult.Skipped;
                 test.Message = message;
                 test.Console = console.GetString();
                 test.Time = console.GetMillis();
@@ -169,6 +173,7 @@ namespace ricaun.NUnit.Services
         private class InvokeResult
         {
             public bool Success { get; set; } = true;
+            public bool Skipped { get; set; } = false;
             public string Message { get; set; }
         }
         private InvokeResult InvokeResultInstance(MethodInfo method)
@@ -180,6 +185,7 @@ namespace ricaun.NUnit.Services
             if (IgnoreTest(method, out string message))
             {
                 result.Message = message;
+                result.Skipped = true;
                 return result;
             }
 
@@ -200,6 +206,7 @@ namespace ricaun.NUnit.Services
                         break;
                     case IgnoreException ignore:
                         result.Success = true;
+                        result.Skipped = true;
                         result.Message = ignore.Message;
                         break;
                     case AssertionException assertion:
