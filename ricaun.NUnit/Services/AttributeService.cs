@@ -95,6 +95,7 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <typeparam name="TCustomAttributeType"></typeparam>
         /// <param name="customAttributeProvider"></param>
+        /// <param name="customAttributeTypes"></param>
         /// <returns></returns>
         public bool TryGetAttributes<TCustomAttributeType>(ICustomAttributeProvider customAttributeProvider,
             out IEnumerable<TCustomAttributeType> customAttributeTypes)

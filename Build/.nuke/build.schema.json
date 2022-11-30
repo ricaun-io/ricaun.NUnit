@@ -72,6 +72,9 @@
             "type": "string"
           }
         },
+        "ReleaseNameVersion": {
+          "type": "boolean"
+        },
         "Root": {
           "type": "string",
           "description": "Root directory during build execution"
@@ -96,7 +99,8 @@
               "GitRelease",
               "Pack",
               "Release",
-              "Sign"
+              "Sign",
+              "Test"
             ]
           }
         },
@@ -116,9 +120,16 @@
               "GitRelease",
               "Pack",
               "Release",
-              "Sign"
+              "Sign",
+              "Test"
             ]
           }
+        },
+        "TestProjectName": {
+          "type": "string"
+        },
+        "TestResults": {
+          "type": "boolean"
         },
         "Verbosity": {
           "type": "string",
