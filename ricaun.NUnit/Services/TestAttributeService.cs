@@ -58,6 +58,7 @@ namespace ricaun.NUnit.Services
         /// GetTestFullName
         /// </summary>
         /// <param name="method"></param>
+        /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
         public string GetTestFullName(MethodInfo method, NUnitAttribute nUnitAttribute)
         {
