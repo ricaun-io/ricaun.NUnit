@@ -70,6 +70,12 @@ public class TestSampleClass
         Assert.Pass("This is a custom pass message.");
     }
 
+    [Test(ExpectedResult = 1)]
+    public int ResultTest()
+    {
+        return 1;
+    }
+
     [TestCase(1)]
     [TestCase(2)]
     [TestCase(3)]
