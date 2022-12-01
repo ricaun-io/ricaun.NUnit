@@ -11,6 +11,11 @@
         public string Name { get; set; }
 
         /// <summary>
+        /// Test Alias
+        /// </summary>
+        public string Alias { get; set; }
+
+        /// <summary>
         /// Test Success?
         /// </summary>
         public bool Success { get; set; } = true;
@@ -42,8 +47,9 @@
         public override string ToString()
         {
             var result = Skipped ? "Skipped" : Success ? "Passed" : "Failed";
-            return $"{Name}\t{result}\t{Message}";
-            //return $"{Name}\t{Success}\t{Skipped}";
+            var name = string.IsNullOrEmpty(Alias) ? Name : Alias;
+            var message = !Message.Contains("Exception") ? Message : "Exception";
+            return $"{name}\t{result}\t{message}";
         }
     }
 }

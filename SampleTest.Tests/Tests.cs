@@ -56,7 +56,6 @@ namespace SampleTest.Tests
             Assert.True(true);
         }
 
-        [Test]
         [TestCase(1, TestName = "TestName")]
         [TestCase(2)]
         [TestCase(3)]
