@@ -56,7 +56,8 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public TestTypeModel Test()
         {
-            var methods = GetFilterTestMethods(type);
+            var filterTestMethods = GetFilterTestMethods(type);
+            var methods = type.GetMethods();
             var testType = new TestTypeModel();
             testType.Name = type.FullName;
             testType.Success = true;
@@ -69,7 +70,7 @@ namespace ricaun.NUnit.Services
                     return testType;
                 }
 
-                var testMethods = methods.Where(AnyTestAttribute);
+                var testMethods = filterTestMethods.Where(AnyTestAttribute);
 
                 var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
                 var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);

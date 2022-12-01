@@ -64,9 +64,9 @@ namespace ricaun.NUnit.Tests
             Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
         }
 
-        [TestCase("*.Test1", 1)]
-        [TestCase("*.Test2", 1)]
-        [TestCase("*.Test3", 1)]
+        [TestCase("*.TestPass", 1)]
+        [TestCase("*.TestReturn", 1)]
+        [TestCase("*.TestExplicit", 1)]
         [TestCase("*.TestName?", 2)]
         [TestCase("*.TestCases(?)", 2)]
         [TestCase("*.TestSame", 2)]
