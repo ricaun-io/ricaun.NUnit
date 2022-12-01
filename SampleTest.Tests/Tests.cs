@@ -56,12 +56,20 @@ namespace SampleTest.Tests
             Assert.True(true);
         }
 
-        [TestCase(1, TestName = "TestName")]
-        [TestCase(2)]
+        [TestCase(1, TestName = "TestName1")]
+        [TestCase(2, TestName = "TestName2")]
         [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5, TestName = "TestSame")]
         public void TestCases(int i)
         {
             Assert.True(i > 0);
+        }
+
+        [Test]
+        public void TestSame()
+        {
+
         }
     }
 }

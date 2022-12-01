@@ -6,9 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.7] / 2022-12-01
 ### Features
-- Add `TestCaseAttribute` suport
+- Feature `TestCaseAttribute` supported
+### Added
 - Add `Alias` in `TestModel`
 - Add `ExplicitEnabled` in Filter
+- Add `WildcardPattern`
+- Add `HasFilterTestMethod`
+- Update `GetFilterTestMethods`
 
 ## [1.0.6] / 2022-11-30 - 2022-10-31
 ### Features

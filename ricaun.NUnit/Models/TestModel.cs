@@ -47,7 +47,7 @@
         public override string ToString()
         {
             var result = Skipped ? "Skipped" : Success ? "Passed" : "Failed";
-            var name = string.IsNullOrEmpty(Alias) ? Name : Alias;
+            var name = string.IsNullOrEmpty(Alias) ? Name : Alias != Name ? $"{Alias}[{Name}]" : Alias;
             var message = !Message.Contains("Exception") ? Message : "Exception";
             return $"{name}\t{result}\t{message}";
         }

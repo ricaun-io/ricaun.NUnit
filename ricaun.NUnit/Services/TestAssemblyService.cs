@@ -63,7 +63,8 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                if (type.GetMethods().Where(e => TestEngineFilter.HasName(e.Name)).Any(this.AnyTestAttribute))
+                //if (type.GetMethods().Where(AnyTestAttribute).Where(e => TestEngineFilter.HasName(e.Name)).Any())
+                if (GetFilterTestMethods(type).Any())
                 {
                     types.Add(type);
                 }
@@ -78,6 +79,15 @@ namespace ricaun.NUnit.Services
         public IEnumerable<MethodInfo> GetTestTypeMethods()
         {
             return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute)).OrderBy(e => GetMethodFullName(e));
+        }
+
+        /// <summary>
+        /// GetTestFullNames
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetTestFullNames()
+        {
+            return GetTestTypeMethods().SelectMany(e => GetTestAttributes(e).Select(a => GetTestFullName(e, a))).OrderBy(e => e);
         }
 
         /// <summary>

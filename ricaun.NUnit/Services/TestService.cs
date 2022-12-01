@@ -56,7 +56,7 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public TestTypeModel Test()
         {
-            var methods = GetTestMethods(type);
+            var methods = GetFilterTestMethods(type);
             var testType = new TestTypeModel();
             testType.Name = type.FullName;
             testType.Success = true;
@@ -82,8 +82,9 @@ namespace ricaun.NUnit.Services
                 {
                     foreach (var testMethod in testMethods)
                     {
-                        foreach (var nUnitAttribute in GetMethodTestAttributes(testMethod))
+                        foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                         {
+                            if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
                             var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
                             testType.Tests.Add(testModel);
                         }
@@ -169,7 +170,7 @@ namespace ricaun.NUnit.Services
         {
             var test = new TestModel();
             test.Name = method.Name;
-            test.Alias = GetMethodTestName(method, nUnitAttribute);
+            test.Alias = GetTestName(method, nUnitAttribute);
             test.Success = true;
 
             using (var console = new ConsoleWriterDateTime())

@@ -22,6 +22,29 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
+        /// GetFilterTestMethods
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IEnumerable<MethodInfo> GetFilterTestMethods(Type type)
+        {
+            var methods = type.GetMethods().OrderBy(e => e.Name);
+            var testMethods = methods.Where(AnyTestAttribute);
+            return testMethods.Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(m, a)));
+        }
+
+        /// <summary>
+        /// HasFilterTestMethod
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="nUnitAttribute"></param>
+        /// <returns></returns>
+        public bool HasFilterTestMethod(MethodInfo method, NUnitAttribute nUnitAttribute)
+        {
+            return TestEngineFilter.HasName(GetTestFullName(method, nUnitAttribute));
+        }
+
+        /// <summary>
         /// GetMethodFullName
         /// </summary>
         /// <param name="method"></param>
@@ -32,13 +55,23 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
+        /// GetTestFullName
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public string GetTestFullName(MethodInfo method, NUnitAttribute nUnitAttribute)
+        {
+            return GetMethodFullName(method) + "." + GetTestName(method, nUnitAttribute);
+        }
+
+        /// <summary>
         /// GetMethodTestNames
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
         public string[] GetMethodTestNames(MethodInfo method)
         {
-            return GetMethodTestAttributes(method).Select(e => GetMethodTestName(method, e)).ToArray();
+            return GetTestAttributes(method).Select(e => GetTestName(method, e)).ToArray();
         }
 
         /// <summary>
@@ -47,7 +80,7 @@ namespace ricaun.NUnit.Services
         /// <param name="method"></param>
         /// <param name="attribute"></param>
         /// <returns></returns>
-        public string GetMethodTestName(MethodInfo method, NUnitAttribute attribute)
+        public string GetTestName(MethodInfo method, NUnitAttribute attribute)
         {
             if (attribute is TestCaseAttribute testCaseAttribute)
             {
@@ -62,30 +95,18 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public IEnumerable<NUnitAttribute> GetMethodTestAttributes(MethodInfo method)
+        public IEnumerable<NUnitAttribute> GetTestAttributes(MethodInfo method)
         {
             var attributes = new List<NUnitAttribute>();
             if (TryGetAttributes<TestCaseAttribute>(method, out IEnumerable<TestCaseAttribute> testCases))
             {
                 attributes.AddRange(testCases);
-                return testCases.OrderBy(e => GetMethodTestName(method, e));
+                return testCases.OrderBy(e => GetTestName(method, e));
             }
             var attribute = GetAttribute<TestAttribute>(method);
             if (attribute is not null) attributes.Add(attribute);
 
             return attributes;
         }
-
-        /// <summary>
-        /// GetTestMethods
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public IEnumerable<MethodInfo> GetTestMethods(Type type)
-        {
-            var methods = type.GetMethods().OrderBy(e => e.Name);
-            return methods.Where(AnyTestAttribute).Where(e => TestEngineFilter.HasName(e.Name));
-        }
-
     }
 }

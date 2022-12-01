@@ -18,6 +18,17 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
+        public void TestAssemblyNames()
+        {
+            Console.WriteLine(fileName);
+            var service = new Services.TestAssemblyService(pathFile);
+            foreach (var names in service.GetTestFullNames())
+            {
+                Console.WriteLine($"{names}");
+            }
+        }
+
+        [Test]
         public void TestAssemblyService()
         {
             Console.WriteLine(fileName);
@@ -25,44 +36,7 @@ namespace ricaun.NUnit.Tests
             foreach (var method in service.GetTestTypeMethods())
             {
                 var names = string.Join(" ", service.GetMethodTestNames(method));
-                Console.WriteLine($"Test Method: {service.GetMethodFullName(method)} \t{names}");
-                //try
-                //{
-                //    using (var instence = new Services.InstanceDisposable(method.DeclaringType))
-                //    {
-                //        try
-                //        {
-                //            var testAttribute = service.GetAttribute<TestAttribute>(method);
-                //            var result = testAttribute.ExpectedResult ?? null;
-                //            var value = instence.Invoke(method);
-
-                //            var equals = (value is not null) ? value.Equals(result) : result is null;
-                //            Console.WriteLine($"\t {method.Name} {equals} \t {value} {value is null} {result}");
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            var exInner = ex.InnerException is null ? ex : ex.InnerException;
-                //            switch (exInner)
-                //            {
-                //                case SuccessException success:
-                //                    break;
-                //                case IgnoreException ignore:
-                //                    break;
-                //                case AssertionException assertion:
-                //                    break;
-                //                default:
-                //                    throw exInner;
-                //            }
-                //        }
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine(ex.GetBaseException().GetBaseException());
-                //    //Console.WriteLine(ex.TargetSite);
-                //    //Console.WriteLine(ex.StackTrace);
-                //    throw;
-                //}
+                Console.WriteLine($"{service.GetMethodFullName(method)} \t{names}");
             }
         }
 
@@ -90,17 +64,23 @@ namespace ricaun.NUnit.Tests
             Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
         }
 
-        [TestCase("Test1")]
-        [TestCase("Test2")]
-        [TestCase("Test3")]
-        public void TestAssemblyFilter(string testName)
+        [TestCase("*.Test1", 1)]
+        [TestCase("*.Test2", 1)]
+        [TestCase("*.Test3", 1)]
+        [TestCase("*.TestName?", 2)]
+        [TestCase("*.TestCases(?)", 2)]
+        [TestCase("*.TestSame", 2)]
+        [TestCase("*", 20)]
+        public void TestAssemblyFilter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);
             var json = TestEngine.TestAssembly(pathFile);
             TestEngineFilter.Reset();
+
             var text = json.AsString();
             Console.WriteLine(text);
-            Assert.AreEqual(1, json.TestCount, $"{fileName} with no Tests.");
+            Assert.AreEqual(numberOfTests, json.TestCount, $"{fileName} with no Tests.");
         }
+
     }
 }
