@@ -63,6 +63,20 @@ namespace ricaun.NUnit
             return testAssemblyModel;
         }
 
+        /// <summary>
+        /// GetTestFullNames
+        /// </summary>
+        /// <param name="assemblyFile"></param>
+        /// <returns></returns>
+        public static string[] GetTestFullNames(string assemblyFile)
+        {
+            using (new AssemblyResolveService(Path.GetDirectoryName(assemblyFile)))
+            {
+                var testAssembly = new TestAssemblyService(assemblyFile);
+                return testAssembly.GetTestFullNames().ToArray();
+            }
+        }
+
         #region NUnit
         /// <summary>
         /// Version of <see cref="TestEngine"/>

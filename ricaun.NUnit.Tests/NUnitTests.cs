@@ -21,10 +21,10 @@ namespace ricaun.NUnit.Tests
         public void TestAssemblyNames()
         {
             Console.WriteLine(fileName);
-            var service = new Services.TestAssemblyService(pathFile);
-            foreach (var names in service.GetTestFullNames())
+            var names = TestEngine.GetTestFullNames(pathFile);
+            foreach (var name in names)
             {
-                Console.WriteLine($"{names}");
+                Console.WriteLine($"{name}");
             }
         }
 
@@ -82,5 +82,24 @@ namespace ricaun.NUnit.Tests
             Assert.AreEqual(numberOfTests, json.TestCount, $"{fileName} with no Tests.");
         }
 
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(4)]
+        [TestCase(8)]
+        public void TestAssemblyFilterName(int numberOfTests)
+        {
+            Console.WriteLine(fileName);
+            var names = TestEngine.GetTestFullNames(pathFile);
+            for (int i = 0; i < numberOfTests; i++)
+            {
+                TestEngineFilter.Add(names[i]);
+            }
+            var json = TestEngine.TestAssembly(pathFile);
+            TestEngineFilter.Reset();
+
+            var text = json.AsString();
+            Console.WriteLine(text);
+            Assert.AreEqual(numberOfTests, json.TestCount, $"{fileName} with no Tests.");
+        }
     }
 }
