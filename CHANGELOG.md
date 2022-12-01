@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Update `GetFilterTestMethods`
 ### Fixed
 - Fix `SetUp` & `TearDown`
+### Tests
+- Test Static with `SetUp` & `TearDown`
 
 ## [1.0.6] / 2022-11-30 - 2022-10-31
 ### Features

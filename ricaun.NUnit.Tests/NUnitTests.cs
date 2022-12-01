@@ -70,7 +70,7 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestName?", 2)]
         [TestCase("*.TestCases(?)", 2)]
         [TestCase("*.TestSame", 2)]
-        [TestCase("*", 20)]
+        [TestCase("*", 23)]
         public void TestAssemblyFilter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);
@@ -85,7 +85,6 @@ namespace ricaun.NUnit.Tests
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(4)]
-        [TestCase(8)]
         public void TestAssemblyFilterName(int numberOfTests)
         {
             Console.WriteLine(fileName);

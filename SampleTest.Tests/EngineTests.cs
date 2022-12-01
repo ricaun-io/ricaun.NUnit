@@ -5,18 +5,7 @@ namespace SampleTest.Tests
 {
     public class EngineTests
     {
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            Property = 0;
-        }
-
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-        }
-
-        public static int Property { get; set; }
+        public int Property { get; set; }
 
         [Test]
         public void Test1()
