@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using ricaun.NUnit.Services;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ricaun.NUnit
 {
@@ -13,20 +15,29 @@ namespace ricaun.NUnit
         public static List<string> TestNames { get; private set; } = new List<string>();
 
         /// <summary>
-        /// Add
+        /// ExplicitEnabled (default: false)
         /// </summary>
-        /// <param name="name"></param>
-        public static void Add(string name)
+        public static bool ExplicitEnabled { get; set; } = false;
+
+        /// <summary>
+        /// Add Test <paramref name="wildcard"/> and enable <see cref="ExplicitEnabled"/>
+        /// </summary>
+        /// <param name="wildcard"></param>
+        public static void Add(string wildcard)
         {
-            TestNames.Add(name);
+            if (string.IsNullOrEmpty(wildcard)) return;
+            ExplicitEnabled = true;
+            TestNames.Add(wildcard);
         }
         /// <summary>
-        /// Clear
+        /// Reset and disable <see cref="ExplicitEnabled"/>
         /// </summary>
-        public static void Clear()
+        public static void Reset()
         {
             TestNames.Clear();
+            ExplicitEnabled = false;
         }
+
         /// <summary>
         /// HasName
         /// </summary>
@@ -37,7 +48,7 @@ namespace ricaun.NUnit
             if (TestNames.Count == 0)
                 return true;
 
-            return TestNames.Contains(name);
+            return TestNames.Any(e => WildcardPattern.Match(e, name));
         }
     }
 }

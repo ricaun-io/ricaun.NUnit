@@ -18,7 +18,9 @@ var test = TestEngine.TestAssembly(location);
 The tests use the NUnit Attributes `[Test]` to execute a method test. 
 * The attribute `[SetUp]` and `[TearDown]` is executed for each method with the attribute `[Test]`.
 * The attribute `[OneTimeSetUp]` and `[OneTimeTearDown]` is executed one time before each method with the attribute `[Test]`.
-* The attribute `[Ignore]`, `[TestCase]`, and `[Explicit]` makes the class or method to be ignored.
+* The attribute `[Ignore]` makes the class or method to be ignored.
+* The attribute `[Explicit]` works only if the `Filter` is enable.
+* The attribute `[TestCase]` disable the `Optional Parameters` 
 
 ```C#
 public class TestSampleClass
@@ -67,7 +69,59 @@ public class TestSampleClass
         Console.WriteLine("Execute PassTest");
         Assert.Pass("This is a custom pass message.");
     }
+
+    [Test(ExpectedResult = 1)]
+    public int ResultTest()
+    {
+        return 1;
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void CasesTest(int i)
+    {
+        Assert.True(i > 0);
+    }
 }
+```
+
+### TestFullNames
+
+Is possible to get all the test names in the `Assembly`.
+```C#
+var location = Assembly.GetExecutingAssembly().Location;
+string[] tests = TestEngine.GetTestFullNames(location);
+```
+
+The name of the test equal to: `namespace`.`type`.`method`.`testname`
+
+### Filter
+
+Is possible to add a custom filter to test only a specific test name, the filter uses `WildcardPattern`.
+
+```C#
+TestEngineFilter.Add("*"); // Select all tests
+```
+
+```C#
+TestEngineFilter.Add("*.Test"); // Test endswith
+```
+
+```C#
+TestEngineFilter.Add("*.Test1"); // Test endswith
+TestEngineFilter.Add("*.Test2"); // Test endswith
+```
+
+```C#
+TestEngineFilter.Add("namespace.type.method.Test1"); // Test specific name
+TestEngineFilter.Add("namespace.type.method.Test2"); // Test specific name
+```
+
+If filter is enable the `[Explicit]` tests is not skipped.
+
+```C#
+TestEngineFilter.Reset(); // Reset filter
 ```
 
 ### Optional Parameters

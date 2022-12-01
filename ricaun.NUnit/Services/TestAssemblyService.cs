@@ -63,7 +63,8 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                if (type.GetMethods().Where(e => TestEngineFilter.HasName(e.Name)).Any(this.AnyTestAttribute))
+                //if (type.GetMethods().Where(AnyTestAttribute).Where(e => TestEngineFilter.HasName(e.Name)).Any())
+                if (GetFilterTestMethods(type).Any())
                 {
                     types.Add(type);
                 }
@@ -77,37 +78,16 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public IEnumerable<MethodInfo> GetTestTypeMethods()
         {
-            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute));
+            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute)).OrderBy(e => GetMethodFullName(e));
         }
 
         /// <summary>
-        /// GetMethodFullName
+        /// GetTestFullNames
         /// </summary>
-        /// <param name="method"></param>
         /// <returns></returns>
-        public string GetMethodFullName(MethodInfo method)
+        public IEnumerable<string> GetTestFullNames()
         {
-            return method.DeclaringType.FullName + "." + method.Name;
-        }
-
-        /// <summary>
-        /// GetMethodTestNames
-        /// </summary>
-        /// <param name="method"></param>
-        /// <returns></returns>
-        public string[] GetMethodTestNames(MethodInfo method)
-        {
-            var names = new List<string>();
-            if (TryGetAttributes<TestCaseAttribute>(method, out IEnumerable<TestCaseAttribute> testCases))
-            {
-                string GetTestCaseName(TestCaseAttribute testCaseAttribute)
-                {
-                    var name = testCaseAttribute.TestName ?? $"{method.Name}({string.Join(",", testCaseAttribute.Arguments)})";
-                    return name;
-                }
-                return testCases.Select(GetTestCaseName).ToArray();
-            }
-            return new[] { method.Name };
+            return GetTestTypeMethods().SelectMany(e => GetTestAttributes(e).Select(a => GetTestFullName(e, a))).OrderBy(e => e);
         }
 
         /// <summary>

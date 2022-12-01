@@ -18,6 +18,17 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
+        public void TestAssemblyNames()
+        {
+            Console.WriteLine(fileName);
+            var names = TestEngine.GetTestFullNames(pathFile);
+            foreach (var name in names)
+            {
+                Console.WriteLine($"{name}");
+            }
+        }
+
+        [Test]
         public void TestAssemblyService()
         {
             Console.WriteLine(fileName);
@@ -25,44 +36,7 @@ namespace ricaun.NUnit.Tests
             foreach (var method in service.GetTestTypeMethods())
             {
                 var names = string.Join(" ", service.GetMethodTestNames(method));
-                Console.WriteLine($"Test Method: {service.GetMethodFullName(method)} \t{names}");
-                //try
-                //{
-                //    using (var instence = new Services.InstanceDisposable(method.DeclaringType))
-                //    {
-                //        try
-                //        {
-                //            var testAttribute = service.GetAttribute<TestAttribute>(method);
-                //            var result = testAttribute.ExpectedResult ?? null;
-                //            var value = instence.Invoke(method);
-
-                //            var equals = (value is not null) ? value.Equals(result) : result is null;
-                //            Console.WriteLine($"\t {method.Name} {equals} \t {value} {value is null} {result}");
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            var exInner = ex.InnerException is null ? ex : ex.InnerException;
-                //            switch (exInner)
-                //            {
-                //                case SuccessException success:
-                //                    break;
-                //                case IgnoreException ignore:
-                //                    break;
-                //                case AssertionException assertion:
-                //                    break;
-                //                default:
-                //                    throw exInner;
-                //            }
-                //        }
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine(ex.GetBaseException().GetBaseException());
-                //    //Console.WriteLine(ex.TargetSite);
-                //    //Console.WriteLine(ex.StackTrace);
-                //    throw;
-                //}
+                Console.WriteLine($"{service.GetMethodFullName(method)} \t{names}");
             }
         }
 
@@ -78,13 +52,53 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
-        public void TestAssemblyFilter()
+        public void TestAssemblyExplicit()
         {
-            TestEngineFilter.Add("Test1");
+            Console.WriteLine(fileName);
+            TestEngineFilter.ExplicitEnabled = true;
             var json = TestEngine.TestAssembly(pathFile);
             var text = json.AsString();
+            TestEngineFilter.Reset();
             Console.WriteLine(text);
-            Assert.IsTrue(json.TestCount == 1, $"{fileName} with no Tests.");
+
+            Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
+        }
+
+        [TestCase("*.TestPass", 1)]
+        [TestCase("*.TestReturn", 1)]
+        [TestCase("*.TestExplicit", 1)]
+        [TestCase("*.TestName?", 2)]
+        [TestCase("*.TestCases(?)", 2)]
+        [TestCase("*.TestSame", 2)]
+        [TestCase("*", 23)]
+        public void TestAssemblyFilter(string testName, int numberOfTests)
+        {
+            TestEngineFilter.Add(testName);
+            var json = TestEngine.TestAssembly(pathFile);
+            TestEngineFilter.Reset();
+
+            var text = json.AsString();
+            Console.WriteLine(text);
+            Assert.AreEqual(numberOfTests, json.TestCount, $"{fileName} with no Tests.");
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(4)]
+        public void TestAssemblyFilterName(int numberOfTests)
+        {
+            Console.WriteLine(fileName);
+            var names = TestEngine.GetTestFullNames(pathFile);
+            for (int i = 0; i < numberOfTests; i++)
+            {
+                TestEngineFilter.Add(names[i]);
+            }
+            var json = TestEngine.TestAssembly(pathFile);
+            TestEngineFilter.Reset();
+
+            var text = json.AsString();
+            Console.WriteLine(text);
+            Assert.AreEqual(numberOfTests, json.TestCount, $"{fileName} with no Tests.");
         }
     }
 }
