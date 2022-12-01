@@ -36,7 +36,6 @@ namespace SampleTest.Tests
         {
             Add();
             Assert.AreEqual(1, PropertyOneTime);
-            Assert.AreEqual(1, PropertyNormal);
         }
 
         [Test]
@@ -44,14 +43,12 @@ namespace SampleTest.Tests
         {
             Add();
             Assert.AreEqual(2, PropertyOneTime);
-            Assert.AreEqual(1, PropertyNormal);
         }
         [Test]
         public void TestStatic3()
         {
             Add();
             Assert.AreEqual(3, PropertyOneTime);
-            Assert.AreEqual(1, PropertyNormal);
         }
 
         public void Add()
