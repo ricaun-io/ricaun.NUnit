@@ -70,9 +70,11 @@ namespace ricaun.NUnit.Revit.Commands
 
         private static void TestDirectory(string directory, params object[] parameters)
         {
+            Console.WriteLine("----------------------------------");
             Console.WriteLine($"NUnit: {typeof(NUnitAttribute).Assembly.GetName().Version}");
             Console.WriteLine($"TestEngine.Version: {TestEngine.Version}");
             Console.WriteLine($"TestEngine.VersionNUnit: {TestEngine.VersionNUnit}");
+            Console.WriteLine("----------------------------------");
             foreach (var filePath in Directory.GetFiles(directory, "*.dll"))
             {
                 var fileName = Path.GetFileName(filePath);
@@ -81,11 +83,10 @@ namespace ricaun.NUnit.Revit.Commands
                     if (TestEngine.ContainNUnit(filePath))
                     {
                         Console.WriteLine($"Test File: {fileName}");
-                        //ValidateTestAssemblyNUnitVersion(filePath);
-                        //foreach (var testName in TestEngine.GetTestFullNames(filePath))
-                        //{
-                        //    Console.WriteLine(testName);
-                        //}
+                        foreach (var testName in TestEngine.GetTestFullNames(filePath))
+                        {
+                            Console.WriteLine($"\t{testName}");
+                        }
 
                         var modelTest = TestEngine.TestAssembly(
                             filePath, parameters);
@@ -93,8 +94,9 @@ namespace ricaun.NUnit.Revit.Commands
                         //System.Windows.Clipboard.SetText(Newtonsoft.Json.JsonConvert.SerializeObject(modelTest));
                         //System.Windows.Clipboard.SetText(modelTest.AsString());
 
-                        Console.WriteLine($"\t{modelTest}");
-                        Console.WriteLine(modelTest.Message);
+                        var passed = modelTest.Success ? "PASSED" : "FAILED";
+                        if (modelTest.TestCount == 0) { passed = "NO TESTS"; }
+                        Console.WriteLine($"{modelTest}\t {passed}");
                     }
 
                 }
@@ -103,26 +105,7 @@ namespace ricaun.NUnit.Revit.Commands
                     Console.WriteLine($"Error: {fileName} {ex}");
                 }
             }
-        }
-
-
-        private static void ValidateTestAssemblyNUnitVersion(string location)
-        {
-            const string NUNIT_ASSEMBLY = "nunit.framework";
-            string reference = NUNIT_ASSEMBLY;
-            {
-                var fileReference = Directory.GetFiles(Path.GetDirectoryName(location), $"{reference}.dll")
-                    .FirstOrDefault();
-
-                if (fileReference is not null)
-                {
-                    {
-                        var assemblyLoad = Assembly.LoadFile(fileReference);
-                        Console.WriteLine($"Assembly.LoadFile({assemblyLoad}) {assemblyLoad.Location}");
-                        return;
-                    }
-                }
-            }
+            Console.WriteLine("----------------------------------");
         }
     }
 }
