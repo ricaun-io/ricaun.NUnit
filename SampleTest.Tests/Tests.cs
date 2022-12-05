@@ -60,14 +60,14 @@ namespace SampleTest.Tests
         [TestCase(2, TestName = "TestName2")]
         [TestCase(3)]
         [TestCase(4)]
-        [TestCase(5, TestName = "TestSame")]
+        [TestCase(5, TestName = "TestSame2")]
         public void TestCases(int i)
         {
             Assert.True(i > 0);
         }
 
         [Test]
-        public void TestSame()
+        public void TestSame1()
         {
 
         }

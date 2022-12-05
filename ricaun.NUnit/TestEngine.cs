@@ -3,6 +3,7 @@ using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using ricaun.NUnit.Services;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -42,12 +43,13 @@ namespace ricaun.NUnit
                                 .Substring(0, testAssemblyModel.Name.Length - testAssemblyModel.Version.Length).Trim('.');
                         }
 
+                        ValidateTestAssemblyNUnitVersion(testAssembly.Assembly);
+
                         var tests = testAssembly.Test();
 
                         testAssemblyModel.Tests.AddRange(tests);
                         testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -72,9 +74,14 @@ namespace ricaun.NUnit
         {
             using (new AssemblyResolveService(Path.GetDirectoryName(assemblyFile)))
             {
-                var testAssembly = new TestAssemblyService(assemblyFile);
-                return testAssembly.GetTestFullNames().ToArray();
+                try
+                {
+                    var testAssembly = new TestAssemblyService(assemblyFile);
+                    return testAssembly.GetTestFullNames().ToArray();
+                }
+                catch { }
             }
+            return new string[] { };
         }
 
         #region NUnit
@@ -111,15 +118,18 @@ namespace ricaun.NUnit
         /// <returns></returns>
         private static AssemblyName GetReferencedAssemblyNUnit(string assemblyFile)
         {
-            string reference = NUNIT_ASSEMBLY;
             var assembly = ReflectionOnlyLoadFrom(assemblyFile);
 
             if (assembly is null) return null;
-
-            var nunitReference = assembly.GetReferencedAssemblies()
-                .FirstOrDefault(e => e.Name.Equals(reference));
+            AssemblyName nunitReference = GetNUnitReference(assembly);
 
             return nunitReference;
+        }
+
+        private static AssemblyName GetNUnitReference(Assembly assembly)
+        {
+            return assembly.GetReferencedAssemblies()
+                .FirstOrDefault(e => e.Name.Equals(NUNIT_ASSEMBLY));
         }
 
         private static Assembly ReflectionOnlyLoadFrom(string assemblyFile)
@@ -135,6 +145,23 @@ namespace ricaun.NUnit
                     .FirstOrDefault(e => e.GetName().ToString().Equals(assemblyName.ToString()));
             }
         }
+
+        private static void ValidateTestAssemblyNUnitVersion(Assembly assembly)
+        {
+            var nunitReference = GetNUnitReference(assembly);
+            if (nunitReference is null)
+            {
+                return;
+            }
+
+            if (nunitReference.Version != VersionNUnit)
+            {
+                var message = $"'{NUNIT_ASSEMBLY}' version {nunitReference.Version} is not allow. Use the version {VersionNUnit}.";
+                Debug.WriteLine(message);
+                throw new FileLoadException(message);
+            }
+        }
+
         #endregion
     }
 }
