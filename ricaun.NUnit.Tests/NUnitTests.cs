@@ -69,7 +69,7 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestExplicit", 1)]
         [TestCase("*.TestName?", 2)]
         [TestCase("*.TestCases(?)", 2)]
-        [TestCase("*.TestSame", 2)]
+        [TestCase("*.TestSame?", 2)]
         [TestCase("*", 23)]
         public void TestAssemblyFilter(string testName, int numberOfTests)
         {

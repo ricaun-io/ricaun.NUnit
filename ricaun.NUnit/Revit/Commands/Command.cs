@@ -22,6 +22,8 @@ namespace ricaun.NUnit.Revit.Commands
         {
             UIApplication uiapp = commandData.Application;
 
+            LastPath = @"C:\Users\ricau\source\repos\TestProject.Tests\TestProject.Tests\bin\Debug\TestProject.Tests.dll";
+
             if (!File.Exists(LastPath)) LastPath = null;
 
             if (LastPath is null)
@@ -113,6 +115,11 @@ namespace ricaun.NUnit.Revit.Commands
                     if (TestEngine.ContainNUnit(filePath))
                     {
                         Console.WriteLine($"Test File: {fileName}");
+
+                        foreach (var testName in TestEngine.GetTestFullNames(filePath))
+                        {
+                            Console.WriteLine(testName);
+                        }
 
                         var modelTest = TestEngine.TestAssembly(
                             filePath,

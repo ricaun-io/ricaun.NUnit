@@ -1,12 +1,9 @@
-﻿using NUnit.Framework;
-using NUnit.Framework.Internal;
-using ricaun.NUnit.Extensions;
+﻿using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace ricaun.NUnit.Services
 {
@@ -63,7 +60,6 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                //if (type.GetMethods().Where(AnyTestAttribute).Where(e => TestEngineFilter.HasName(e.Name)).Any())
                 if (GetFilterTestMethods(type).Any())
                 {
                     types.Add(type);

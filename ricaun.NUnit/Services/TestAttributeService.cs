@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -30,7 +31,15 @@ namespace ricaun.NUnit.Services
         {
             var methods = type.GetMethods().OrderBy(e => e.Name);
             var testMethods = methods.Where(AnyTestAttribute);
-            return testMethods.Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(m, a)));
+            var onlyTypeTests = testMethods.Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(m, a)));
+            //foreach (var testMethod in testMethods)
+            //{
+            //    //Debug.WriteLine($"{testMethod.Name} {testMethod.GetCustomAttributes(true).Count()}");
+            //    //Debug.WriteLine($"{testMethod.Name} {string.Join(" ", testMethod.GetCustomAttributes(true).Select(e => e.GetType().Name))}");
+            //    //Debug.WriteLine($"{testMethod.Name} {testMethod.GetCustomAttributes(true).OfType<TestAttribute>().Count()}");
+            //}
+            //Debug.WriteLine($"Debug:\t{type}:\t{string.Join(" ", onlyTypeTests.Select(e => e.Name))}");
+            return onlyTypeTests;
         }
 
         /// <summary>
@@ -58,6 +67,7 @@ namespace ricaun.NUnit.Services
         /// GetTestFullName
         /// </summary>
         /// <param name="method"></param>
+        /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
         public string GetTestFullName(MethodInfo method, NUnitAttribute nUnitAttribute)
         {
