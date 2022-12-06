@@ -94,7 +94,18 @@ var location = Assembly.GetExecutingAssembly().Location;
 string[] tests = TestEngine.GetTestFullNames(location);
 ```
 
-The name of the test equal to: `namespace`.`type`.`method`.`testname`
+The name of the test equal to: `Namespace`.`Type`.`Method`.`TestNameAlias`.
+
+### TestFullName
+
+Is possible to get test FullName using `TestTypeModel` and `TestModel`.
+```C#
+TestTypeModel testType;
+TestModel test;
+string testFullName = TestEngine.GetTestFullName(testType, test);
+```
+
+The name of the test equal to: `TypeName`.`TestName`.`TestAlias`.
 
 ### Filter
 

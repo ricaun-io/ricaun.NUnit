@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] / 2022-12-06
+### Features
+- Feature `TestEngine.GetTestFullName` to compare with `TestEngine.GetTestFullNames`.
+
 ## [1.0.9] / 2022-12-06
 ### Features
 - Feature `TestEngine.Initialize` to force load `NUnit` reference.
@@ -86,6 +90,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Test with Console Output
 
 [vNext]: ../../compare/1.0.0...HEAD
+[1.1.0]: ../../compare/1.0.9...1.1.0
 [1.0.9]: ../../compare/1.0.8...1.0.9
 [1.0.8]: ../../compare/1.0.7...1.0.8
 [1.0.7]: ../../compare/1.0.6...1.0.7

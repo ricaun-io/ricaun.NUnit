@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace ricaun.NUnit.Tests
@@ -23,6 +24,15 @@ namespace ricaun.NUnit.Tests
             TestEngine.Initialize(out string message);
             Console.WriteLine(message);
             Assert.IsTrue(TestEngine.Initialize());
+            Assert.IsNotNull(TestEngine.Version);
+            Assert.IsNotNull(TestEngine.VersionNUnit);
+        }
+
+        [Test]
+        public void TestAssemblyContainNUnit()
+        {
+            Console.WriteLine(fileName);
+            Assert.IsTrue(TestEngine.ContainNUnit(pathFile));
         }
 
         [Test]
@@ -34,6 +44,26 @@ namespace ricaun.NUnit.Tests
             {
                 Console.WriteLine($"{name}");
             }
+        }
+
+        [Test]
+        public void TestAssemblyNamesAlias()
+        {
+            Console.WriteLine(fileName);
+            var testModel = TestEngine.TestAssembly(pathFile);
+            var names = TestEngine.GetTestFullNames(pathFile);
+            var nameAlias = testModel.Tests.SelectMany(type => type.Tests.Select(test => TestEngine.GetTestFullName(type, test))).ToArray();
+
+            foreach (var alias in nameAlias)
+            {
+                Console.WriteLine(alias);
+                if (!names.Contains(alias))
+                {
+                    Assert.Fail($"{alias} not found.");
+                }
+            }
+
+            Assert.AreEqual(names.Length, nameAlias.Length);
         }
 
         [Test]
@@ -52,11 +82,11 @@ namespace ricaun.NUnit.Tests
         public void TestAssembly()
         {
             Console.WriteLine(fileName);
-            var json = TestEngine.TestAssembly(pathFile);
-            var text = json.AsString();
+            var testModel = TestEngine.TestAssembly(pathFile);
+            var text = testModel.AsString();
             Console.WriteLine(text);
-            Console.WriteLine(json.Message);
-            Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
+            Console.WriteLine(testModel.Message);
+            Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
         }
 
         [Test]
@@ -64,12 +94,12 @@ namespace ricaun.NUnit.Tests
         {
             Console.WriteLine(fileName);
             TestEngineFilter.ExplicitEnabled = true;
-            var json = TestEngine.TestAssembly(pathFile);
-            var text = json.AsString();
+            var testModel = TestEngine.TestAssembly(pathFile);
+            var text = testModel.AsString();
             TestEngineFilter.Reset();
             Console.WriteLine(text);
-            Console.WriteLine(json.Message);
-            Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
+            Console.WriteLine(testModel.Message);
+            Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
         }
 
         [TestCase("*.TestPass", 1)]
@@ -82,12 +112,12 @@ namespace ricaun.NUnit.Tests
         public void TestAssemblyFilter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);
-            var json = TestEngine.TestAssembly(pathFile);
+            var testModel = TestEngine.TestAssembly(pathFile);
             TestEngineFilter.Reset();
 
-            var text = json.AsString();
+            var text = testModel.AsString();
             Console.WriteLine(text);
-            Assert.AreEqual(numberOfTests, json.TestCount, $"{fileName} with no Tests.");
+            Assert.AreEqual(numberOfTests, testModel.TestCount, $"{fileName} with no Tests.");
         }
 
         [TestCase(1)]
@@ -101,12 +131,12 @@ namespace ricaun.NUnit.Tests
             {
                 TestEngineFilter.Add(names[i]);
             }
-            var json = TestEngine.TestAssembly(pathFile);
+            var testModel = TestEngine.TestAssembly(pathFile);
             TestEngineFilter.Reset();
 
-            var text = json.AsString();
+            var text = testModel.AsString();
             Console.WriteLine(text);
-            Assert.AreEqual(numberOfTests, json.TestCount, $"{fileName} with no Tests.");
+            Assert.AreEqual(numberOfTests, testModel.TestCount, $"{fileName} with no Tests.");
         }
     }
 }
