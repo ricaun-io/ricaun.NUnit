@@ -89,7 +89,7 @@
 
   <PropertyGroup>
     <PackageId>ricaun.NUnit</PackageId>
-    <Version>1.0.8</Version>
+    <Version>1.0.9</Version>
     <ProjectGuid>{EBDE7FEE-0D1E-4034-9B44-4C5F4E24F52A}</ProjectGuid>
   </PropertyGroup>
 
@@ -131,7 +131,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  
+
   <ItemGroup>
     <None Include="..\README.md">
       <Pack>True</Pack>
@@ -160,7 +160,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="9.*" IncludeAssets="build; compile" PrivateAssets="All" />
     <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="$(RevitVersion).*" IncludeAssets="build; compile" PrivateAssets="All" />
   </ItemGroup>
-  
+
   <ItemGroup Condition="!$(Configuration.Contains('Debug'))">
     <Compile Remove="Revit\**" />
     <EmbeddedResource Remove="Revit\**" />
@@ -171,13 +171,13 @@
   <PropertyGroup Condition="!$(Configuration.Contains('Debug'))">
     <TargetFramework>net45</TargetFramework>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <None Include="Resources\icon.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit" Version="3.13.3"/>
   </ItemGroup>
 
 </Project>

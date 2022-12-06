@@ -18,6 +18,14 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
+        public void TestAssemblyInitialize()
+        {
+            TestEngine.Initialize(out string message);
+            Console.WriteLine(message);
+            Assert.IsTrue(TestEngine.Initialize());
+        }
+
+        [Test]
         public void TestAssemblyNames()
         {
             Console.WriteLine(fileName);
@@ -47,7 +55,7 @@ namespace ricaun.NUnit.Tests
             var json = TestEngine.TestAssembly(pathFile);
             var text = json.AsString();
             Console.WriteLine(text);
-
+            Console.WriteLine(json.Message);
             Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
         }
 
@@ -60,7 +68,7 @@ namespace ricaun.NUnit.Tests
             var text = json.AsString();
             TestEngineFilter.Reset();
             Console.WriteLine(text);
-
+            Console.WriteLine(json.Message);
             Assert.IsTrue(json.TestCount > 0, $"{fileName} with no Tests.");
         }
 

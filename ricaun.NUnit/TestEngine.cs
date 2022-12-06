@@ -16,6 +16,32 @@ namespace ricaun.NUnit
     /// </summary>
     public static class TestEngine
     {
+        #region Initialize
+        /// <summary>
+        /// Initialize
+        /// </summary>
+        /// <returns>Return true if successful</returns>
+        public static bool Initialize() => Initialize(out string message);
+
+        /// <summary>
+        /// Initialize
+        /// </summary>
+        /// <returns>Return true if successful</returns>
+        public static bool Initialize(out string message)
+        {
+            try
+            {
+                message = $"ricaun.NUnit {TestEngine.Version.ToString(3)} {TestEngine.VersionNUnit.ToString(3)}";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                message = $"{ex}";
+            }
+            return false;
+        }
+        #endregion
+
         /// <summary>
         /// Test Assembly
         /// </summary>
