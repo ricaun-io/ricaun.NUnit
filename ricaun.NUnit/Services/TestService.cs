@@ -37,7 +37,6 @@ namespace ricaun.NUnit.Services
         {
             this.type = type;
             this.parameters = parameters;
-            this.instance = CreateInstance(type, this.parameters);
         }
 
         /// <summary>
@@ -50,27 +49,37 @@ namespace ricaun.NUnit.Services
         #endregion
 
         #region public
-        /// <summary>
-        /// Test
-        /// </summary>
-        /// <returns></returns>
-        public TestTypeModel Test()
+        public TestTypeModel TestInstance()
         {
             var filterTestMethods = GetFilterTestMethods(type);
             var methods = type.GetMethods();
             var testType = new TestTypeModel();
+
             testType.Name = type.FullName;
             testType.Success = true;
+
+            var testMethods = filterTestMethods.Where(AnyTestAttribute);
+
+            try
+            {
+                this.instance = CreateInstance(this.type, this.parameters);
+            }
+            catch (Exception ex)
+            {
+                testType.Message = testType.Message + Environment.NewLine + ex.ToString();
+                testType.Success = false;
+                AddDefaultTestModels(testType, testMethods);
+                return testType;
+            }
 
             {
                 if (IgnoreTest(type, out string ignoreMessage))
                 {
                     testType.Message = ignoreMessage;
                     testType.Skipped = true;
+                    AddDefaultTestModels(testType, testMethods);
                     return testType;
                 }
-
-                var testMethods = filterTestMethods.Where(AnyTestAttribute);
 
                 var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
                 var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
@@ -100,10 +109,98 @@ namespace ricaun.NUnit.Services
                 testType.Success = success & !testType.Tests.Any(e => e.Success == false);
                 testType.Skipped = skipped & !testType.Tests.Any(e => e.Skipped == false);
                 testType.Message = message;
+
+                if (upOneResult.Success == false)
+                {
+                    AddDefaultTestModels(testType, testMethods);
+                }
+                if (downOneResult.Success == false)
+                {
+                    foreach (var testModel in testType.Tests)
+                    {
+                        testModel.Message += testType.Message;
+                        testModel.Success = testType.Success;
+                        testModel.Skipped = testType.Skipped;
+                    }
+                }
+
             }
 
             return testType;
         }
+
+        private void AddDefaultTestModels(TestTypeModel testType, IEnumerable<MethodInfo> testMethods)
+        {
+            foreach (var testMethod in testMethods)
+            {
+                foreach (var nUnitAttribute in GetTestAttributes(testMethod))
+                {
+                    if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
+                    var testModel = NewTestModel(testMethod, nUnitAttribute);
+                    testModel.Message = testType.Message;
+                    testModel.Success = testType.Success;
+                    testModel.Skipped = testType.Skipped;
+                    testType.Tests.Add(testModel);
+                }
+            }
+        }
+
+        ///// <summary>
+        ///// Test
+        ///// </summary>
+        ///// <returns></returns>
+        //private TestTypeModel Test()
+        //{
+        //    this.instance = CreateInstance(this.type, this.parameters);
+
+        //    var filterTestMethods = GetFilterTestMethods(type);
+        //    var methods = type.GetMethods();
+        //    var testType = new TestTypeModel();
+        //    testType.Name = type.FullName;
+        //    testType.Success = true;
+
+        //    {
+        //        if (IgnoreTest(type, out string ignoreMessage))
+        //        {
+        //            testType.Message = ignoreMessage;
+        //            testType.Skipped = true;
+        //            return testType;
+        //        }
+
+        //        var testMethods = filterTestMethods.Where(AnyTestAttribute);
+
+        //        var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
+        //        var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
+
+        //        var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
+        //        var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
+
+        //        var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
+        //        if (upOneResult.Success)
+        //        {
+        //            foreach (var testMethod in testMethods)
+        //            {
+        //                foreach (var nUnitAttribute in GetTestAttributes(testMethod))
+        //                {
+        //                    if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
+        //                    var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
+        //                    testType.Tests.Add(testModel);
+        //                }
+        //            }
+        //        }
+        //        var downOneResult = InvokeResultInstance(methodOneTimeTearDown);
+
+        //        var success = upOneResult.Success & downOneResult.Success;
+        //        var skipped = upOneResult.Skipped & downOneResult.Skipped;
+        //        var message = string.Join(Environment.NewLine, upOneResult.Message, downOneResult.Message).Trim();
+
+        //        testType.Success = success & !testType.Tests.Any(e => e.Success == false);
+        //        testType.Skipped = skipped & !testType.Tests.Any(e => e.Skipped == false);
+        //        testType.Message = message;
+        //    }
+
+        //    return testType;
+        //}
 
         #endregion
 
@@ -164,6 +261,15 @@ namespace ricaun.NUnit.Services
                 test.Time = console.GetMillis();
             }
 
+            return test;
+        }
+
+        public TestModel NewTestModel(MethodInfo method, NUnitAttribute nUnitAttribute)
+        {
+            var test = new TestModel();
+            test.Name = method.Name;
+            test.Alias = GetTestName(method, nUnitAttribute);
+            test.Success = true;
             return test;
         }
 

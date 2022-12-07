@@ -114,22 +114,43 @@ namespace ricaun.NUnit.Services
                     {
                         using (var test = new TestService(type, parameters))
                         {
-                            testTypeModel = test.Test();
+                            testTypeModel = test.TestInstance();
                         }
                     }
                     catch (Exception ex)
                     {
-                        testTypeModel = testTypeModel ?? new TestTypeModel();
-                        testTypeModel.Name = type.Name;
                         testTypeModel.Message = testTypeModel.Message + Environment.NewLine + ex.ToString();
                         testTypeModel.Success = false;
+                        foreach (var test in testTypeModel.Tests)
+                        {
+                            test.Message = test.Message + Environment.NewLine + ex.ToString();
+                            test.Success = false;
+                        }
                     }
-                    finally
-                    {
-                        result.Add(testTypeModel);
-                    }
+
+                    result.Add(testTypeModel);
                     testTypeModel.Console = console.GetString();
                     testTypeModel.Time = console.GetMillis();
+                    //try
+                    //{
+                    //    using (var test = new TestService(type, parameters))
+                    //    {
+                    //        testTypeModel = test.Test();
+                    //    }
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    testTypeModel = testTypeModel ?? new TestTypeModel();
+                    //    testTypeModel.Name = type.Name;
+                    //    testTypeModel.Message = testTypeModel.Message + Environment.NewLine + ex.ToString();
+                    //    testTypeModel.Success = false;
+                    //}
+                    //finally
+                    //{
+                    //    result.Add(testTypeModel);
+                    //}
+                    //testTypeModel.Console = console.GetString();
+                    //testTypeModel.Time = console.GetMillis();
                 }
             }
 
