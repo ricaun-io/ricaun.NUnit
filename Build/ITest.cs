@@ -10,14 +10,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// ITest
+/// </summary>
 public interface ITest : ICompile, IHazContent
 {
+    /// <summary>
+    /// TestResults (Default: true)
+    /// </summary>
     [Parameter]
     bool TestResults => TryGetValue<bool?>(() => TestResults) ?? true;
 
+    /// <summary>
+    /// TestBuildStopWhenFailed (Default: true)
+    /// </summary>
     [Parameter]
     bool TestBuildStopWhenFailed => TryGetValue<bool?>(() => TestBuildStopWhenFailed) ?? true;
 
+    /// <summary>
+    /// TestProjectName (Default: "*.Tests")
+    /// </summary>
     [Parameter]
     string TestProjectName => TryGetValue<string>(() => TestProjectName) ?? "*.Tests";
 

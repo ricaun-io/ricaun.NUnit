@@ -110,6 +110,18 @@ namespace ricaun.NUnit
             return new string[] { };
         }
 
+        /// <summary>
+        /// GetTestFullName
+        /// <code>TypeName.TestName.TestAlias</code>
+        /// </summary>
+        /// <param name="testType"></param>
+        /// <param name="test"></param>
+        /// <returns></returns>
+        public static string GetTestFullName(TestTypeModel testType, TestModel test)
+        {
+            return $"{testType.Name}.{test.Name}.{test.Alias}";
+        }
+
         #region NUnit
         /// <summary>
         /// Version of <see cref="TestEngine"/>

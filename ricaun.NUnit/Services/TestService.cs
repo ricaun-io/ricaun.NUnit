@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,6 @@ namespace ricaun.NUnit.Services
         {
             this.type = type;
             this.parameters = parameters;
-            this.instance = CreateInstance(type, this.parameters);
         }
 
         /// <summary>
@@ -49,29 +49,44 @@ namespace ricaun.NUnit.Services
         #endregion
 
         #region public
-
         /// <summary>
-        /// Test
+        /// Test Instance
         /// </summary>
         /// <returns></returns>
-        public TestTypeModel Test()
+        public TestTypeModel TestInstance()
         {
+            TestExecutionContextUtils.Clear();
+
             var filterTestMethods = GetFilterTestMethods(type);
             var methods = type.GetMethods();
             var testType = new TestTypeModel();
+
             testType.Name = type.FullName;
             testType.Success = true;
 
+            var testMethods = filterTestMethods.Where(AnyTestAttribute);
+
+            if (IgnoreTest(type, out string ignoreMessage))
             {
-                if (IgnoreTest(type, out string ignoreMessage))
-                {
-                    testType.Message = ignoreMessage;
-                    testType.Skipped = true;
-                    return testType;
-                }
+                testType.Message = ignoreMessage;
+                testType.Skipped = true;
+                AddDefaultTestModels(testType, testMethods);
+                return testType;
+            }
 
-                var testMethods = filterTestMethods.Where(AnyTestAttribute);
+            try
+            {
+                this.instance = CreateInstance(this.type, this.parameters);
+            }
+            catch (Exception ex)
+            {
+                testType.Message = testType.Message + Environment.NewLine + ex.ToString();
+                testType.Success = false;
+                AddDefaultTestModels(testType, testMethods);
+                return testType;
+            }
 
+            {
                 var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
                 var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
 
@@ -100,10 +115,98 @@ namespace ricaun.NUnit.Services
                 testType.Success = success & !testType.Tests.Any(e => e.Success == false);
                 testType.Skipped = skipped & !testType.Tests.Any(e => e.Skipped == false);
                 testType.Message = message;
+
+                if (upOneResult.Success == false)
+                {
+                    AddDefaultTestModels(testType, testMethods);
+                }
+                if (downOneResult.Success == false)
+                {
+                    foreach (var testModel in testType.Tests)
+                    {
+                        testModel.Message += testType.Message;
+                        testModel.Success = testType.Success;
+                        testModel.Skipped = testType.Skipped;
+                    }
+                }
+
             }
 
             return testType;
         }
+
+        private void AddDefaultTestModels(TestTypeModel testType, IEnumerable<MethodInfo> testMethods)
+        {
+            foreach (var testMethod in testMethods)
+            {
+                foreach (var nUnitAttribute in GetTestAttributes(testMethod))
+                {
+                    if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
+                    var testModel = NewTestModel(testMethod, nUnitAttribute);
+                    testModel.Message = testType.Message;
+                    testModel.Success = testType.Success;
+                    testModel.Skipped = testType.Skipped;
+                    testType.Tests.Add(testModel);
+                }
+            }
+        }
+
+        ///// <summary>
+        ///// Test
+        ///// </summary>
+        ///// <returns></returns>
+        //private TestTypeModel Test()
+        //{
+        //    this.instance = CreateInstance(this.type, this.parameters);
+
+        //    var filterTestMethods = GetFilterTestMethods(type);
+        //    var methods = type.GetMethods();
+        //    var testType = new TestTypeModel();
+        //    testType.Name = type.FullName;
+        //    testType.Success = true;
+
+        //    {
+        //        if (IgnoreTest(type, out string ignoreMessage))
+        //        {
+        //            testType.Message = ignoreMessage;
+        //            testType.Skipped = true;
+        //            return testType;
+        //        }
+
+        //        var testMethods = filterTestMethods.Where(AnyTestAttribute);
+
+        //        var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
+        //        var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
+
+        //        var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
+        //        var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
+
+        //        var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
+        //        if (upOneResult.Success)
+        //        {
+        //            foreach (var testMethod in testMethods)
+        //            {
+        //                foreach (var nUnitAttribute in GetTestAttributes(testMethod))
+        //                {
+        //                    if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
+        //                    var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
+        //                    testType.Tests.Add(testModel);
+        //                }
+        //            }
+        //        }
+        //        var downOneResult = InvokeResultInstance(methodOneTimeTearDown);
+
+        //        var success = upOneResult.Success & downOneResult.Success;
+        //        var skipped = upOneResult.Skipped & downOneResult.Skipped;
+        //        var message = string.Join(Environment.NewLine, upOneResult.Message, downOneResult.Message).Trim();
+
+        //        testType.Success = success & !testType.Tests.Any(e => e.Success == false);
+        //        testType.Skipped = skipped & !testType.Tests.Any(e => e.Skipped == false);
+        //        testType.Message = message;
+        //    }
+
+        //    return testType;
+        //}
 
         #endregion
 
@@ -167,6 +270,21 @@ namespace ricaun.NUnit.Services
             return test;
         }
 
+        /// <summary>
+        /// NewTestModel
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="nUnitAttribute"></param>
+        /// <returns></returns>
+        private TestModel NewTestModel(MethodInfo method, NUnitAttribute nUnitAttribute)
+        {
+            var test = new TestModel();
+            test.Name = method.Name;
+            test.Alias = GetTestName(method, nUnitAttribute);
+            test.Success = true;
+            return test;
+        }
+
         private TestModel InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown, NUnitAttribute nUnitAttribute)
         {
             var test = new TestModel();
@@ -222,6 +340,7 @@ namespace ricaun.NUnit.Services
         }
         private InvokeResult InvokeResultInstance(MethodInfo method)
         {
+            TestExecutionContextUtils.Clear();
             var result = new InvokeResult();
             if (method is null)
                 return result;
@@ -238,6 +357,54 @@ namespace ricaun.NUnit.Services
                 var value = Invoke(this.instance, method, this.parameters);
 
                 if (IsValueExpectedResult(method, value, out object expectedResult) == false)
+                {
+                    result.Success = false;
+                    result.Message = $"Expected:\t{expectedResult}\tBut was:\t{value}";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var exInner = ex.InnerException is null ? ex : ex.InnerException;
+                result.Success = false;
+                result.Message = exInner.ToString();
+                switch (exInner)
+                {
+                    case SuccessException success:
+                        result.Success = true;
+                        result.Message = success.Message;
+                        break;
+                    case IgnoreException ignore:
+                        result.Success = true;
+                        result.Skipped = true;
+                        result.Message = ignore.Message;
+                        break;
+                    case AssertionException assertion:
+                        result.Message = assertion.Message + Environment.NewLine + assertion.ToString();
+                        break;
+                }
+            }
+            return result;
+        }
+        private InvokeResult InvokeResultInstanceTestCase(MethodInfo method, TestCaseAttribute testCase)
+        {
+            TestExecutionContextUtils.Clear();
+            var result = new InvokeResult();
+            if (method is null)
+                return result;
+
+            if (IgnoreTest(method, out string message))
+            {
+                result.Message = message;
+                result.Skipped = true;
+                return result;
+            }
+
+            try
+            {
+                var value = Invoke(this.instance, method, testCase.Arguments);
+
+                if (IsValueExpectedResult(testCase, value, out object expectedResult) == false)
                 {
                     result.Success = false;
                     result.Message = $"Expected:\t{expectedResult}\tBut was:\t{value}";
@@ -290,54 +457,6 @@ namespace ricaun.NUnit.Services
             expectedResult = testCase.ExpectedResult ?? null;
             var equals = (value is not null) ? value.Equals(expectedResult) : expectedResult is null;
             return equals;
-        }
-
-        private InvokeResult InvokeResultInstanceTestCase(MethodInfo method, TestCaseAttribute testCase)
-        {
-            var result = new InvokeResult();
-            if (method is null)
-                return result;
-
-            if (IgnoreTest(method, out string message))
-            {
-                result.Message = message;
-                result.Skipped = true;
-                return result;
-            }
-
-            try
-            {
-                var value = Invoke(this.instance, method, testCase.Arguments);
-
-                if (IsValueExpectedResult(testCase, value, out object expectedResult) == false)
-                {
-                    result.Success = false;
-                    result.Message = $"Expected:\t{expectedResult}\tBut was:\t{value}";
-                }
-
-            }
-            catch (Exception ex)
-            {
-                var exInner = ex.InnerException is null ? ex : ex.InnerException;
-                result.Success = false;
-                result.Message = exInner.ToString();
-                switch (exInner)
-                {
-                    case SuccessException success:
-                        result.Success = true;
-                        result.Message = success.Message;
-                        break;
-                    case IgnoreException ignore:
-                        result.Success = true;
-                        result.Skipped = true;
-                        result.Message = ignore.Message;
-                        break;
-                    case AssertionException assertion:
-                        result.Message = assertion.Message + Environment.NewLine + assertion.ToString();
-                        break;
-                }
-            }
-            return result;
         }
 
         #endregion

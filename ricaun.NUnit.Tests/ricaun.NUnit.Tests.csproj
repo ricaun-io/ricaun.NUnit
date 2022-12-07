@@ -25,7 +25,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!--
     <DebugType>None</DebugType>
+    -->
   </PropertyGroup>
 
   <ItemGroup>

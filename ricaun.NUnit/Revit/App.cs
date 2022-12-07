@@ -10,9 +10,11 @@ namespace ricaun.NUnit.Revit
         private static RibbonPanel ribbonPanel;
         public Result OnStartup(UIControlledApplication application)
         {
+            TestEngine.Initialize(out string message);
             ribbonPanel = application.CreatePanel("ricaun.NUnit");
             ribbonPanel.CreatePushButton<Commands.Command>()
-                .SetLargeImage("/UIFrameworkRes;component/ribbon/images/revit.ico");
+                .SetLargeImage("/UIFrameworkRes;component/ribbon/images/revit.ico")
+                .SetToolTip(message);
             return Result.Succeeded;
         }
 
