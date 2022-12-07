@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Features
 - Feature `TestEngine.GetTestFullName` to compare with `TestEngine.GetTestFullNames`.
 ### Fixed
-- Fix Multiple AssertionResults: `TestExecutionContext.CurrentContext.CurrentResult.AssertionResults.Clear();`
+- Fix Multiple AssertionResults: `TestExecutionContextUtils.Clear();`
 
 ## [1.0.9] / 2022-12-06
 ### Features

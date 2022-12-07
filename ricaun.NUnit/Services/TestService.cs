@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,6 @@ namespace ricaun.NUnit.Services
         #endregion
 
         #region public
-
         /// <summary>
         /// Test
         /// </summary>
@@ -265,6 +265,7 @@ namespace ricaun.NUnit.Services
                         break;
                 }
             }
+            TestExecutionContextUtils.Clear();
             return result;
         }
 
