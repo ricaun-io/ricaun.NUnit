@@ -6,11 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.1.0] / 2022-12-06
 ### Features
+- Feature `TestInstance` generete all `TestModel` if failed or ignored.
 - Feature `TestEngine.GetTestFullName` to compare with `TestEngine.GetTestFullNames`.
 ### Fixed
 - Fix Multiple AssertionResults: `TestExecutionContextUtils.Clear();`
 ### Updated
 - Update core `TestAssemblyService` and `TestService` to add fail tests using `TestInstance` method
+### Tests
+- Add `TestsExplict` to test failed and ExplictAttribute
 
 ## [1.0.9] / 2022-12-06
 ### Features

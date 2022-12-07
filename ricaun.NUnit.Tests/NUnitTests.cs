@@ -87,6 +87,7 @@ namespace ricaun.NUnit.Tests
             Console.WriteLine(text);
             Console.WriteLine(testModel.Message);
             Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+            Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
         }
 
         [Test]
@@ -108,7 +109,7 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestName?", 2)]
         [TestCase("*.TestCases(?)", 2)]
         [TestCase("*.TestSame?", 2)]
-        [TestCase("*", 25)]
+        [TestCase("*", 30)]
         public void TestAssemblyFilter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

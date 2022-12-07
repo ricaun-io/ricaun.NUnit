@@ -26,6 +26,13 @@ namespace SampleTest.Tests
             Assert.Ignore("Ignore Message");
         }
 
+        [Ignore("Ignore")]
+        [Test]
+        public void TestIgnore2()
+        {
+
+        }
+
         [Test]
         [Explicit]
         public void TestExplicit()

@@ -49,6 +49,10 @@ namespace ricaun.NUnit.Services
         #endregion
 
         #region public
+        /// <summary>
+        /// Test Instance
+        /// </summary>
+        /// <returns></returns>
         public TestTypeModel TestInstance()
         {
             var filterTestMethods = GetFilterTestMethods(type);
@@ -59,6 +63,14 @@ namespace ricaun.NUnit.Services
             testType.Success = true;
 
             var testMethods = filterTestMethods.Where(AnyTestAttribute);
+
+            if (IgnoreTest(type, out string ignoreMessage))
+            {
+                testType.Message = ignoreMessage;
+                testType.Skipped = true;
+                AddDefaultTestModels(testType, testMethods);
+                return testType;
+            }
 
             try
             {
@@ -73,14 +85,6 @@ namespace ricaun.NUnit.Services
             }
 
             {
-                if (IgnoreTest(type, out string ignoreMessage))
-                {
-                    testType.Message = ignoreMessage;
-                    testType.Skipped = true;
-                    AddDefaultTestModels(testType, testMethods);
-                    return testType;
-                }
-
                 var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
                 var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
 
@@ -264,7 +268,13 @@ namespace ricaun.NUnit.Services
             return test;
         }
 
-        public TestModel NewTestModel(MethodInfo method, NUnitAttribute nUnitAttribute)
+        /// <summary>
+        /// NewTestModel
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="nUnitAttribute"></param>
+        /// <returns></returns>
+        private TestModel NewTestModel(MethodInfo method, NUnitAttribute nUnitAttribute)
         {
             var test = new TestModel();
             test.Name = method.Name;
