@@ -55,6 +55,8 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public TestTypeModel TestInstance()
         {
+            TestExecutionContextUtils.Clear();
+
             var filterTestMethods = GetFilterTestMethods(type);
             var methods = type.GetMethods();
             var testType = new TestTypeModel();
@@ -338,6 +340,7 @@ namespace ricaun.NUnit.Services
         }
         private InvokeResult InvokeResultInstance(MethodInfo method)
         {
+            TestExecutionContextUtils.Clear();
             var result = new InvokeResult();
             if (method is null)
                 return result;
@@ -381,36 +384,11 @@ namespace ricaun.NUnit.Services
                         break;
                 }
             }
-            TestExecutionContextUtils.Clear();
             return result;
         }
-
-        private bool IsValueExpectedResult(MethodInfo method, object value, out object expectedResult)
-        {
-            expectedResult = null;
-            var testAttribute = GetAttribute<TestAttribute>(method);
-
-            if (testAttribute is null)
-                return true;
-
-            expectedResult = testAttribute.ExpectedResult ?? null;
-            var equals = (value is not null) ? value.Equals(expectedResult) : expectedResult is null;
-            return equals;
-        }
-
-        private bool IsValueExpectedResult(TestCaseAttribute testCase, object value, out object expectedResult)
-        {
-            expectedResult = null;
-            if (testCase is null)
-                return true;
-
-            expectedResult = testCase.ExpectedResult ?? null;
-            var equals = (value is not null) ? value.Equals(expectedResult) : expectedResult is null;
-            return equals;
-        }
-
         private InvokeResult InvokeResultInstanceTestCase(MethodInfo method, TestCaseAttribute testCase)
         {
+            TestExecutionContextUtils.Clear();
             var result = new InvokeResult();
             if (method is null)
                 return result;
@@ -455,6 +433,30 @@ namespace ricaun.NUnit.Services
                 }
             }
             return result;
+        }
+
+        private bool IsValueExpectedResult(MethodInfo method, object value, out object expectedResult)
+        {
+            expectedResult = null;
+            var testAttribute = GetAttribute<TestAttribute>(method);
+
+            if (testAttribute is null)
+                return true;
+
+            expectedResult = testAttribute.ExpectedResult ?? null;
+            var equals = (value is not null) ? value.Equals(expectedResult) : expectedResult is null;
+            return equals;
+        }
+
+        private bool IsValueExpectedResult(TestCaseAttribute testCase, object value, out object expectedResult)
+        {
+            expectedResult = null;
+            if (testCase is null)
+                return true;
+
+            expectedResult = testCase.ExpectedResult ?? null;
+            var equals = (value is not null) ? value.Equals(expectedResult) : expectedResult is null;
+            return equals;
         }
 
         #endregion

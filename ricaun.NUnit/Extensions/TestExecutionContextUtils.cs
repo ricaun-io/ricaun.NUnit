@@ -13,7 +13,7 @@ namespace ricaun.NUnit.Extensions
         /// </summary>
         public static void Clear()
         {
-            TestExecutionContext.CurrentContext.CurrentResult.AssertionResults.Clear();
+            TestExecutionContext.CurrentContext?.CurrentResult?.AssertionResults?.Clear();
         }
     }
 }
