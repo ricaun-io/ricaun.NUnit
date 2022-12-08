@@ -113,7 +113,7 @@ namespace ricaun.NUnit.Tests
             TestEngineFilter.Reset();
             Console.WriteLine(text);
             Console.WriteLine(testModel.Message);
-            //Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+            Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
         }
 
         [TestCase("*.TestPass", 1)]

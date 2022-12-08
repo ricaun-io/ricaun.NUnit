@@ -100,13 +100,6 @@ namespace SampleTest.Tests
     [Explicit]
     public class TestsExplicit
     {
-        private readonly int integer;
-
-        public TestsExplicit(int integer)
-        {
-            this.integer = integer;
-        }
-
         [Test]
         public void TestParameterText(string text)
         {
@@ -116,7 +109,7 @@ namespace SampleTest.Tests
         }
 
         [Test]
-        public void TestParameterInteger()
+        public void TestParameterInteger(int integer)
         {
             Console.WriteLine($"Value is {integer}");
             Assert.IsTrue(integer > 0);
