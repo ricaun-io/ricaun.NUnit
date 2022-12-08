@@ -103,13 +103,26 @@ namespace ricaun.NUnit.Tests
             Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
         }
 
+        [Test]
+        public void TestAssemblyParameters()
+        {
+            Console.WriteLine(fileName);
+            TestEngineFilter.Add("*.TestParameter*");
+            var testModel = TestEngine.TestAssembly(pathFile, "String Value", 10);
+            var text = testModel.AsString();
+            TestEngineFilter.Reset();
+            Console.WriteLine(text);
+            Console.WriteLine(testModel.Message);
+            //Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+        }
+
         [TestCase("*.TestPass", 1)]
         [TestCase("*.TestReturn", 1)]
         [TestCase("*.TestExplicit", 1)]
         [TestCase("*.TestName?", 2)]
         [TestCase("*.TestCases(?)", 2)]
         [TestCase("*.TestSame?", 2)]
-        [TestCase("*", 30)]
+        [TestCase("*", 32)]
         public void TestAssemblyFilter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

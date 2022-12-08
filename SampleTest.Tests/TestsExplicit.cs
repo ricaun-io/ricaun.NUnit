@@ -96,4 +96,30 @@ namespace SampleTest.Tests
             Console.WriteLine("Failed");
         }
     }
+
+    [Explicit]
+    public class TestsExplicit
+    {
+        private readonly int integer;
+
+        public TestsExplicit(int integer)
+        {
+            this.integer = integer;
+        }
+
+        [Test]
+        public void TestParameterText(string text)
+        {
+            Console.WriteLine($"Value is {text}");
+            Assert.IsNotNull(text);
+            Assert.IsNotEmpty(text);
+        }
+
+        [Test]
+        public void TestParameterInteger()
+        {
+            Console.WriteLine($"Value is {integer}");
+            Assert.IsTrue(integer > 0);
+        }
+    }
 }
