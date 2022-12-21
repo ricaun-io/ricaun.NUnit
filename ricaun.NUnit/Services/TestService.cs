@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace ricaun.NUnit.Services
 {
@@ -23,7 +22,6 @@ namespace ricaun.NUnit.Services
         /// </summary>
         public Type[] IgnoreAttributes { get; set; } = new[] {
             typeof(IgnoreAttribute),
-            //typeof(TestCaseAttribute),
             typeof(ExplicitAttribute)
         };
 
@@ -59,10 +57,7 @@ namespace ricaun.NUnit.Services
 
             var filterTestMethods = GetFilterTestMethods(type);
             var methods = type.GetMethods();
-            var testType = new TestTypeModel();
-
-            testType.Name = type.FullName;
-            testType.Success = true;
+            var testType = NewTestTypeModel(type);
 
             var testMethods = filterTestMethods.Where(AnyTestAttribute);
 
@@ -132,6 +127,21 @@ namespace ricaun.NUnit.Services
 
             }
 
+            return testType;
+        }
+
+        /// <summary>
+        /// NewTestTypeModel
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private TestTypeModel NewTestTypeModel(Type type)
+        {
+            var testType = new TestTypeModel();
+            testType.Alias = type.FullName;
+            testType.FullName = type.FullName;
+            testType.Name = type.FullName;
+            testType.Success = true;
             return testType;
         }
 
@@ -232,43 +242,43 @@ namespace ricaun.NUnit.Services
             return false;
         }
 
-        private TestModel InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown)
-        {
-            var test = new TestModel();
-            test.Name = method.Name;
-            test.Success = true;
+        //private TestModel InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown)
+        //{
+        //    var test = new TestModel();
+        //    test.Name = method.Name;
+        //    test.Success = true;
 
-            using (var console = new ConsoleWriterDateTime())
-            {
-                if (IgnoreTest(method, out string messageIgnore))
-                {
-                    test.Message = messageIgnore;
-                    test.Console = console.GetString();
-                    test.Time = console.GetMillis();
-                    test.Skipped = true;
-                    return test;
-                }
+        //    using (var console = new ConsoleWriterDateTime())
+        //    {
+        //        if (IgnoreTest(method, out string messageIgnore))
+        //        {
+        //            test.Message = messageIgnore;
+        //            test.Console = console.GetString();
+        //            test.Time = console.GetMillis();
+        //            test.Skipped = true;
+        //            return test;
+        //        }
 
-                var upResult = InvokeResultInstance(methodSetUp);
-                var methodResult = upResult;
-                if (upResult.Success)
-                {
-                    methodResult = InvokeResultInstance(method);
-                }
-                var downResult = InvokeResultInstance(methodTearDown);
+        //        var upResult = InvokeResultInstance(methodSetUp);
+        //        var methodResult = upResult;
+        //        if (upResult.Success)
+        //        {
+        //            methodResult = InvokeResultInstance(method);
+        //        }
+        //        var downResult = InvokeResultInstance(methodTearDown);
 
-                var success = upResult.Success & methodResult.Success & downResult.Success;
-                var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
+        //        var success = upResult.Success & methodResult.Success & downResult.Success;
+        //        var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
 
-                test.Success = success;
-                test.Skipped = methodResult.Skipped;
-                test.Message = message;
-                test.Console = console.GetString();
-                test.Time = console.GetMillis();
-            }
+        //        test.Success = success;
+        //        test.Skipped = methodResult.Skipped;
+        //        test.Message = message;
+        //        test.Console = console.GetString();
+        //        test.Time = console.GetMillis();
+        //    }
 
-            return test;
-        }
+        //    return test;
+        //}
 
         /// <summary>
         /// NewTestModel
@@ -281,16 +291,14 @@ namespace ricaun.NUnit.Services
             var test = new TestModel();
             test.Name = method.Name;
             test.Alias = GetTestName(method, nUnitAttribute);
+            test.FullName = GetTestFullName(method, nUnitAttribute);
             test.Success = true;
             return test;
         }
 
         private TestModel InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown, NUnitAttribute nUnitAttribute)
         {
-            var test = new TestModel();
-            test.Name = method.Name;
-            test.Alias = GetTestName(method, nUnitAttribute);
-            test.Success = true;
+            var test = NewTestModel(method, nUnitAttribute);
 
             using (var console = new ConsoleWriterDateTime())
             {
@@ -326,7 +334,6 @@ namespace ricaun.NUnit.Services
 
             return test;
         }
-
 
         #endregion
 

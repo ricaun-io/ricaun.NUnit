@@ -16,6 +16,11 @@
         public string Alias { get; set; }
 
         /// <summary>
+        /// Test FullName
+        /// </summary>
+        public string FullName { get; set; }
+
+        /// <summary>
         /// Test Success?
         /// </summary>
         public bool Success { get; set; } = true;

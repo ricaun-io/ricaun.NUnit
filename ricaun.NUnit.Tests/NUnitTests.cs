@@ -67,6 +67,20 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
+        public void TestAssemblyNamesAlias_FullName()
+        {
+            Console.WriteLine(fileName);
+            var testModel = TestEngine.TestAssembly(pathFile);
+            var nameAlias = testModel.Tests.SelectMany(type => type.Tests.Select(test => TestEngine.GetTestFullName(type, test))).ToArray();
+            var testFullNames = testModel.Tests.SelectMany(type => type.Tests.Select(test => test.FullName)).ToArray();
+            foreach (var testFullName in testFullNames)
+            {
+                Console.WriteLine(testFullName);
+            }
+            Assert.IsTrue(nameAlias.SequenceEqual(testFullNames));
+        }
+
+        [Test]
         public void TestAssemblyService()
         {
             Console.WriteLine(fileName);

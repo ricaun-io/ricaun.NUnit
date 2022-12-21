@@ -86,15 +86,15 @@ namespace ricaun.NUnit.Services
             return GetTestTypeMethods().SelectMany(e => GetTestAttributes(e).Select(a => GetTestFullName(e, a))).OrderBy(e => e);
         }
 
-        /// <summary>
-        /// GetTestTypeMethods
-        /// </summary>
-        /// <param name="fullName"></param>
-        /// <returns></returns>
-        public MethodInfo GetTestTypeMethods(string fullName)
-        {
-            return GetTestTypeMethods().FirstOrDefault(e => GetMethodFullName(e) == fullName);
-        }
+        ///// <summary>
+        ///// GetTestTypeMethods
+        ///// </summary>
+        ///// <param name="fullName"></param>
+        ///// <returns></returns>
+        //public MethodInfo GetTestTypeMethods(string fullName)
+        //{
+        //    return GetTestTypeMethods().FirstOrDefault(e => GetMethodFullName(e) == fullName);
+        //}
 
         /// <summary>
         /// Test
