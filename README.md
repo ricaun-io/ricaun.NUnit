@@ -104,6 +104,11 @@ TestTypeModel testType;
 TestModel test;
 string testFullName = TestEngine.GetTestFullName(testType, test);
 ```
+or
+```C#
+TestModel test;
+string testFullName = test.FullName;
+```
 
 The name of the test equal to: `TypeName`.`TestName`.`TestAlias`.
 
@@ -149,7 +154,6 @@ var location = Assembly.GetExecutingAssembly().Location;
 var test = TestEngine.TestAssembly(location);
 TestEngine.Result = null;
 ```
-
 
 ### Optional Parameters
 
