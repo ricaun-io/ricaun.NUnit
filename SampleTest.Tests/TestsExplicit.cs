@@ -4,9 +4,9 @@ using System;
 namespace SampleTest.Tests
 {
     [Explicit]
-    public class TestsExplicit1
+    public class TestsExplicit1_ShouldFail
     {
-        public TestsExplicit1()
+        public TestsExplicit1_ShouldFail()
         {
             throw new NotImplementedException();
         }
@@ -19,7 +19,7 @@ namespace SampleTest.Tests
     }
 
     [Explicit]
-    public class TestsExplicit2 : IDisposable
+    public class TestsExplicit2_ShouldFail : IDisposable
     {
         [Test]
         public void TestDispose()
@@ -34,7 +34,7 @@ namespace SampleTest.Tests
     }
 
     [Explicit]
-    public class TestsExplicit3
+    public class TestsExplicit3_ShouldFail
     {
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -50,7 +50,7 @@ namespace SampleTest.Tests
     }
 
     [Explicit]
-    public class TestsExplicit4
+    public class TestsExplicit4_ShouldFail
     {
         [OneTimeTearDown]
         public void OneTimeTearDown()
@@ -66,7 +66,7 @@ namespace SampleTest.Tests
     }
 
     [Explicit]
-    public class TestsExplicit5
+    public class TestsExplicit5_ShouldFail
     {
         [SetUp]
         public void SetUp()
@@ -82,7 +82,7 @@ namespace SampleTest.Tests
     }
 
     [Explicit]
-    public class TestsExplicit6
+    public class TestsExplicit6_ShouldFail
     {
         [TearDown]
         public void TearDown()
@@ -94,6 +94,25 @@ namespace SampleTest.Tests
         public void TestTearDown()
         {
             Console.WriteLine("Failed");
+        }
+    }
+
+    [Explicit]
+    public class TestsExplicit_ShouldFail
+    {
+        [Test]
+        public void TestParameterText(string text)
+        {
+            Console.WriteLine($"Value is {text}");
+            Assert.IsNotNull(text);
+            Assert.IsNotEmpty(text);
+        }
+
+        [Test]
+        public void TestParameterInteger(int integer)
+        {
+            Console.WriteLine($"Value is {integer}");
+            Assert.IsTrue(integer > 0);
         }
     }
 }

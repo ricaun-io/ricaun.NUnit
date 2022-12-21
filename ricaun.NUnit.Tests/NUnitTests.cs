@@ -19,7 +19,7 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
-        public void TestAssemblyInitialize()
+        public void TestAssembly_Initialize()
         {
             TestEngine.Initialize(out string message);
             Console.WriteLine(message);
@@ -29,14 +29,14 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
-        public void TestAssemblyContainNUnit()
+        public void TestAssembly_ContainNUnit()
         {
             Console.WriteLine(fileName);
             Assert.IsTrue(TestEngine.ContainNUnit(pathFile));
         }
 
         [Test]
-        public void TestAssemblyNames()
+        public void TestAssembly_Names()
         {
             Console.WriteLine(fileName);
             var names = TestEngine.GetTestFullNames(pathFile);
@@ -47,7 +47,7 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
-        public void TestAssemblyNamesAlias()
+        public void TestAssembly_NamesAlias()
         {
             Console.WriteLine(fileName);
             var testModel = TestEngine.TestAssembly(pathFile);
@@ -67,7 +67,40 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
-        public void TestAssemblyService()
+        public void TestAssembly_NamesAlias_FullName()
+        {
+            Console.WriteLine(fileName);
+            var testModel = TestEngine.TestAssembly(pathFile);
+            var nameAlias = testModel.Tests.SelectMany(type => type.Tests.Select(test => TestEngine.GetTestFullName(type, test))).ToArray();
+            var testFullNames = testModel.Tests.SelectMany(type => type.Tests.Select(test => test.FullName)).ToArray();
+            foreach (var testFullName in testFullNames)
+            {
+                Console.WriteLine(testFullName);
+            }
+            Assert.IsTrue(nameAlias.SequenceEqual(testFullNames), "Sequence Alias and FullName equal");
+        }
+
+        [Test]
+        public void TestAssembly_TestEngineResult()
+        {
+            var testCount = 0;
+            var textOut = "";
+            var tick = DateTime.Now.Ticks;
+
+            TestEngine.Result = new TestModelResult((test) =>
+            {
+                testCount++;
+                textOut += $"{testCount}\t{DateTime.Now.Ticks - tick}\t{test.FullName}\n";
+            });
+            var testModel = TestEngine.TestAssembly(pathFile);
+            Console.WriteLine(textOut);
+            TestEngine.Result = null;
+
+            Assert.AreEqual(testModel.TestCount, testCount);
+        }
+
+        [Test]
+        public void TestAssembly_Service()
         {
             Console.WriteLine(fileName);
             var service = new Services.TestAssemblyService(pathFile);
@@ -91,11 +124,24 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
-        public void TestAssemblyExplicit()
+        public void TestAssembly_Explicit()
         {
             Console.WriteLine(fileName);
             TestEngineFilter.ExplicitEnabled = true;
             var testModel = TestEngine.TestAssembly(pathFile);
+            var text = testModel.AsString();
+            TestEngineFilter.Reset();
+            Console.WriteLine(text);
+            Console.WriteLine(testModel.Message);
+            Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+        }
+
+        [Test]
+        public void TestAssembly_Parameters()
+        {
+            Console.WriteLine(fileName);
+            TestEngineFilter.Add("*.TestParameter*");
+            var testModel = TestEngine.TestAssembly(pathFile, "String Value", 10);
             var text = testModel.AsString();
             TestEngineFilter.Reset();
             Console.WriteLine(text);
@@ -109,8 +155,8 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestName?", 2)]
         [TestCase("*.TestCases(?)", 2)]
         [TestCase("*.TestSame?", 2)]
-        [TestCase("*", 30)]
-        public void TestAssemblyFilter(string testName, int numberOfTests)
+        [TestCase("*", 32)]
+        public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);
             var testModel = TestEngine.TestAssembly(pathFile);
@@ -124,7 +170,7 @@ namespace ricaun.NUnit.Tests
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(4)]
-        public void TestAssemblyFilterName(int numberOfTests)
+        public void TestAssembly_FilterName(int numberOfTests)
         {
             Console.WriteLine(fileName);
             var names = TestEngine.GetTestFullNames(pathFile);

@@ -7,14 +7,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace ricaun.NUnit
 {
     /// <summary>
     /// TestEngine
     /// </summary>
-    public static class TestEngine
+    public static partial class TestEngine
     {
         #region Initialize
         /// <summary>
@@ -117,6 +116,9 @@ namespace ricaun.NUnit
         /// <param name="testType"></param>
         /// <param name="test"></param>
         /// <returns></returns>
+#if !DEBUG
+        [Obsolete("This method is obsolete, use TestModel.FullName")]
+#endif
         public static string GetTestFullName(TestTypeModel testType, TestModel test)
         {
             return $"{testType.Name}.{test.Name}.{test.Alias}";

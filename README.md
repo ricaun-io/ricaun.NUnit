@@ -104,6 +104,11 @@ TestTypeModel testType;
 TestModel test;
 string testFullName = TestEngine.GetTestFullName(testType, test);
 ```
+or
+```C#
+TestModel test;
+string testFullName = test.FullName;
+```
 
 The name of the test equal to: `TypeName`.`TestName`.`TestAlias`.
 
@@ -133,6 +138,21 @@ If filter is enable the `[Explicit]` tests is not skipped.
 
 ```C#
 TestEngineFilter.Reset(); // Reset filter
+```
+
+### Result
+
+`Result` allow receiving a test result when the `TestEngine` is running.
+Use `TestEngine.Result` to apply an interface `ITestModelResult`.
+
+``` C#
+TestEngine.Result = new TestModelResult((testModel) =>
+{
+    Debug.WriteLine(testModel);
+});
+var location = Assembly.GetExecutingAssembly().Location;
+var test = TestEngine.TestAssembly(location);
+TestEngine.Result = null;
 ```
 
 ### Optional Parameters
@@ -168,7 +188,6 @@ public class TestParameterClass : IDisposable
     }
 }
 ```
-
 
 ## Release
 

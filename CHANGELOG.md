@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] / 2022-12-21
+### Features
+- Feature `TestModel` with FullName
+- Feature `TestEngine.Result` to invoke `TestModel` when finish using `ITestModelResult`
+### Changed
+- Change `TestEngine` to partial to add `Result` feature
+### Added
+- Add `TestEngine.Result`
+- Add `TestModelResult` and `ITestModelResult`
+
 ## [1.1.0] / 2022-12-06
 ### Features
 - Feature `TestInstance` generete all `TestModel` if failed or ignored.
@@ -97,6 +107,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Test with Console Output
 
 [vNext]: ../../compare/1.0.0...HEAD
+[1.1.1]: ../../compare/1.1.0...1.1.1
 [1.1.0]: ../../compare/1.0.9...1.1.0
 [1.0.9]: ../../compare/1.0.8...1.0.9
 [1.0.8]: ../../compare/1.0.7...1.0.8
