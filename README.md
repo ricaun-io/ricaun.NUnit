@@ -135,6 +135,22 @@ If filter is enable the `[Explicit]` tests is not skipped.
 TestEngineFilter.Reset(); // Reset filter
 ```
 
+### Result
+
+`Result` allow receiving a test result when the `TestEngine` is running.
+Use `TestEngine.Result` to apply an interface `ITestModelResult`.
+
+``` C#
+TestEngine.Result = new TestModelResult((testModel) =>
+{
+    Debug.WriteLine(testModel);
+});
+var location = Assembly.GetExecutingAssembly().Location;
+var test = TestEngine.TestAssembly(location);
+TestEngine.Result = null;
+```
+
+
 ### Optional Parameters
 
 Is possible to add optional parameters in the class or method tested. 
@@ -168,7 +184,6 @@ public class TestParameterClass : IDisposable
     }
 }
 ```
-
 
 ## Release
 

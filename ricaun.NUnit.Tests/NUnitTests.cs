@@ -85,16 +85,16 @@ namespace ricaun.NUnit.Tests
         {
             var testCount = 0;
             var textOut = "";
-            Console.WriteLine(fileName);
-            TestEngineResult.Result = new TestModelResult((test) =>
+            var tick = DateTime.Now.Ticks;
+
+            TestEngine.Result = new TestModelResult((test) =>
             {
                 testCount++;
-                textOut += $"{testCount}\t{test.FullName}\n";
+                textOut += $"{testCount}\t{DateTime.Now.Ticks - tick}\t{test.FullName}\n";
             });
             var testModel = TestEngine.TestAssembly(pathFile);
-            //Console.WriteLine(testModel.AsString());
             Console.WriteLine(textOut);
-            TestEngineResult.Result = null;
+            TestEngine.Result = null;
 
             Assert.AreEqual(testModel.TestCount, testCount);
         }

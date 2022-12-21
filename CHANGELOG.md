@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.1.1] / 2022-12-21
 ### Features
 - Feature `TestModel` with FullName
-- Feature `TestEngineResult` to invoke `TestModel` when finish using `ITestModelResult`
+- Feature `TestEngine.Result` to invoke `TestModel` when finish using `ITestModelResult`
+### Changed
+- Change `TestEngine` to partial to add `Result` feature
 ### Added
-- Add `TestEngineResult`
+- Add `TestEngine.Result`
 - Add `TestModelResult` and `ITestModelResult`
 
 ## [1.1.0] / 2022-12-06

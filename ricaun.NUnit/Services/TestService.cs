@@ -98,7 +98,7 @@ namespace ricaun.NUnit.Services
                             if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
                             var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
                             testType.Tests.Add(testModel);
-                            TestEngineResult.InvokeResult(testModel);
+                            TestEngine.InvokeResult(testModel);
                         }
                     }
                 }
@@ -158,7 +158,7 @@ namespace ricaun.NUnit.Services
                     testModel.Success = testType.Success;
                     testModel.Skipped = testType.Skipped;
                     testType.Tests.Add(testModel);
-                    TestEngineResult.InvokeResult(testModel);
+                    TestEngine.InvokeResult(testModel);
                 }
             }
         }

@@ -13,7 +13,7 @@ namespace ricaun.NUnit
     /// <summary>
     /// TestEngine
     /// </summary>
-    public static class TestEngine
+    public static partial class TestEngine
     {
         #region Initialize
         /// <summary>

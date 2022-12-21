@@ -4,9 +4,9 @@ using System;
 namespace ricaun.NUnit
 {
     /// <summary>
-    /// TestEngineResult
+    /// TestEngine
     /// </summary>
-    public class TestEngineResult
+    public static partial class TestEngine
     {
         /// <summary>
         /// InvokeResult
