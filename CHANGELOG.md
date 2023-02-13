@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Feature `AssemblyResolveService` improved
 ### Added
 - Add new `AssemblyResolveService`
-- Add `InternalsVisibleTo` Tests
+- Add `InternalsVisibleTo` in the csproj to enable Tests
 ### Updated
 - Update all services to internal
 - Update `AssemblyResolveService` to `AssemblyResolveCurrentDirectoryService`
