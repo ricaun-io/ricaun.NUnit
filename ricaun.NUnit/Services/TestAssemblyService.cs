@@ -10,7 +10,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// TestAssemblyService
     /// </summary>
-    public class TestAssemblyService : TestAttributeService
+    internal class TestAssemblyService : TestAttributeService
     {
         private readonly Assembly assembly;
         private readonly object[] parameters;

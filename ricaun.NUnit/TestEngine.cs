@@ -54,7 +54,7 @@ namespace ricaun.NUnit
             {
                 try
                 {
-                    using (new AssemblyResolveService(Path.GetDirectoryName(assemblyFile)))
+                    using (new AssemblyResolveCurrentDirectoryService(Path.GetDirectoryName(assemblyFile)))
                     {
                         testAssemblyModel.FileName = Path.GetFileName(assemblyFile);
                         var testAssembly = new TestAssemblyService(assemblyFile, parameters);
@@ -97,7 +97,7 @@ namespace ricaun.NUnit
         /// <returns></returns>
         public static string[] GetTestFullNames(string assemblyFile)
         {
-            using (new AssemblyResolveService(Path.GetDirectoryName(assemblyFile)))
+            using (new AssemblyResolveCurrentDirectoryService(Path.GetDirectoryName(assemblyFile)))
             {
                 try
                 {
@@ -107,6 +107,20 @@ namespace ricaun.NUnit
                 catch { }
             }
             return new string[] { };
+        }
+
+        /// <summary>
+        /// GetTestFullNames
+        /// </summary>
+        /// <param name="assemblyFile"></param>
+        /// <param name="directoryResolver"></param>
+        /// <returns></returns>
+        public static string[] GetTestFullNames(string assemblyFile, string directoryResolver)
+        {
+            using (new AssemblyResolveService(directoryResolver))
+            {
+                return GetTestFullNames(assemblyFile);
+            }
         }
 
         /// <summary>

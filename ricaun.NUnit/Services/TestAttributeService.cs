@@ -10,7 +10,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// TestAttributeService
     /// </summary>
-    public class TestAttributeService : AttributeService
+    internal class TestAttributeService : AttributeService
     {
         /// <summary>
         /// AnyTestAttribute

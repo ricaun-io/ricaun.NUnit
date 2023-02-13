@@ -44,6 +44,19 @@ namespace ricaun.NUnit.Tests
             {
                 Console.WriteLine($"{name}");
             }
+            Assert.IsNotEmpty(names);
+        }
+
+        [Test]
+        public void TestAssembly_Names_Resolver()
+        {
+            Console.WriteLine(fileName);
+            var names = TestEngine.GetTestFullNames(pathFile, "");
+            foreach (var name in names)
+            {
+                Console.WriteLine($"{name}");
+            }
+            Assert.IsNotEmpty(names);
         }
 
         [Test]
@@ -104,11 +117,13 @@ namespace ricaun.NUnit.Tests
         {
             Console.WriteLine(fileName);
             var service = new Services.TestAssemblyService(pathFile);
-            foreach (var method in service.GetTestTypeMethods())
+            var methods = service.GetTestTypeMethods();
+            foreach (var method in methods)
             {
                 var names = string.Join(" ", service.GetMethodTestNames(method));
                 Console.WriteLine($"{service.GetMethodFullName(method)} \t{names}");
             }
+            Assert.IsNotEmpty(methods);
         }
 
         [Test]

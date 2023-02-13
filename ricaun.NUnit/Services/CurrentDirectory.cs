@@ -7,7 +7,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// CurrentDirectory
     /// </summary>
-    public class CurrentDirectory : IDisposable
+    internal class CurrentDirectory : IDisposable
     {
         private readonly string currentDirectory;
         private string CallingAssemblyDirectory => Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);

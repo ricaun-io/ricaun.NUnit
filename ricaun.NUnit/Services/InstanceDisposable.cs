@@ -6,7 +6,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// InstanceDisposable
     /// </summary>
-    public class InstanceDisposable : ActivatorService, IDisposable
+    internal class InstanceDisposable : ActivatorService, IDisposable
     {
         private readonly object instance;
 

@@ -93,6 +93,10 @@ Is possible to get all the test names in the `Assembly`.
 var location = Assembly.GetExecutingAssembly().Location;
 string[] tests = TestEngine.GetTestFullNames(location);
 ```
+To force the `Assembly` to load references in another folder using `directoryResolver` as a directory.
+```C#
+string[] tests = TestEngine.GetTestFullNames(location, directoryResolver);
+```
 
 The name of the test equal to: `Namespace`.`Type`.`Method`.`TestNameAlias`.
 
@@ -102,7 +106,7 @@ Is possible to get test FullName using `TestTypeModel` and `TestModel`.
 ```C#
 TestTypeModel testType;
 TestModel test;
-string testFullName = TestEngine.GetTestFullName(testType, test);
+string testFullName = TestEngine.GetTestFullName(testType, test); // Obsolete
 ```
 or
 ```C#

@@ -8,7 +8,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// AttributeService
     /// </summary>
-    public class AttributeService
+    internal class AttributeService
     {
         #region Attribute
 
