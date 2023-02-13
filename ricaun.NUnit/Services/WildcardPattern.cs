@@ -7,7 +7,7 @@ namespace ricaun.NUnit.Services
     /// WildcardPattern
     /// <code>https://stackoverflow.com/questions/30299671/matching-strings-with-wildcard</code>
     /// </summary>
-    public class WildcardPattern
+    internal class WildcardPattern
     {
         private readonly string _expression;
         private readonly Regex _regex;

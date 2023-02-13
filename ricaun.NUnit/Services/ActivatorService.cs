@@ -10,7 +10,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// ActivatorService
     /// </summary>
-    public class ActivatorService : TestAttributeService
+    internal class ActivatorService : TestAttributeService
     {
         #region CreateInstance / Dispose
 

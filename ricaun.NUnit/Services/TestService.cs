@@ -11,7 +11,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// TestService
     /// </summary>
-    public class TestService : ActivatorService, IDisposable
+    internal class TestService : ActivatorService, IDisposable
     {
         private readonly Type type;
         private readonly object[] parameters;

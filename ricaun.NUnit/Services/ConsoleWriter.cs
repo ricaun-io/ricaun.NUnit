@@ -7,7 +7,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// ConsoleWriterDateTime
     /// </summary>
-    public class ConsoleWriterDateTime : ConsoleWriter
+    internal class ConsoleWriterDateTime : ConsoleWriter
     {
         private DateTime Time = DateTime.Now;
 

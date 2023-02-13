@@ -7,16 +7,22 @@ using System.Reflection;
 namespace ricaun.NUnit.Services
 {
     /// <summary>
-    /// AssemblyResolve and CurrentDirectory
+    /// AssemblyResolveService
     /// </summary>
-    public class AssemblyResolveService : CurrentDirectory, IDisposable
+    public class AssemblyResolveService : IDisposable
     {
+        private readonly string directory;
+        private readonly bool includeSubDirectories;
+
         /// <summary>
         /// AssemblyResolveService
         /// </summary>
-        /// <param name="directory"></param>
-        public AssemblyResolveService(string directory) : base(directory)
+        /// <param name="directory">Directory to find the Assembly to be loaded.</param>
+        /// <param name="includeSubDirectories">Include in the Search in subdirectories.</param>
+        public AssemblyResolveService(string directory, bool includeSubDirectories = false)
         {
+            this.directory = directory;
+            this.includeSubDirectories = includeSubDirectories;
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
         }
 
@@ -24,27 +30,39 @@ namespace ricaun.NUnit.Services
         {
             var requestedAssemblyName = new AssemblyName(args.Name);
 
-            Debug.WriteLine($"Debug AssemblyResolve: {requestedAssemblyName}");
+            Debug.WriteLine($"AssemblyResolve: [Resolve] {requestedAssemblyName}");
 
             Assembly assembly = ReadExistingAssembly(requestedAssemblyName);
 
-            if (assembly is not null) return assembly;
+            if (assembly is null)
+                assembly = LoadAssemblyWithPattern(requestedAssemblyName, requestedAssemblyName.Name);
 
-            try
+            if (assembly is null)
+                assembly = LoadAssemblyWithPattern(requestedAssemblyName);
+
+            return assembly;
+        }
+
+        private Assembly LoadAssemblyWithPattern(AssemblyName name, string pattern = "*")
+        {
+            if (string.IsNullOrWhiteSpace(directory))
+                return null;
+
+            var searchOption = includeSubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            foreach (var assemblyFile in Directory.GetFiles(directory, $"{pattern}.dll", searchOption))
             {
-                foreach (var assemblyFile in Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll"))
+                try
                 {
                     var assemblyName = AssemblyName.GetAssemblyName(assemblyFile);
-                    if (requestedAssemblyName.ToString() == assemblyName.ToString())
+                    if (name.ToString() == assemblyName.ToString())
                     {
-                        Console.WriteLine($"Load File: {assemblyName}");
+                        Debug.WriteLine($"AssemblyResolve: [Load] {assemblyName}");
                         return Assembly.LoadFile(assemblyFile);
                     }
                 }
+                catch { }
             }
-            catch { }
-
-            return assembly;
+            return null;
         }
 
         private Assembly ReadExistingAssembly(AssemblyName name)
@@ -57,6 +75,7 @@ namespace ricaun.NUnit.Services
                 if (string.Equals(currentName.Name, name.Name, StringComparison.InvariantCultureIgnoreCase) &&
                     string.Equals(CultureToString(currentName.CultureInfo), CultureToString(name.CultureInfo), StringComparison.InvariantCultureIgnoreCase))
                 {
+                    Debug.WriteLine($"AssemblyResolve: [Loaded] {name}");
                     return assembly;
                 }
             }
@@ -72,10 +91,10 @@ namespace ricaun.NUnit.Services
         /// <summary>
         /// Dispose
         /// </summary>
-        public override void Dispose()
+        public void Dispose()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
-            base.Dispose();
         }
     }
+
 }
