@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Updated
 - Remove `Application Revit UI` from `Debug`
 - Remove obsolete `TestEngine.GetTestFullName` method
+### Fixed
+- Fix missing Services to `internal`
 
 ## [1.1.2] / 2023-02-13
 ### Features

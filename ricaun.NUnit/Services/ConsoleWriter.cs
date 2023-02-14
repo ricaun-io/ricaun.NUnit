@@ -33,7 +33,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// ConsoleWriter
     /// </summary>
-    public class ConsoleWriter : IDisposable
+    internal class ConsoleWriter : IDisposable
     {
         private TextWriter consoleOut;
         private TextWriter consoleError;

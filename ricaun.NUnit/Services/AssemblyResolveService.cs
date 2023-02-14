@@ -9,7 +9,7 @@ namespace ricaun.NUnit.Services
     /// <summary>
     /// AssemblyResolveService
     /// </summary>
-    public class AssemblyResolveService : IDisposable
+    internal class AssemblyResolveService : IDisposable
     {
         private readonly string directory;
         private readonly bool includeSubDirectories;
