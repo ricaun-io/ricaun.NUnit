@@ -130,10 +130,8 @@ namespace ricaun.NUnit
         /// <param name="testType"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-#if !DEBUG
         [Obsolete("This method is obsolete, use TestModel.FullName")]
-#endif
-        public static string GetTestFullName(TestTypeModel testType, TestModel test)
+        internal static string GetTestFullName(TestTypeModel testType, TestModel test)
         {
             return $"{testType.Name}.{test.Name}.{test.Alias}";
         }

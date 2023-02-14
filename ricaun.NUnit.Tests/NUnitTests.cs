@@ -65,7 +65,7 @@ namespace ricaun.NUnit.Tests
             Console.WriteLine(fileName);
             var testModel = TestEngine.TestAssembly(pathFile);
             var names = TestEngine.GetTestFullNames(pathFile);
-            var nameAlias = testModel.Tests.SelectMany(type => type.Tests.Select(test => TestEngine.GetTestFullName(type, test))).ToArray();
+            var nameAlias = testModel.Tests.SelectMany(type => type.Tests.Select(test => test.FullName)).ToArray();
 
             foreach (var alias in nameAlias)
             {
@@ -84,7 +84,9 @@ namespace ricaun.NUnit.Tests
         {
             Console.WriteLine(fileName);
             var testModel = TestEngine.TestAssembly(pathFile);
+#pragma warning disable CS0618 // Type or member is obsolete
             var nameAlias = testModel.Tests.SelectMany(type => type.Tests.Select(test => TestEngine.GetTestFullName(type, test))).ToArray();
+#pragma warning restore CS0618 // Type or member is obsolete
             var testFullNames = testModel.Tests.SelectMany(type => type.Tests.Select(test => test.FullName)).ToArray();
             foreach (var testFullName in testFullNames)
             {

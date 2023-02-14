@@ -1,11 +1,14 @@
 # ricaun.NUnit
 
-ricaun.NUnit is a package to manage the Load and Test assemblies using the NUnit Attributes as patterns.
+ricaun.NUnit is a package to manage the Load and Test assemblies using the [NUnit](https://www.nuget.org/packages/NUnit/) Attributes as patterns.
 
 [![Visual Studio 2022](https://img.shields.io/badge/Visual%20Studio-2022-blue)](../..)
 [![Nuke](https://img.shields.io/badge/Nuke-Build-blue)](https://nuke.build/)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Build](../../actions/workflows/Build.yml/badge.svg)](../../actions)
+[![.NET Framework 4.5](https://img.shields.io/badge/.NET%20Framework%204.5-blue.svg)](../..)
+[![.NET Standard 2.0](https://img.shields.io/badge/-.NET%20Standard%202.0-blue)](../..)
+[![NUnit](https://img.shields.io/badge/NUnit-3.13.3-blue)](https://www.nuget.org/packages/NUnit)
 
 ## Features
 ```C#
@@ -15,7 +18,7 @@ var test = TestEngine.TestAssembly(location);
 
 ### Test Attributes
 
-The tests use the NUnit Attributes `[Test]` to execute a method test. 
+The tests use the [NUnit](https://www.nuget.org/packages/NUnit/) Attributes `[Test]` to execute a method test. 
 * The attribute `[SetUp]` and `[TearDown]` is executed for each method with the attribute `[Test]`.
 * The attribute `[OneTimeSetUp]` and `[OneTimeTearDown]` is executed one time before each method with the attribute `[Test]`.
 * The attribute `[Ignore]` makes the class or method to be ignored.
@@ -102,13 +105,7 @@ The name of the test equal to: `Namespace`.`Type`.`Method`.`TestNameAlias`.
 
 ### TestFullName
 
-Is possible to get test FullName using `TestTypeModel` and `TestModel`.
-```C#
-TestTypeModel testType;
-TestModel test;
-string testFullName = TestEngine.GetTestFullName(testType, test); // Obsolete
-```
-or
+Is possible to get test FullName using `TestModel`.
 ```C#
 TestModel test;
 string testFullName = test.FullName;
