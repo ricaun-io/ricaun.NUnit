@@ -93,10 +93,12 @@ public class TestSampleClass
 
 Is possible to get all the test names in the `Assembly`.
 ```C#
+var location = Assembly.GetExecutingAssembly().Location;
 string[] tests = TestEngine.GetTestFullNames(location);
 ```
 To force the `Assembly` to load references in another folder using `directoryResolver` as a directory.
 ```C#
+var location = Assembly.GetExecutingAssembly().Location;
 string[] tests = TestEngine.GetTestFullNames(location, directoryResolver);
 ```
 
