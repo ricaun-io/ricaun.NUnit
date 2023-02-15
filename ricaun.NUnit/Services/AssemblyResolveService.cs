@@ -54,7 +54,7 @@ namespace ricaun.NUnit.Services
                 try
                 {
                     var assemblyName = AssemblyName.GetAssemblyName(assemblyFile);
-                    if (name.ToString() == assemblyName.ToString())
+                    if (IsNameAndCultureEquals(assemblyName, name))
                     {
                         Debug.WriteLine($"AssemblyResolve: [Load] {assemblyName}");
                         return Assembly.LoadFile(assemblyFile);
@@ -71,15 +71,20 @@ namespace ricaun.NUnit.Services
             var assemblies = currentDomain.GetAssemblies();
             foreach (var assembly in assemblies)
             {
-                var currentName = assembly.GetName();
-                if (string.Equals(currentName.Name, name.Name, StringComparison.InvariantCultureIgnoreCase) &&
-                    string.Equals(CultureToString(currentName.CultureInfo), CultureToString(name.CultureInfo), StringComparison.InvariantCultureIgnoreCase))
+                var assemblyName = assembly.GetName();
+                if (IsNameAndCultureEquals(assemblyName, name))
                 {
                     Debug.WriteLine($"AssemblyResolve: [Loaded] {name}");
                     return assembly;
                 }
             }
             return null;
+        }
+
+        private bool IsNameAndCultureEquals(AssemblyName currentName, AssemblyName assemblyName)
+        {
+            return (string.Equals(currentName.Name, assemblyName.Name, StringComparison.InvariantCultureIgnoreCase) &&
+                    string.Equals(CultureToString(currentName.CultureInfo), CultureToString(assemblyName.CultureInfo), StringComparison.InvariantCultureIgnoreCase));
         }
 
         private string CultureToString(CultureInfo culture)
