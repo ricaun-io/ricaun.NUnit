@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
-
+using System.Threading.Tasks;
 
 namespace ricaun.NUnit.Revit
 {
@@ -38,6 +38,7 @@ namespace ricaun.NUnit.Revit
         }
 
         [Test]
+        [Explicit]
         public void FailTest()
         {
             Console.WriteLine("Execute FailTest");
@@ -49,6 +50,37 @@ namespace ricaun.NUnit.Revit
         {
             Console.WriteLine("Execute PassTest");
             Assert.Pass("This is a custom pass message.");
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(7)]
+        [TestCase(8)]
+        [TestCase(9)]
+        [TestCase(10)]
+        public void PassCaseTest(object value)
+        {
+
+        }
+
+        [Test]
+        public async Task TaskTest()
+        {
+            await Task.Delay(700);
+            Console.WriteLine("Execute TaskTest");
+        }
+
+        [TestCase(3000, ExpectedResult = 3000)]
+        [TestCase(200, ExpectedResult = 200)]
+        [TestCase(100, ExpectedResult = 100)]
+        public async Task<object> TaskTestObject(int value)
+        {
+            await Task.Delay(value);
+            return value;
         }
     }
 }

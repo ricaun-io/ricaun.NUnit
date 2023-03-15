@@ -13,8 +13,12 @@ namespace ricaun.NUnit
         /// <summary>
         /// CancellationToken TimeOut for Task Tests (default: 1 Minute)
         /// </summary>
-        public static TimeSpan CancellationTokenTimeOut { get; set; } = TimeSpan.FromMinutes(1);
-
+        public static TimeSpan CancellationTokenTimeOut { get; set; } =
+#if DEBUG
+            TimeSpan.FromSeconds(1);
+#else
+            TimeSpan.FromMinutes(1);
+#endif
         /// <summary>
         /// TestNames
         /// </summary>

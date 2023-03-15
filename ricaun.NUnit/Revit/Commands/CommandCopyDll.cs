@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace ricaun.NUnit.Revit.Commands
 {
-    [DisplayName("Command - Load Copy Dll")]
+    [DisplayName("Command - SampleTest")]
     [Transaction(TransactionMode.Manual)]
     public class CommandCopyDll : IExternalCommand
     {

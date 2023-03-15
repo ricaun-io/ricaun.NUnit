@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace ricaun.NUnit.Revit.Commands
 {
-    [DisplayName("Command - Load SampleTest")]
+    [DisplayName("Command - Load FileTest")]
     [Transaction(TransactionMode.Manual)]
     public class Command : IExternalCommand
     {
@@ -39,105 +39,11 @@ namespace ricaun.NUnit.Revit.Commands
                 }
             }
 
-            Execute(uiapp, LastPath);
+            var parameters = new object[] { uiapp, uiapp.Application, uiapp.Application.VersionBuild };
 
+            TestUtils.Execute(LastPath, uiapp.Application.VersionNumber, parameters);
 
             return Result.Succeeded;
-        }
-
-        private static void Execute(UIApplication uiapp, string filePath)
-        {
-            if (filePath is null) return;
-
-            var location = Assembly.GetExecutingAssembly().Location;
-            var directory = Path.GetDirectoryName(location);
-
-            string copyPath = null;
-            if (Path.GetExtension(filePath).EndsWith("zip"))
-            {
-                copyPath = CopyFile(filePath, directory);
-            }
-            else if (Path.GetExtension(filePath).EndsWith("dll"))
-            {
-                copyPath = ZipExtension.CreateFromDirectory(
-                    Path.GetDirectoryName(filePath),
-                    Path.Combine(directory, Path.GetFileName(filePath))
-                    );
-            }
-            else return;
-
-            if (System.Windows.Input.Keyboard.Modifiers == ModifierKeys.Control)
-                Process.Start(directory);
-
-            UnZipAndTestFiles(uiapp, directory);
-
-            if (copyPath is not null)
-                File.Delete(copyPath);
-        }
-
-        private static string CopyFile(string filePath, string directory)
-        {
-            var copy = Path.Combine(directory, Path.GetFileName(filePath));
-            File.Copy(filePath, copy, true);
-            return copy;
-        }
-
-        private static void UnZipAndTestFiles(UIApplication uiapp, string directory)
-        {
-            var versionNumber = uiapp.Application.VersionNumber;
-
-            if (Directory.GetFiles(directory, "*.zip").FirstOrDefault() is string zipFile)
-            {
-                if (ZipExtension.ExtractToFolder(zipFile, out string zipDestination))
-                {
-                    foreach (var versionDirectory in Directory.GetDirectories(zipDestination))
-                    {
-                        if (Path.GetFileName(versionDirectory).Equals(versionNumber))
-                        {
-                            Console.WriteLine($"Test VersionNumber: {versionNumber}");
-                            TestDirectory(uiapp, versionDirectory);
-                        }
-                    }
-
-                    TestDirectory(uiapp, zipDestination);
-                }
-            }
-        }
-
-        private static void TestDirectory(UIApplication uiapp, string directory)
-        {
-            var application = uiapp.Application;
-            foreach (var filePath in Directory.GetFiles(directory, "*.dll"))
-            {
-                var fileName = Path.GetFileName(filePath);
-                try
-                {
-                    if (TestEngine.ContainNUnit(filePath))
-                    {
-                        Console.WriteLine($"Test File: {fileName}");
-
-                        foreach (var testName in TestEngine.GetTestFullNames(filePath))
-                        {
-                            Console.WriteLine(testName);
-                        }
-
-                        var modelTest = TestEngine.TestAssembly(
-                            filePath,
-                            application,
-                            application.GetControlledApplication(),
-                            uiapp);
-
-                        System.Windows.Clipboard.SetText(Newtonsoft.Json.JsonConvert.SerializeObject(modelTest));
-
-                        Console.WriteLine($"\t{modelTest}");
-                    }
-
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine($"Error: {fileName}");
-                }
-            }
         }
     }
 }
