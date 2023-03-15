@@ -1,4 +1,5 @@
 ﻿using ricaun.NUnit.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +10,11 @@ namespace ricaun.NUnit
     /// </summary>
     public static class TestEngineFilter
     {
+        /// <summary>
+        /// CancellationToken TimeOut for Task Tests (default: 1 Minute)
+        /// </summary>
+        public static TimeSpan CancellationTokenTimeOut { get; set; } = TimeSpan.FromMinutes(1);
+
         /// <summary>
         /// TestNames
         /// </summary>

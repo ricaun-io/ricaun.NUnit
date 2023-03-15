@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ricaun.NUnit.Services
@@ -56,62 +58,67 @@ namespace ricaun.NUnit.Services
 
             var methodParams = GetMethodOrderParameters(method, possibleParams);
 
-            if (method.ReturnType == typeof(Task))
+            if (IsReturnTypeEqualsTask(method))
             {
+                var taskInvoke = method.Invoke(obj, methodParams);
+
+                if (taskInvoke is Task task)
+                {
+                    return InvokeTask(task);
+                }
+
                 throw new TaskCanceledException("Task method not supported!");
-
-                //var taskInvoke = (Task)method.Invoke(obj, methodParams);
-                //if (!taskInvoke.Wait(2000))
-                //{
-                //    Console.WriteLine("Task 2000ms Timeout");
-                //};
-
-                //var task = Task.Run(async () =>
-                //{
-                //    await taskInvoke;
-                //});
-                //task.GetAwaiter().GetResult();
-
-                //return;
             }
 
             return method.Invoke(obj, methodParams);
         }
 
         /// <summary>
-        /// InvokeAsync
+        /// Invoke Task and Return 'Result'
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="method"></param>
-        /// <param name="possibleParams"></param>
+        /// <param name="task"></param>
         /// <returns></returns>
-        public async Task InvokeAsync(object obj, MethodInfo method, params object[] possibleParams)
+        private object InvokeTask(Task task)
         {
-            if (method is null)
-                return;
-
-            var methodParams = GetMethodOrderParameters(method, possibleParams);
-
-            if (method.ReturnType == typeof(Task))
+            CancellationTokenSource source = new CancellationTokenSource(TestEngineFilter.CancellationTokenTimeOut);
+            var cancellationToken = source.Token;
+            using (cancellationToken.Register(() => { }))
             {
-                await (Task)method.Invoke(obj, methodParams);
-                return;
+                try
+                {
+                    Task.Run(async () => { await task.ConfigureAwait(false); }, cancellationToken).GetAwaiter().GetResult();
+                    var resultProperty = task.GetType().GetProperty("Result");
+                    return resultProperty?.GetValue(task);
+                }
+                catch (Exception) when (cancellationToken.IsCancellationRequested)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    // Next line will never be reached because cancellation will always have been requested in this catch block.
+                    // But it's required to satisfy compiler.
+                    throw new InvalidOperationException();
+                }
+                catch
+                {
+                    throw;
+                }
             }
-
-            method.Invoke(obj, methodParams);
         }
 
         /// <summary>
-        /// InvokeAsync
+        /// Is <paramref name="method"/> Task or Task<>
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="methodName"></param>
-        /// <param name="possibleParams"></param>
+        /// <param name="method"></param>
         /// <returns></returns>
-        public async Task InvokeAsync(object obj, string methodName, params object[] possibleParams)
+        private bool IsReturnTypeEqualsTask(MethodInfo method)
         {
-            var method = obj?.GetType().GetMethod(methodName);
-            await InvokeAsync(obj, method, possibleParams);
+            var returnType = method.ReturnType;
+
+            if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                return true;
+            }
+
+            return returnType == typeof(Task);
         }
         #endregion
 
@@ -129,13 +136,22 @@ namespace ricaun.NUnit.Services
 
             foreach (ParameterInfo parameter in methodBase.GetParameters())
             {
-                object o = possibleParamsTemp.FirstOrDefault(e => e.GetType().Equals(parameter.ParameterType));
+                object o = possibleParamsTemp.FirstOrDefault(e => IsParameterTypeSimilar(parameter, e));
                 possibleParamsTemp.Remove(o);
                 result.Add(o);
             }
 
             return result.ToArray();
         }
+
+        private bool IsParameterTypeSimilar(ParameterInfo parameter, object parameterValue)
+        {
+            if (parameter.ParameterType == typeof(object))
+                return true;
+
+            return parameterValue.GetType().Equals(parameter.ParameterType);
+        }
+
         #endregion
     }
 }
