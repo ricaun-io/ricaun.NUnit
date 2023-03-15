@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] / 2023-03-15
+### Features
+- [x] Force Task Tests to run in the with single-threaded apartment.
+### Updated
+- Add `TaskSTA` - run Task with single-threaded apartment.
+- Update `Revit` Commands and Tests
+- Update `VoidTaskResult` return `null`
+- Update `TestModel` ToString single line.
+
 ## [1.2.2] / 2023-03-14
 ### Features
 - [x] Enable Task Tests to work with the Framework
@@ -145,6 +154,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Test with Console Output
 
 [vNext]: ../../compare/1.0.0...HEAD
+[1.2.3]: ../../compare/1.2.2...1.2.3
 [1.2.2]: ../../compare/1.2.1...1.2.2
 [1.2.1]: ../../compare/1.2.0...1.2.1
 [1.2.0]: ../../compare/1.1.2...1.2.0

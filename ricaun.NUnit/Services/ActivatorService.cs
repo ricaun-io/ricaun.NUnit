@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ricaun.NUnit.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -60,14 +61,16 @@ namespace ricaun.NUnit.Services
 
             if (IsReturnTypeEqualsTask(method))
             {
-                var taskInvoke = method.Invoke(obj, methodParams);
-
-                if (taskInvoke is Task task)
+                return TaskSTA.Run(() =>
                 {
-                    return InvokeTask(task);
-                }
+                    var taskInvoke = method.Invoke(obj, methodParams);
+                    if (taskInvoke is Task task)
+                    {
+                        return InvokeTask(task);
+                    }
+                    throw new TaskCanceledException("Task method not supported!");
 
-                throw new TaskCanceledException("Task method not supported!");
+                }).GetAwaiter().GetResult();
             }
 
             return method.Invoke(obj, methodParams);
@@ -86,9 +89,15 @@ namespace ricaun.NUnit.Services
             {
                 try
                 {
-                    Task.Run(async () => { await task.ConfigureAwait(false); }, cancellationToken).GetAwaiter().GetResult();
-                    var resultProperty = task.GetType().GetProperty("Result");
-                    return resultProperty?.GetValue(task);
+                    task.Wait(cancellationToken);
+
+                    var resultProperty = task.GetType().GetProperty(nameof(Task<object>.Result));
+                    var resultValue = resultProperty?.GetValue(task);
+
+                    if (resultValue.GetType().Name.Equals("VoidTaskResult"))
+                        return null;
+
+                    return resultValue;
                 }
                 catch (Exception) when (cancellationToken.IsCancellationRequested)
                 {

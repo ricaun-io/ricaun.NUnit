@@ -46,7 +46,9 @@ namespace SampleTest.Tests
             return value;
         }
 
-        [TestCase(1000)]
+        [TestCase(100)]
+        [TestCase(500)]
+        [TestCase(5000)]
         public async Task TestTaskTimeOut(int delay)
         {
             Console.WriteLine("TestTaskTimeOut");
