@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ricaun.NUnit.Services
@@ -78,9 +80,28 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         private object InvokeTask(Task task)
         {
-            Task.Run(async () => { await task; }).GetAwaiter().GetResult();
-            var resultProperty = task.GetType().GetProperty("Result");
-            return resultProperty?.GetValue(task);
+            CancellationTokenSource source = new CancellationTokenSource(TestEngineFilter.CancellationTokenTimeOut);
+            var cancellationToken = source.Token;
+            using (cancellationToken.Register(() => { }))
+            {
+                try
+                {
+                    Task.Run(async () => { await task.ConfigureAwait(false); }, cancellationToken).GetAwaiter().GetResult();
+                    var resultProperty = task.GetType().GetProperty("Result");
+                    return resultProperty?.GetValue(task);
+                }
+                catch (Exception) when (cancellationToken.IsCancellationRequested)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    // Next line will never be reached because cancellation will always have been requested in this catch block.
+                    // But it's required to satisfy compiler.
+                    throw new InvalidOperationException();
+                }
+                catch
+                {
+                    throw;
+                }
+            }
         }
 
         /// <summary>

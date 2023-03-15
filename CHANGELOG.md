@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.2.2] / 2023-03-14
 ### Features
 - [x] Enable Task Tests to work with the Framework
-- [] Async Test Timeout
+- [x] Async Test Timeout - `TestEngineFilter.CancellationTokenTimeOut`
 ### Updated
 - Update `TestModel`
 - Update `AppDomainUtils`

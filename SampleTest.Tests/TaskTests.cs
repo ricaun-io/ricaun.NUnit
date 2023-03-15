@@ -45,5 +45,13 @@ namespace SampleTest.Tests
             await Task.Delay(10);
             return value;
         }
+
+        [TestCase(1000)]
+        public async Task TestTaskTimeOut(int delay)
+        {
+            Console.WriteLine("TestTaskTimeOut");
+            await Task.Delay(delay);
+            Assert.Pass("TestTaskTimeOut");
+        }
     }
 }
