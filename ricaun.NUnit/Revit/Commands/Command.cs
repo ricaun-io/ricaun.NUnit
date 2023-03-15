@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace ricaun.NUnit.Revit.Commands
 {
-    [DisplayName("Command - Load SampleTest")]
+    [DisplayName("Command - Load FileTest")]
     [Transaction(TransactionMode.Manual)]
     public class Command : IExternalCommand
     {
@@ -39,8 +39,11 @@ namespace ricaun.NUnit.Revit.Commands
                 }
             }
 
-            Execute(uiapp, LastPath);
+            var parameters = new object[] { uiapp, uiapp.Application, uiapp.Application.VersionBuild };
 
+            TestUtils.Execute(LastPath, uiapp.Application.VersionNumber, parameters);
+
+            //Execute(uiapp, LastPath);
 
             return Result.Succeeded;
         }

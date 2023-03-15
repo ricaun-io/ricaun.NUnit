@@ -10,6 +10,45 @@ namespace ricaun.NUnit.Extensions
     internal static class TaskSTA
     {
         /// <summary>
+        /// CurrentThread ApartmentState is <see cref="ApartmentState.STA"/>
+        /// </summary>
+        /// <returns></returns>
+        private static bool CurrentThreadIsSTA()
+        {
+            // System.Diagnostics.Debug.WriteLine($"CurrentThread: {System.Threading.Thread.CurrentThread.GetApartmentState()}");
+            return System.Threading.Thread.CurrentThread.GetApartmentState() == ApartmentState.STA;
+        }
+
+        /// <summary>
+        /// RunSafe if CurrentThread is <see cref="ApartmentState.STA"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static T RunSafe<T>(Func<T> func)
+        {
+            if (CurrentThreadIsSTA())
+            {
+                return Run(func).GetAwaiter().GetResult();
+            }
+            return func();
+        }
+
+        /// <summary>
+        /// RunSafe if CurrentThread is <see cref="ApartmentState.STA"/>
+        /// </summary>
+        /// <param name="action"></param>
+        public static void RunSafe(Action action)
+        {
+            if (CurrentThreadIsSTA())
+            {
+                Run(action).GetAwaiter().GetResult();
+                return;
+            }
+            action();
+        }
+
+        /// <summary>
         /// Run
         /// </summary>
         /// <typeparam name="T"></typeparam>

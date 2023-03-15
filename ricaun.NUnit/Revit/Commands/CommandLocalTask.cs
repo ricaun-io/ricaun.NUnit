@@ -30,7 +30,25 @@ namespace ricaun.NUnit.Revit.Commands
                     var invoke = method.Invoke(instance, null);
                     if (invoke is Task taskInvoke)
                         taskInvoke.GetAwaiter().GetResult();
+
                 }).Wait(1000);
+
+                TaskSTA.RunSafe(() =>
+                {
+                    var invoke = method.Invoke(instance, null);
+                    if (invoke is Task taskInvoke)
+                        taskInvoke.GetAwaiter().GetResult();
+
+                });
+
+                var i = TaskSTA.RunSafe(() =>
+                {
+                    var invoke = method.Invoke(instance, null);
+                    if (invoke is Task taskInvoke)
+                        taskInvoke.GetAwaiter().GetResult();
+                    return invoke;
+                });
+                Console.WriteLine(i);
 
                 TaskSTA.Run(() =>
                 {
@@ -39,9 +57,10 @@ namespace ricaun.NUnit.Revit.Commands
                     Console.WriteLine("..");
                     Thread.Sleep(100);
                     Console.WriteLine("...");
+
                 }).Wait(1000);
 
-                Console.WriteLine($"Wait {methodReturn}");
+                Console.WriteLine($"Finish {methodReturn}");
             }
 
             return Result.Succeeded;

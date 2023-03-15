@@ -52,10 +52,25 @@ namespace ricaun.NUnit.Revit
             Assert.Pass("This is a custom pass message.");
         }
 
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(7)]
+        [TestCase(8)]
+        [TestCase(9)]
+        [TestCase(10)]
+        public void PassCaseTest(object value)
+        {
+
+        }
+
         [Test]
         public async Task TaskTest()
         {
-            await Task.Delay(500);
+            await Task.Delay(700);
             Console.WriteLine("Execute TaskTest");
         }
 

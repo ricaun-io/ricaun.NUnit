@@ -53,8 +53,9 @@
         {
             var result = Skipped ? "Skipped" : Success ? "Passed" : "Failed";
             var name = string.IsNullOrEmpty(Alias) ? Name : Alias != Name ? $"{Alias}[{Name}]" : Alias;
-            var message = !Message.Contains("Exception") ? Message : Message.Substring(0, Message.IndexOf("Exception") + "Exception".Length);
-            return $"{name}\t{result}\t{message}".Replace("\n", " ").Replace("\r", " ");
+            var message = Message;
+            //var message = (!Message.Contains("Exception:")) ? Message : Message.Substring(0, Message.IndexOf("Exception:") + "Exception".Length);
+            return $"{name}\t {result}\t {message}".Replace("\n", " ").Replace("\r", " ");
         }
     }
 }

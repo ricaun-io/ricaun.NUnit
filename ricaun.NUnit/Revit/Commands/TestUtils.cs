@@ -97,6 +97,14 @@ namespace ricaun.NUnit.Revit.Commands
                         var passed = modelTest.Success ? "PASSED" : "FAILED";
                         if (modelTest.TestCount == 0) { passed = "NO TESTS"; }
                         Console.WriteLine($"{modelTest}\t {passed}");
+
+                        var tests = modelTest.Tests.SelectMany(e => e.Tests);
+
+                        foreach (var test in tests)
+                        {
+                            Console.WriteLine($"\t {test}");
+                        }
+
                     }
 
                 }

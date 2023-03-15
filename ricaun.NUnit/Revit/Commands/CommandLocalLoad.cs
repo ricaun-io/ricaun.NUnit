@@ -46,8 +46,10 @@ namespace ricaun.NUnit.Revit.Commands
 
             foreach (var test in tests)
             {
-                Console.WriteLine(test);
+                Console.WriteLine($"\t{test}");
             }
+
+            Console.WriteLine(testModel.Time);
 
             return Result.Succeeded;
         }
