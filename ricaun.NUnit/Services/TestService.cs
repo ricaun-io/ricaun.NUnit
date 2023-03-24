@@ -20,7 +20,7 @@ namespace ricaun.NUnit.Services
         /// <summary>
         /// IgnoreAttributes
         /// </summary>
-        public Type[] IgnoreAttributes { get; set; } = new[] {
+        public Type[] IgnoreNUnitAttributes { get; set; } = new[] {
             typeof(IgnoreAttribute),
             typeof(ExplicitAttribute)
         };
@@ -227,19 +227,35 @@ namespace ricaun.NUnit.Services
         private bool IgnoreTest(MemberInfo memberInfo, out string ignoreMessage)
         {
             ignoreMessage = "";
-            foreach (var ignoreAttribute in IgnoreAttributes)
+            foreach (var ignoreNUnitAttribute in IgnoreNUnitAttributes)
             {
-                if (ignoreAttribute == typeof(ExplicitAttribute))
+                if (ignoreNUnitAttribute == typeof(ExplicitAttribute))
                 {
                     if (TestEngineFilter.ExplicitEnabled)
                         continue;
                 }
 
-                if (HasAttributeName(memberInfo, ignoreAttribute))
+                ignoreMessage = ignoreNUnitAttribute.Name;
+
+                if (TryGetAttribute(memberInfo, out IgnoreAttribute ignoreAttribute))
                 {
-                    ignoreMessage = $"IgnoreTest: '{memberInfo.Name}' => '{ignoreAttribute.Name}'";
+                    ignoreMessage = $"{ignoreAttribute.GetReason()}";
                     return true;
                 }
+
+                if (TryGetAttribute(memberInfo, out ExplicitAttribute explicitAttribute))
+                {
+                    ignoreMessage = $"{explicitAttribute.GetReason()}";
+                    if (string.IsNullOrEmpty(ignoreMessage))
+                        ignoreMessage = explicitAttribute.GetType().Name;
+                    return true;
+                }
+
+                //if (HasAttributeName(memberInfo, ignoreAttribute))
+                //{
+                //    ignoreMessage = $"IgnoreTest: '{memberInfo.Name}' => '{ignoreAttribute.Name}'";
+                //    return true;
+                //}
             }
             return false;
         }

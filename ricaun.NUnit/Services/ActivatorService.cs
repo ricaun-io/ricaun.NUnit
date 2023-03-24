@@ -114,7 +114,7 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
-        /// Is <paramref name="method"/> Task or Task<>
+        /// Is <paramref name="method"/> Task or Task[]
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
