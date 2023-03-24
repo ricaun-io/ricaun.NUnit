@@ -34,7 +34,7 @@ namespace SampleTest.Tests
         }
 
         [Test]
-        [Explicit]
+        [Explicit("This is Explicit")]
         public void TestExplicit()
         {
 
