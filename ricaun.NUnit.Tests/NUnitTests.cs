@@ -151,6 +151,7 @@ namespace ricaun.NUnit.Tests
             Console.WriteLine(text);
             Console.WriteLine(testModel.Message);
             Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+            Assert.AreEqual(testModel.SuccessHate, 0.8, $"{fileName} Failed.");
         }
 
         [Test]

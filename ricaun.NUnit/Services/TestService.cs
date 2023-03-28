@@ -17,14 +17,6 @@ namespace ricaun.NUnit.Services
         private readonly object[] parameters;
         private object instance;
 
-        /// <summary>
-        /// IgnoreAttributes
-        /// </summary>
-        public Type[] IgnoreNUnitAttributes { get; set; } = new[] {
-            typeof(IgnoreAttribute),
-            typeof(ExplicitAttribute)
-        };
-
         #region Constructor
         /// <summary>
         /// TestService
@@ -61,7 +53,7 @@ namespace ricaun.NUnit.Services
 
             var testMethods = filterTestMethods.Where(AnyTestAttribute);
 
-            if (IgnoreTest(type, out string ignoreMessage))
+            if (IgnoreTestWithAttributes(type, out string ignoreMessage))
             {
                 testType.Message = ignoreMessage;
                 testType.Skipped = true;
@@ -224,25 +216,12 @@ namespace ricaun.NUnit.Services
 
         #region private
 
-        private bool IgnoreTest(MemberInfo memberInfo, out string ignoreMessage)
+        private bool IgnoreTestWithAttributes(MemberInfo memberInfo, out string ignoreMessage)
         {
             ignoreMessage = "";
-            foreach (var ignoreNUnitAttribute in IgnoreNUnitAttributes)
+
+            if (TestEngineFilter.ExplicitEnabled == false)
             {
-                if (ignoreNUnitAttribute == typeof(ExplicitAttribute))
-                {
-                    if (TestEngineFilter.ExplicitEnabled)
-                        continue;
-                }
-
-                ignoreMessage = ignoreNUnitAttribute.Name;
-
-                if (TryGetAttribute(memberInfo, out IgnoreAttribute ignoreAttribute))
-                {
-                    ignoreMessage = $"{ignoreAttribute.GetReason()}";
-                    return true;
-                }
-
                 if (TryGetAttribute(memberInfo, out ExplicitAttribute explicitAttribute))
                 {
                     ignoreMessage = $"{explicitAttribute.GetReason()}";
@@ -250,13 +229,14 @@ namespace ricaun.NUnit.Services
                         ignoreMessage = explicitAttribute.GetType().Name;
                     return true;
                 }
-
-                //if (HasAttributeName(memberInfo, ignoreAttribute))
-                //{
-                //    ignoreMessage = $"IgnoreTest: '{memberInfo.Name}' => '{ignoreAttribute.Name}'";
-                //    return true;
-                //}
             }
+
+            if (TryGetAttribute(memberInfo, out IgnoreAttribute ignoreAttribute))
+            {
+                ignoreMessage = $"{ignoreAttribute.GetReason()}";
+                return true;
+            }
+
             return false;
         }
 
@@ -320,7 +300,7 @@ namespace ricaun.NUnit.Services
 
             using (var console = new ConsoleWriterDateTime())
             {
-                if (IgnoreTest(method, out string messageIgnore))
+                if (IgnoreTestWithAttributes(method, out string messageIgnore))
                 {
                     test.Message = messageIgnore;
                     test.Console = console.GetString();
@@ -370,7 +350,7 @@ namespace ricaun.NUnit.Services
             if (method is null)
                 return result;
 
-            if (IgnoreTest(method, out string message))
+            if (IgnoreTestWithAttributes(method, out string message))
             {
                 result.Message = message;
                 result.Skipped = true;
@@ -418,7 +398,7 @@ namespace ricaun.NUnit.Services
             if (method is null)
                 return result;
 
-            if (IgnoreTest(method, out string message))
+            if (IgnoreTestWithAttributes(method, out string message))
             {
                 result.Message = message;
                 result.Skipped = true;
