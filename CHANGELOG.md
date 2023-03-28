@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.2.5] / 2023-03-27
+### Fixed
+- Fix `Explicit` not working, add test.
+
 ## [1.2.4] / 2023-03-24
 ### Features
 - [x] Read `Ignore` and `Explicit` reason in the `TestModel` message.
@@ -160,6 +164,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Test with Console Output
 
 [vNext]: ../../compare/1.0.0...HEAD
+[1.2.5]: ../../compare/1.2.4...1.2.5
 [1.2.4]: ../../compare/1.2.3...1.2.4
 [1.2.3]: ../../compare/1.2.2...1.2.3
 [1.2.2]: ../../compare/1.2.1...1.2.2
