@@ -65,16 +65,36 @@ namespace ricaun.NUnit.Services
                     types.Add(type);
                 }
             }
-            return types.OrderBy(e => e.Name);
+            return types.OrderBy(e => e.FullName);
         }
 
         /// <summary>
         /// GetTestTypeMethods
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Does not work with Abstract")]
         public IEnumerable<MethodInfo> GetTestTypeMethods()
         {
             return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute)).OrderBy(e => GetMethodFullName(e));
+        }
+
+        /// <summary>
+        /// GetTestDictionaryTypeMethods
+        /// </summary>
+        /// <returns></returns>
+        public IReadOnlyDictionary<Type, MethodInfo[]> GetTestDictionaryTypeMethods()
+        {
+            var result = new Dictionary<Type, MethodInfo[]>();
+            var types = GetTestTypes();
+            foreach (var type in types)
+            {
+                var methods = type.GetMethods().Where(AnyTestAttribute).OrderBy(e => e.Name).ToArray();
+                if (methods.Any())
+                {
+                    result.Add(type, methods);
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -83,7 +103,18 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public IEnumerable<string> GetTestFullNames()
         {
-            return GetTestTypeMethods().SelectMany(e => GetTestAttributes(e).Select(a => GetTestFullName(e, a))).OrderBy(e => e);
+            foreach (var typeMethod in GetTestDictionaryTypeMethods())
+            {
+                Type type = typeMethod.Key;
+                MethodInfo[] methods = typeMethod.Value;
+                foreach (MethodInfo method in methods)
+                {
+                    foreach (var nUnitAttribute in GetTestAttributes(method))
+                    {
+                        yield return GetTestFullName(type, method, nUnitAttribute);
+                    }
+                }
+            }
         }
 
         ///// <summary>

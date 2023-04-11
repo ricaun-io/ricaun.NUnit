@@ -23,6 +23,16 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
+        /// AnyMethodWithTestAttribute
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool AnyMethodWithTestAttribute(Type type)
+        {
+            return type.GetMethods().Any(AnyTestAttribute);
+        }
+
+        /// <summary>
         /// GetFilterTestMethods
         /// </summary>
         /// <param name="type"></param>
@@ -58,9 +68,32 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
+        [Obsolete]
         public string GetMethodFullName(MethodInfo method)
         {
-            return method.DeclaringType.FullName + "." + method.Name;
+            return GetMethodFullName(method.DeclaringType, method);
+        }
+
+        /// <summary>
+        /// GetMethodFullName
+        /// </summary>
+        /// <param name="declaringType"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public string GetMethodFullName(Type declaringType, MethodInfo method)
+        {
+            return GetMethodFullName(declaringType.FullName, method);
+        }
+
+        /// <summary>
+        /// GetMethodFullName
+        /// </summary>
+        /// <param name="fullNameType"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public string GetMethodFullName(string fullNameType, MethodInfo method)
+        {
+            return fullNameType + "." + method.Name;
         }
 
         /// <summary>
@@ -69,9 +102,34 @@ namespace ricaun.NUnit.Services
         /// <param name="method"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
+        [Obsolete]
         public string GetTestFullName(MethodInfo method, NUnitAttribute nUnitAttribute)
         {
             return GetMethodFullName(method) + "." + GetTestName(method, nUnitAttribute);
+        }
+
+        /// <summary>
+        /// GetTestFullName
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="method"></param>
+        /// <param name="nUnitAttribute"></param>
+        /// <returns></returns>
+        public string GetTestFullName(Type type, MethodInfo method, NUnitAttribute nUnitAttribute)
+        {
+            return GetMethodFullName(type, method) + "." + GetTestName(method, nUnitAttribute);
+        }
+
+        /// <summary>
+        /// GetTestFullName
+        /// </summary>
+        /// <param name="fullNameType"></param>
+        /// <param name="method"></param>
+        /// <param name="nUnitAttribute"></param>
+        /// <returns></returns>
+        public string GetTestFullName(string fullNameType, MethodInfo method, NUnitAttribute nUnitAttribute)
+        {
+            return GetMethodFullName(fullNameType, method) + "." + GetTestName(method, nUnitAttribute);
         }
 
         /// <summary>

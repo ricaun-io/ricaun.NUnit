@@ -38,8 +38,8 @@ namespace ricaun.NUnit.Tests
         [Test]
         public void TestAssembly_Names()
         {
-            Console.WriteLine(fileName);
             var names = TestEngine.GetTestFullNames(pathFile);
+            Console.WriteLine($"{fileName} {names.Length}");
             foreach (var name in names)
             {
                 Console.WriteLine($"{name}");
@@ -78,21 +78,19 @@ namespace ricaun.NUnit.Tests
         [Test]
         public void TestAssembly_NamesAlias()
         {
-            Console.WriteLine(fileName);
+            var testFullNames = TestEngine.GetTestFullNames(pathFile);
             var testModel = TestEngine.TestAssembly(pathFile);
-            var names = TestEngine.GetTestFullNames(pathFile);
-            var nameAlias = testModel.Tests.SelectMany(type => type.Tests.Select(test => test.FullName)).ToArray();
+            var testFullNamesTwo = testModel.Tests.SelectMany(type => type.Tests.Select(test => test.FullName)).ToArray();
+            Console.WriteLine($"{fileName} {testFullNamesTwo.Length}");
 
-            foreach (var alias in nameAlias)
+            Assert.AreEqual(testFullNamesTwo.Length, testFullNames.Length);
+
+            for (int i = 0; i < testFullNamesTwo.Length; i++)
             {
-                Console.WriteLine(alias);
-                if (!names.Contains(alias))
-                {
-                    Assert.Fail($"{alias} not found.");
-                }
+                Console.WriteLine($"{testFullNamesTwo[i]} \t {testFullNames[i]}");
             }
 
-            Assert.AreEqual(names.Length, nameAlias.Length);
+            Assert.IsTrue(testFullNamesTwo.SequenceEqual(testFullNames), "Sequence Alias and FullName equal");
         }
 
         [Test]
@@ -139,13 +137,18 @@ namespace ricaun.NUnit.Tests
         {
             Console.WriteLine(fileName);
             var service = new Services.TestAssemblyService(pathFile);
-            var methods = service.GetTestTypeMethods();
-            foreach (var method in methods)
+            var typeMethods = service.GetTestDictionaryTypeMethods();
+            foreach (var typeMethod in typeMethods)
             {
-                var names = string.Join(" ", service.GetMethodTestNames(method));
-                Console.WriteLine($"{service.GetMethodFullName(method)} \t{names}");
+                var type = typeMethod.Key;
+                var methods = typeMethod.Value;
+                foreach (var method in methods)
+                {
+                    var names = string.Join(" ", service.GetMethodTestNames(method));
+                    Console.WriteLine($"{service.GetMethodFullName(type, method)} \t{names}");
+                }
             }
-            Assert.IsNotEmpty(methods);
+            Assert.IsNotEmpty(typeMethods);
         }
 
         [Test]

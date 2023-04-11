@@ -88,7 +88,9 @@ namespace ricaun.NUnit.Services
                         foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                         {
                             if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
-                            var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
+                            var testModel = InvokeTestInstance(testType, testMethod, methodSetUp, methodTearDown, nUnitAttribute);
+
+                            //var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
                             testType.Tests.Add(testModel);
                             TestEngine.InvokeResult(testModel);
                         }
@@ -145,7 +147,7 @@ namespace ricaun.NUnit.Services
                 foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                 {
                     if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
-                    var testModel = NewTestModel(testMethod, nUnitAttribute);
+                    var testModel = NewTestModel(testType, testMethod, nUnitAttribute);
                     testModel.Message = testType.Message;
                     testModel.Success = testType.Success;
                     testModel.Skipped = testType.Skipped;
@@ -183,35 +185,61 @@ namespace ricaun.NUnit.Services
             return false;
         }
 
+        ///// <summary>
+        ///// NewTestModel
+        ///// </summary>
+        ///// <param name="method"></param>
+        ///// <param name="nUnitAttribute"></param>
+        ///// <returns></returns>
+        //private TestModel NewTestModel(MethodInfo method, NUnitAttribute nUnitAttribute)
+        //{
+        //    var test = new TestModel();
+        //    test.Name = method.Name;
+        //    test.Alias = GetTestName(method, nUnitAttribute);
+        //    test.FullName = GetTestFullName(method, nUnitAttribute);
+        //    test.Success = true;
+        //    return test;
+        //}
+
         /// <summary>
-        /// NewTestModel
+        /// NewTestModel with type to work with abstract tests
         /// </summary>
+        /// <param name="fullNameType"></param>
         /// <param name="method"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
-        private TestModel NewTestModel(MethodInfo method, NUnitAttribute nUnitAttribute)
+        private TestModel NewTestModel(TestTypeModel testType, MethodInfo method, NUnitAttribute nUnitAttribute)
         {
             var test = new TestModel();
             test.Name = method.Name;
             test.Alias = GetTestName(method, nUnitAttribute);
-            test.FullName = GetTestFullName(method, nUnitAttribute);
+            test.FullName = GetTestFullName(testType.FullName, method, nUnitAttribute);
             test.Success = true;
             return test;
         }
 
-        private TestModel InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown, NUnitAttribute nUnitAttribute)
+        /// <summary>
+        /// Invoke Test Instance and Add In <paramref name="testType"/>
+        /// </summary>
+        /// <param name="testType"></param>
+        /// <param name="method"></param>
+        /// <param name="methodSetUp"></param>
+        /// <param name="methodTearDown"></param>
+        /// <param name="nUnitAttribute"></param>
+        /// <returns></returns>
+        private TestModel InvokeTestInstance(TestTypeModel testType, MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown, NUnitAttribute nUnitAttribute)
         {
-            var test = NewTestModel(method, nUnitAttribute);
+            var testModel = NewTestModel(testType, method, nUnitAttribute);
 
             using (var console = new ConsoleWriterDateTime())
             {
                 if (IgnoreTestWithAttributes(method, out string messageIgnore))
                 {
-                    test.Message = messageIgnore;
-                    test.Console = console.GetString();
-                    test.Time = console.GetMillis();
-                    test.Skipped = true;
-                    return test;
+                    testModel.Message = messageIgnore;
+                    testModel.Console = console.GetString();
+                    testModel.Time = console.GetMillis();
+                    testModel.Skipped = true;
+                    return testModel;
                 }
 
                 var upResult = InvokeResultInstance(methodSetUp);
@@ -228,14 +256,14 @@ namespace ricaun.NUnit.Services
                 var success = upResult.Success & methodResult.Success & downResult.Success;
                 var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
 
-                test.Success = success;
-                test.Skipped = methodResult.Skipped;
-                test.Message = message;
-                test.Console = console.GetString();
-                test.Time = console.GetMillis();
+                testModel.Success = success;
+                testModel.Skipped = methodResult.Skipped;
+                testModel.Message = message;
+                testModel.Console = console.GetString();
+                testModel.Time = console.GetMillis();
             }
 
-            return test;
+            return testModel;
         }
 
         #endregion

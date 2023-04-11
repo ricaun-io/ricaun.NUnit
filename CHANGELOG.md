@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - [] Tests with abstract class with [Test] methods.
 - [x] Tests alias with arguments show type parameters.
 - [x] Test with parameters works with IsAssignableFrom.
+### Added
+- Add `GetTestDictionaryTypeMethods`
 
 ## [1.2.5] / 2023-03-27
 ### Fixed
