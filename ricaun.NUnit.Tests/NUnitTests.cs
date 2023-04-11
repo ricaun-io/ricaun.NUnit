@@ -60,6 +60,22 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
+        public void TestAssembly_NamesAlias_FullName_EqualsType()
+        {
+            Console.WriteLine(fileName);
+            var testModel = TestEngine.TestAssembly(pathFile);
+
+            foreach (var testType in testModel.Tests)
+            {
+                foreach (var test in testType.Tests)
+                {
+                    var startWithType = test.FullName.StartsWith(testType.FullName);
+                    Assert.IsTrue(startWithType, $"{test.FullName} not start with {testType.FullName}");
+                }
+            }
+        }
+
+        [Test]
         public void TestAssembly_NamesAlias()
         {
             Console.WriteLine(fileName);
@@ -88,10 +104,14 @@ namespace ricaun.NUnit.Tests
             var nameAlias = testModel.Tests.SelectMany(type => type.Tests.Select(test => TestEngine.GetTestFullName(type, test))).ToArray();
 #pragma warning restore CS0618 // Type or member is obsolete
             var testFullNames = testModel.Tests.SelectMany(type => type.Tests.Select(test => test.FullName)).ToArray();
-            foreach (var testFullName in testFullNames)
+
+            Assert.AreEqual(nameAlias.Length, testFullNames.Length);
+
+            for (int i = 0; i < nameAlias.Length; i++)
             {
-                Console.WriteLine(testFullName);
+                Console.WriteLine($"{nameAlias[i]} \t {testFullNames[i]}");
             }
+
             Assert.IsTrue(nameAlias.SequenceEqual(testFullNames), "Sequence Alias and FullName equal");
         }
 
@@ -140,7 +160,7 @@ namespace ricaun.NUnit.Tests
             Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
         }
 
-        [Test(ExpectedResult = 14)]
+        [Test(ExpectedResult = 13)]
         public int TestAssembly_Explicit()
         {
             Console.WriteLine(fileName);
@@ -152,7 +172,9 @@ namespace ricaun.NUnit.Tests
             Console.WriteLine(testModel.Message);
             Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
 
-            var failExplictTests = testModel.TestCount - (int)(testModel.TestCount * testModel.SuccessHate);
+            var failExplictTests = testModel.Tests.SelectMany(e => e.Tests).Count(e => e.Success == false);
+
+            //var failExplictTests = testModel.TestCount - (int)(testModel.TestCount * testModel.SuccessHate);
             return failExplictTests;
         }
 
@@ -191,7 +213,7 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestCases(?)", 2)]
         [TestCase("*.TestSame?", 2)]
         [TestCase("*.TestTask*", 8)]
-        [TestCase("*", 45)]
+        [TestCase("*", 48)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);
