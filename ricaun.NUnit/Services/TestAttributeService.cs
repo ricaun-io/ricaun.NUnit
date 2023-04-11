@@ -97,6 +97,13 @@ namespace ricaun.NUnit.Services
                 var name = testCaseAttribute.TestName ?? $"{method.Name}({string.Join(",", testCaseAttribute.Arguments)})";
                 return name;
             }
+
+            var parameters = method.GetParameters();
+            if (parameters.Any())
+            {
+                return $"{method.Name}({string.Join(",", parameters.Select(e => e.ParameterType.Name))})";
+            }
+
             return method.Name;
         }
 

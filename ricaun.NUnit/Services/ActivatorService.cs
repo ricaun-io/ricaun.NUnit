@@ -158,7 +158,13 @@ namespace ricaun.NUnit.Services
             if (parameter.ParameterType == typeof(object))
                 return true;
 
-            return parameterValue.GetType().Equals(parameter.ParameterType);
+            var valueType = parameterValue.GetType();
+            bool canAssign = parameter.ParameterType.IsAssignableFrom(valueType);
+
+            System.Diagnostics.Debug.WriteLine($"{canAssign}:\t {valueType} >> {parameterValue.GetType()}");
+
+            return canAssign;
+            //return parameterValue.GetType().Equals(parameter.ParameterType);
         }
 
         #endregion

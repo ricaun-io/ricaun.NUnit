@@ -140,8 +140,8 @@ namespace ricaun.NUnit.Tests
             Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
         }
 
-        [Test]
-        public void TestAssembly_Explicit()
+        [Test(ExpectedResult = 13)]
+        public int TestAssembly_Explicit()
         {
             Console.WriteLine(fileName);
             TestEngineFilter.ExplicitEnabled = true;
@@ -151,7 +151,21 @@ namespace ricaun.NUnit.Tests
             Console.WriteLine(text);
             Console.WriteLine(testModel.Message);
             Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
-            Assert.AreEqual(testModel.SuccessHate, 0.8, $"{fileName} Failed.");
+
+            var failExplictTests = testModel.TestCount - (int)(testModel.TestCount * testModel.SuccessHate);
+            return failExplictTests;
+        }
+
+        class BaseCloneable : ICloneable
+        {
+            public object Clone()
+            {
+                return this;
+            }
+            public override string ToString()
+            {
+                return nameof(BaseCloneable);
+            }
         }
 
         [Test]
@@ -159,12 +173,15 @@ namespace ricaun.NUnit.Tests
         {
             Console.WriteLine(fileName);
             TestEngineFilter.Add("*.TestParameter*");
-            var testModel = TestEngine.TestAssembly(pathFile, "String Value", 10);
+
+            var array = new string[] { "Array1" };
+            var testModel = TestEngine.TestAssembly(pathFile, new BaseCloneable(), "Text", 123, (long)456, array);
             var text = testModel.AsString();
             TestEngineFilter.Reset();
             Console.WriteLine(text);
             Console.WriteLine(testModel.Message);
             Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+            Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
         }
 
         [TestCase("*.TestPass", 1)]
@@ -174,7 +191,7 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestCases(?)", 2)]
         [TestCase("*.TestSame?", 2)]
         [TestCase("*.TestTask*", 8)]
-        [TestCase("*", 40)]
+        [TestCase("*", 45)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);
