@@ -1,4 +1,5 @@
-﻿using ricaun.NUnit.Extensions;
+﻿using NUnit.Framework;
+using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using System;
 using System.Collections.Generic;
@@ -60,21 +61,42 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                if (GetFilterTestMethods(type).Any())
+                //if (GetFilterTestMethods(type).Any())
+                if (AnyMethodWithTestAttribute(type))
                 {
                     types.Add(type);
                 }
             }
-            return types.OrderBy(e => e.Name);
+            return types.OrderBy(e => e.FullName);
         }
 
+        ///// <summary>
+        ///// GetTestTypeMethods
+        ///// </summary>
+        ///// <returns></returns>
+        //[Obsolete("Does not work with Abstract")]
+        //public IEnumerable<MethodInfo> GetTestTypeMethods()
+        //{
+        //    return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute)).OrderBy(e => GetMethodFullName(e));
+        //}
+
         /// <summary>
-        /// GetTestTypeMethods
+        /// GetTestDictionaryTypeMethods
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<MethodInfo> GetTestTypeMethods()
+        public IReadOnlyDictionary<Type, MethodInfo[]> GetTestDictionaryTypeMethods()
         {
-            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute)).OrderBy(e => GetMethodFullName(e));
+            var result = new Dictionary<Type, MethodInfo[]>();
+            var types = GetTestTypes();
+            foreach (var type in types)
+            {
+                var methods = GetMethodWithTestAttribute(type).ToArray();
+                if (methods.Any())
+                {
+                    result.Add(type, methods);
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -83,7 +105,18 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public IEnumerable<string> GetTestFullNames()
         {
-            return GetTestTypeMethods().SelectMany(e => GetTestAttributes(e).Select(a => GetTestFullName(e, a))).OrderBy(e => e);
+            foreach (var typeMethod in GetTestDictionaryTypeMethods())
+            {
+                Type type = typeMethod.Key;
+                MethodInfo[] methods = typeMethod.Value;
+                foreach (MethodInfo method in methods)
+                {
+                    foreach (var attribute in GetTestAttributes(method))
+                    {
+                        yield return GetTestFullName(type, method, attribute);
+                    }
+                }
+            }
         }
 
         ///// <summary>
@@ -103,7 +136,7 @@ namespace ricaun.NUnit.Services
         public IEnumerable<TestTypeModel> Test()
         {
             var result = new List<TestTypeModel>();
-            var types = GetTestTypes();
+            var types = GetTestTypes().Where(AnyMethodWithTestAttributeAndFilter);
 
             foreach (var type in types)
             {
@@ -131,26 +164,6 @@ namespace ricaun.NUnit.Services
                     result.Add(testTypeModel);
                     testTypeModel.Console = console.GetString();
                     testTypeModel.Time = console.GetMillis();
-                    //try
-                    //{
-                    //    using (var test = new TestService(type, parameters))
-                    //    {
-                    //        testTypeModel = test.Test();
-                    //    }
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    testTypeModel = testTypeModel ?? new TestTypeModel();
-                    //    testTypeModel.Name = type.Name;
-                    //    testTypeModel.Message = testTypeModel.Message + Environment.NewLine + ex.ToString();
-                    //    testTypeModel.Success = false;
-                    //}
-                    //finally
-                    //{
-                    //    result.Add(testTypeModel);
-                    //}
-                    //testTypeModel.Console = console.GetString();
-                    //testTypeModel.Time = console.GetMillis();
                 }
             }
 

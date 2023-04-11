@@ -47,11 +47,10 @@ namespace ricaun.NUnit.Services
         {
             TestExecutionContextUtils.Clear();
 
-            var filterTestMethods = GetFilterTestMethods(type);
             var methods = type.GetMethods();
             var testType = NewTestTypeModel(type);
 
-            var testMethods = filterTestMethods.Where(AnyTestAttribute);
+            var testMethods = GetMethodWithTestAttributeAndFilter(type);
 
             if (IgnoreTestWithAttributes(type, out string ignoreMessage))
             {
@@ -87,8 +86,10 @@ namespace ricaun.NUnit.Services
                     {
                         foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                         {
-                            if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
-                            var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
+                            if (!HasFilterTestMethod(type, testMethod, nUnitAttribute)) continue;
+                            var testModel = InvokeTestInstance(testType, testMethod, methodSetUp, methodTearDown, nUnitAttribute);
+
+                            //var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
                             testType.Tests.Add(testModel);
                             TestEngine.InvokeResult(testModel);
                         }
@@ -144,8 +145,8 @@ namespace ricaun.NUnit.Services
             {
                 foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                 {
-                    if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
-                    var testModel = NewTestModel(testMethod, nUnitAttribute);
+                    if (!HasFilterTestMethod(type, testMethod, nUnitAttribute)) continue;
+                    var testModel = NewTestModel(testType, testMethod, nUnitAttribute);
                     testModel.Message = testType.Message;
                     testModel.Success = testType.Success;
                     testModel.Skipped = testType.Skipped;
@@ -154,63 +155,6 @@ namespace ricaun.NUnit.Services
                 }
             }
         }
-
-        ///// <summary>
-        ///// Test
-        ///// </summary>
-        ///// <returns></returns>
-        //private TestTypeModel Test()
-        //{
-        //    this.instance = CreateInstance(this.type, this.parameters);
-
-        //    var filterTestMethods = GetFilterTestMethods(type);
-        //    var methods = type.GetMethods();
-        //    var testType = new TestTypeModel();
-        //    testType.Name = type.FullName;
-        //    testType.Success = true;
-
-        //    {
-        //        if (IgnoreTest(type, out string ignoreMessage))
-        //        {
-        //            testType.Message = ignoreMessage;
-        //            testType.Skipped = true;
-        //            return testType;
-        //        }
-
-        //        var testMethods = filterTestMethods.Where(AnyTestAttribute);
-
-        //        var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
-        //        var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
-
-        //        var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
-        //        var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
-
-        //        var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
-        //        if (upOneResult.Success)
-        //        {
-        //            foreach (var testMethod in testMethods)
-        //            {
-        //                foreach (var nUnitAttribute in GetTestAttributes(testMethod))
-        //                {
-        //                    if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
-        //                    var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
-        //                    testType.Tests.Add(testModel);
-        //                }
-        //            }
-        //        }
-        //        var downOneResult = InvokeResultInstance(methodOneTimeTearDown);
-
-        //        var success = upOneResult.Success & downOneResult.Success;
-        //        var skipped = upOneResult.Skipped & downOneResult.Skipped;
-        //        var message = string.Join(Environment.NewLine, upOneResult.Message, downOneResult.Message).Trim();
-
-        //        testType.Success = success & !testType.Tests.Any(e => e.Success == false);
-        //        testType.Skipped = skipped & !testType.Tests.Any(e => e.Skipped == false);
-        //        testType.Message = message;
-        //    }
-
-        //    return testType;
-        //}
 
         #endregion
 
@@ -240,73 +184,61 @@ namespace ricaun.NUnit.Services
             return false;
         }
 
-        //private TestModel InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown)
+        ///// <summary>
+        ///// NewTestModel
+        ///// </summary>
+        ///// <param name="method"></param>
+        ///// <param name="nUnitAttribute"></param>
+        ///// <returns></returns>
+        //private TestModel NewTestModel(MethodInfo method, NUnitAttribute nUnitAttribute)
         //{
         //    var test = new TestModel();
         //    test.Name = method.Name;
+        //    test.Alias = GetTestName(method, nUnitAttribute);
+        //    test.FullName = GetTestFullName(method, nUnitAttribute);
         //    test.Success = true;
-
-        //    using (var console = new ConsoleWriterDateTime())
-        //    {
-        //        if (IgnoreTest(method, out string messageIgnore))
-        //        {
-        //            test.Message = messageIgnore;
-        //            test.Console = console.GetString();
-        //            test.Time = console.GetMillis();
-        //            test.Skipped = true;
-        //            return test;
-        //        }
-
-        //        var upResult = InvokeResultInstance(methodSetUp);
-        //        var methodResult = upResult;
-        //        if (upResult.Success)
-        //        {
-        //            methodResult = InvokeResultInstance(method);
-        //        }
-        //        var downResult = InvokeResultInstance(methodTearDown);
-
-        //        var success = upResult.Success & methodResult.Success & downResult.Success;
-        //        var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
-
-        //        test.Success = success;
-        //        test.Skipped = methodResult.Skipped;
-        //        test.Message = message;
-        //        test.Console = console.GetString();
-        //        test.Time = console.GetMillis();
-        //    }
-
         //    return test;
         //}
 
         /// <summary>
-        /// NewTestModel
+        /// NewTestModel with type to work with abstract tests
         /// </summary>
+        /// <param name="testType"></param>
         /// <param name="method"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
-        private TestModel NewTestModel(MethodInfo method, NUnitAttribute nUnitAttribute)
+        private TestModel NewTestModel(TestTypeModel testType, MethodInfo method, NUnitAttribute nUnitAttribute)
         {
             var test = new TestModel();
             test.Name = method.Name;
             test.Alias = GetTestName(method, nUnitAttribute);
-            test.FullName = GetTestFullName(method, nUnitAttribute);
+            test.FullName = GetTestFullName(testType.FullName, method, nUnitAttribute);
             test.Success = true;
             return test;
         }
 
-        private TestModel InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown, NUnitAttribute nUnitAttribute)
+        /// <summary>
+        /// Invoke Test Instance and Add In <paramref name="testType"/>
+        /// </summary>
+        /// <param name="testType"></param>
+        /// <param name="method"></param>
+        /// <param name="methodSetUp"></param>
+        /// <param name="methodTearDown"></param>
+        /// <param name="nUnitAttribute"></param>
+        /// <returns></returns>
+        private TestModel InvokeTestInstance(TestTypeModel testType, MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown, NUnitAttribute nUnitAttribute)
         {
-            var test = NewTestModel(method, nUnitAttribute);
+            var testModel = NewTestModel(testType, method, nUnitAttribute);
 
             using (var console = new ConsoleWriterDateTime())
             {
                 if (IgnoreTestWithAttributes(method, out string messageIgnore))
                 {
-                    test.Message = messageIgnore;
-                    test.Console = console.GetString();
-                    test.Time = console.GetMillis();
-                    test.Skipped = true;
-                    return test;
+                    testModel.Message = messageIgnore;
+                    testModel.Console = console.GetString();
+                    testModel.Time = console.GetMillis();
+                    testModel.Skipped = true;
+                    return testModel;
                 }
 
                 var upResult = InvokeResultInstance(methodSetUp);
@@ -323,14 +255,14 @@ namespace ricaun.NUnit.Services
                 var success = upResult.Success & methodResult.Success & downResult.Success;
                 var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
 
-                test.Success = success;
-                test.Skipped = methodResult.Skipped;
-                test.Message = message;
-                test.Console = console.GetString();
-                test.Time = console.GetMillis();
+                testModel.Success = success;
+                testModel.Skipped = methodResult.Skipped;
+                testModel.Message = message;
+                testModel.Console = console.GetString();
+                testModel.Time = console.GetMillis();
             }
 
-            return test;
+            return testModel;
         }
 
         #endregion
