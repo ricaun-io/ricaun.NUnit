@@ -1,4 +1,5 @@
-﻿using ricaun.NUnit.Extensions;
+﻿using NUnit.Framework;
+using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,8 @@ namespace ricaun.NUnit.Services
                 if (!type.IsClass) continue;
                 if (type.IsAbstract) continue;
 
-                if (GetFilterTestMethods(type).Any())
+                //if (GetFilterTestMethods(type).Any())
+                if (AnyMethodWithTestAttribute(type))
                 {
                     types.Add(type);
                 }
@@ -68,15 +70,15 @@ namespace ricaun.NUnit.Services
             return types.OrderBy(e => e.FullName);
         }
 
-        /// <summary>
-        /// GetTestTypeMethods
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Does not work with Abstract")]
-        public IEnumerable<MethodInfo> GetTestTypeMethods()
-        {
-            return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute)).OrderBy(e => GetMethodFullName(e));
-        }
+        ///// <summary>
+        ///// GetTestTypeMethods
+        ///// </summary>
+        ///// <returns></returns>
+        //[Obsolete("Does not work with Abstract")]
+        //public IEnumerable<MethodInfo> GetTestTypeMethods()
+        //{
+        //    return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute)).OrderBy(e => GetMethodFullName(e));
+        //}
 
         /// <summary>
         /// GetTestDictionaryTypeMethods
@@ -88,7 +90,7 @@ namespace ricaun.NUnit.Services
             var types = GetTestTypes();
             foreach (var type in types)
             {
-                var methods = type.GetMethods().Where(AnyTestAttribute).OrderBy(e => e.Name).ToArray();
+                var methods = GetMethodWithTestAttribute(type).ToArray();
                 if (methods.Any())
                 {
                     result.Add(type, methods);
@@ -109,9 +111,9 @@ namespace ricaun.NUnit.Services
                 MethodInfo[] methods = typeMethod.Value;
                 foreach (MethodInfo method in methods)
                 {
-                    foreach (var nUnitAttribute in GetTestAttributes(method))
+                    foreach (var attribute in GetTestAttributes(method))
                     {
-                        yield return GetTestFullName(type, method, nUnitAttribute);
+                        yield return GetTestFullName(type, method, attribute);
                     }
                 }
             }
@@ -134,7 +136,7 @@ namespace ricaun.NUnit.Services
         public IEnumerable<TestTypeModel> Test()
         {
             var result = new List<TestTypeModel>();
-            var types = GetTestTypes();
+            var types = GetTestTypes().Where(AnyMethodWithTestAttributeAndFilter);
 
             foreach (var type in types)
             {
@@ -162,26 +164,6 @@ namespace ricaun.NUnit.Services
                     result.Add(testTypeModel);
                     testTypeModel.Console = console.GetString();
                     testTypeModel.Time = console.GetMillis();
-                    //try
-                    //{
-                    //    using (var test = new TestService(type, parameters))
-                    //    {
-                    //        testTypeModel = test.Test();
-                    //    }
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    testTypeModel = testTypeModel ?? new TestTypeModel();
-                    //    testTypeModel.Name = type.Name;
-                    //    testTypeModel.Message = testTypeModel.Message + Environment.NewLine + ex.ToString();
-                    //    testTypeModel.Success = false;
-                    //}
-                    //finally
-                    //{
-                    //    result.Add(testTypeModel);
-                    //}
-                    //testTypeModel.Console = console.GetString();
-                    //testTypeModel.Time = console.GetMillis();
                 }
             }
 

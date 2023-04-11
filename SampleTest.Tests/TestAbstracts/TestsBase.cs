@@ -3,17 +3,17 @@ using System;
 
 namespace SampleTest.Tests.TestAbstracts
 {
-    public class Abstract1Tests : TestsBase
+    public class AbstractTest1 : TestsBase
     {
 
     }
 
-    public class Abstract2Tests : TestsBase
+    public class AbstractTest2 : TestsBase
     {
 
     }
 
-    public class Abstract3Tests : TestsBase
+    public class AbstractTest3 : TestsBase
     {
 
     }
@@ -23,10 +23,10 @@ namespace SampleTest.Tests.TestAbstracts
         [SetUp]
         public void SetUp()
         {
-
+            Console.WriteLine("SetUp");
         }
         [Test]
-        public void Tests()
+        public void Tests_Abstract()
         {
             Console.WriteLine(this.GetType());
             Assert.Pass($"{this.GetType()} {this.GetType().Name}");
@@ -34,7 +34,7 @@ namespace SampleTest.Tests.TestAbstracts
         [TearDown]
         public void TearDown()
         {
-
+            Console.WriteLine("TearDown");
         }
     }
 }

@@ -29,50 +29,97 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public bool AnyMethodWithTestAttribute(Type type)
         {
-            return type.GetMethods().Any(AnyTestAttribute);
+            return GetMethodWithTestAttribute(type).Any();
         }
 
         /// <summary>
-        /// GetFilterTestMethods
+        /// GetMethodWithTestAttribute
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public IEnumerable<MethodInfo> GetFilterTestMethods(Type type)
+        public IEnumerable<MethodInfo> GetMethodWithTestAttribute(Type type)
         {
-            var methods = type.GetMethods().OrderBy(e => e.Name);
-            var testMethods = methods.Where(AnyTestAttribute);
-            var onlyTypeTests = testMethods.Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(m, a)));
-            //foreach (var testMethod in testMethods)
-            //{
-            //    //Debug.WriteLine($"{testMethod.Name} {testMethod.GetCustomAttributes(true).Count()}");
-            //    Debug.WriteLine($"{testMethod.Name} {string.Join(" ", testMethod.GetCustomAttributes(true).Select(e => e.GetType().Name))}");
-            //    Debug.WriteLine($"{testMethod.Name} {testMethod.GetCustomAttributes(true).OfType<TestAttribute>().Count()}");
-            //}
-            //Debug.WriteLine($"Debug:\t{type}:\t{string.Join(" ", onlyTypeTests.Select(e => e.Name))}");
-            return onlyTypeTests;
+            return type.GetMethods().Where(AnyTestAttribute).OrderBy(e => e.Name);
         }
+
+        /// <summary>
+        /// AnyMethodWithTestAttributeAndFilter
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool AnyMethodWithTestAttributeAndFilter(Type type)
+        {
+            return GetMethodWithTestAttributeAndFilter(type).Any();
+        }
+
+        /// <summary>
+        /// GetMethodWithTestAttributeAndFilter
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public IEnumerable<MethodInfo> GetMethodWithTestAttributeAndFilter(Type type)
+        {
+            return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type, m, a)));
+        }
+
+        ///// <summary>
+        ///// GetFilterTestMethods
+        ///// </summary>
+        ///// <param name="type"></param>
+        ///// <returns></returns>
+        //[Obsolete]
+        //public IEnumerable<MethodInfo> GetFilterTestMethods(Type type)
+        //{
+        //    var methods = type.GetMethods().OrderBy(e => e.Name);
+        //    var testMethods = methods.Where(AnyTestAttribute);
+        //    var onlyTypeTests = testMethods.Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(m, a)));
+        //    //foreach (var testMethod in testMethods)
+        //    //{
+        //    //    //Debug.WriteLine($"{testMethod.Name} {testMethod.GetCustomAttributes(true).Count()}");
+        //    //    Debug.WriteLine($"{testMethod.Name} {string.Join(" ", testMethod.GetCustomAttributes(true).Select(e => e.GetType().Name))}");
+        //    //    Debug.WriteLine($"{testMethod.Name} {testMethod.GetCustomAttributes(true).OfType<TestAttribute>().Count()}");
+        //    //}
+        //    //Debug.WriteLine($"Debug:\t{type}:\t{string.Join(" ", onlyTypeTests.Select(e => e.Name))}");
+        //    return onlyTypeTests;
+        //}
+
+        ///// <summary>
+        ///// HasFilterTestMethod
+        ///// </summary>
+        ///// <param name="method"></param>
+        ///// <param name="nUnitAttribute"></param>
+        ///// <returns></returns>
+        //public bool HasFilterTestMethod(MethodInfo method, NUnitAttribute nUnitAttribute)
+        //{
+        //    return TestEngineFilter.HasName(GetTestFullName(method, nUnitAttribute));
+        //}
+        //public bool HasFilterTestMethod(string typeFullName, MethodInfo method, NUnitAttribute nUnitAttribute)
+        //{
+        //    return TestEngineFilter.HasName(GetTestFullName(typeFullName, method, nUnitAttribute));
+        //}
 
         /// <summary>
         /// HasFilterTestMethod
         /// </summary>
+        /// <param name="type"></param>
         /// <param name="method"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
-        public bool HasFilterTestMethod(MethodInfo method, NUnitAttribute nUnitAttribute)
+        public bool HasFilterTestMethod(Type type, MethodInfo method, NUnitAttribute nUnitAttribute)
         {
-            return TestEngineFilter.HasName(GetTestFullName(method, nUnitAttribute));
+            return TestEngineFilter.HasName(GetTestFullName(type, method, nUnitAttribute));
         }
 
-        /// <summary>
-        /// GetMethodFullName
-        /// </summary>
-        /// <param name="method"></param>
-        /// <returns></returns>
-        [Obsolete]
-        public string GetMethodFullName(MethodInfo method)
-        {
-            return GetMethodFullName(method.DeclaringType, method);
-        }
+        ///// <summary>
+        ///// GetMethodFullName
+        ///// </summary>
+        ///// <param name="method"></param>
+        ///// <returns></returns>
+        //[Obsolete]
+        //public string GetMethodFullName(MethodInfo method)
+        //{
+        //    return GetMethodFullName(method.DeclaringType, method);
+        //}
 
         /// <summary>
         /// GetMethodFullName
@@ -96,17 +143,17 @@ namespace ricaun.NUnit.Services
             return fullNameType + "." + method.Name;
         }
 
-        /// <summary>
-        /// GetTestFullName
-        /// </summary>
-        /// <param name="method"></param>
-        /// <param name="nUnitAttribute"></param>
-        /// <returns></returns>
-        [Obsolete]
-        public string GetTestFullName(MethodInfo method, NUnitAttribute nUnitAttribute)
-        {
-            return GetMethodFullName(method) + "." + GetTestName(method, nUnitAttribute);
-        }
+        ///// <summary>
+        ///// GetTestFullName
+        ///// </summary>
+        ///// <param name="method"></param>
+        ///// <param name="nUnitAttribute"></param>
+        ///// <returns></returns>
+        //[Obsolete]
+        //public string GetTestFullName(MethodInfo method, NUnitAttribute nUnitAttribute)
+        //{
+        //    return GetMethodFullName(method) + "." + GetTestName(method, nUnitAttribute);
+        //}
 
         /// <summary>
         /// GetTestFullName

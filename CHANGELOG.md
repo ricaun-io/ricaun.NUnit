@@ -6,11 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.2.6] / 2023-03-28
 ### Features
-- [] Tests with abstract class with [Test] methods.
+- [x] Tests with abstract class works like a [Test] methods.
 - [x] Tests alias with arguments show type parameters.
 - [x] Test with parameters works with IsAssignableFrom.
 ### Added
 - Add `GetTestDictionaryTypeMethods`
+### Updated
+- Update `TestAttributeService` and Filter
+### Tests
+- Add `TestAbstractClass` to test abstract class with [Test] methods.
 
 ## [1.2.5] / 2023-03-27
 ### Fixed

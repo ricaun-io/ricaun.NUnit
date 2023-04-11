@@ -47,11 +47,10 @@ namespace ricaun.NUnit.Services
         {
             TestExecutionContextUtils.Clear();
 
-            var filterTestMethods = GetFilterTestMethods(type);
             var methods = type.GetMethods();
             var testType = NewTestTypeModel(type);
 
-            var testMethods = filterTestMethods.Where(AnyTestAttribute);
+            var testMethods = GetMethodWithTestAttributeAndFilter(type);
 
             if (IgnoreTestWithAttributes(type, out string ignoreMessage))
             {
@@ -87,7 +86,7 @@ namespace ricaun.NUnit.Services
                     {
                         foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                         {
-                            if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
+                            if (!HasFilterTestMethod(type, testMethod, nUnitAttribute)) continue;
                             var testModel = InvokeTestInstance(testType, testMethod, methodSetUp, methodTearDown, nUnitAttribute);
 
                             //var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
@@ -146,7 +145,7 @@ namespace ricaun.NUnit.Services
             {
                 foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                 {
-                    if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
+                    if (!HasFilterTestMethod(type, testMethod, nUnitAttribute)) continue;
                     var testModel = NewTestModel(testType, testMethod, nUnitAttribute);
                     testModel.Message = testType.Message;
                     testModel.Success = testType.Success;
@@ -204,7 +203,7 @@ namespace ricaun.NUnit.Services
         /// <summary>
         /// NewTestModel with type to work with abstract tests
         /// </summary>
-        /// <param name="fullNameType"></param>
+        /// <param name="testType"></param>
         /// <param name="method"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
