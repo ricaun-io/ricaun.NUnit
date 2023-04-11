@@ -155,63 +155,6 @@ namespace ricaun.NUnit.Services
             }
         }
 
-        ///// <summary>
-        ///// Test
-        ///// </summary>
-        ///// <returns></returns>
-        //private TestTypeModel Test()
-        //{
-        //    this.instance = CreateInstance(this.type, this.parameters);
-
-        //    var filterTestMethods = GetFilterTestMethods(type);
-        //    var methods = type.GetMethods();
-        //    var testType = new TestTypeModel();
-        //    testType.Name = type.FullName;
-        //    testType.Success = true;
-
-        //    {
-        //        if (IgnoreTest(type, out string ignoreMessage))
-        //        {
-        //            testType.Message = ignoreMessage;
-        //            testType.Skipped = true;
-        //            return testType;
-        //        }
-
-        //        var testMethods = filterTestMethods.Where(AnyTestAttribute);
-
-        //        var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
-        //        var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
-
-        //        var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
-        //        var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
-
-        //        var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
-        //        if (upOneResult.Success)
-        //        {
-        //            foreach (var testMethod in testMethods)
-        //            {
-        //                foreach (var nUnitAttribute in GetTestAttributes(testMethod))
-        //                {
-        //                    if (!HasFilterTestMethod(testMethod, nUnitAttribute)) continue;
-        //                    var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
-        //                    testType.Tests.Add(testModel);
-        //                }
-        //            }
-        //        }
-        //        var downOneResult = InvokeResultInstance(methodOneTimeTearDown);
-
-        //        var success = upOneResult.Success & downOneResult.Success;
-        //        var skipped = upOneResult.Skipped & downOneResult.Skipped;
-        //        var message = string.Join(Environment.NewLine, upOneResult.Message, downOneResult.Message).Trim();
-
-        //        testType.Success = success & !testType.Tests.Any(e => e.Success == false);
-        //        testType.Skipped = skipped & !testType.Tests.Any(e => e.Skipped == false);
-        //        testType.Message = message;
-        //    }
-
-        //    return testType;
-        //}
-
         #endregion
 
         #region private
@@ -239,44 +182,6 @@ namespace ricaun.NUnit.Services
 
             return false;
         }
-
-        //private TestModel InvokeTestInstance(MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown)
-        //{
-        //    var test = new TestModel();
-        //    test.Name = method.Name;
-        //    test.Success = true;
-
-        //    using (var console = new ConsoleWriterDateTime())
-        //    {
-        //        if (IgnoreTest(method, out string messageIgnore))
-        //        {
-        //            test.Message = messageIgnore;
-        //            test.Console = console.GetString();
-        //            test.Time = console.GetMillis();
-        //            test.Skipped = true;
-        //            return test;
-        //        }
-
-        //        var upResult = InvokeResultInstance(methodSetUp);
-        //        var methodResult = upResult;
-        //        if (upResult.Success)
-        //        {
-        //            methodResult = InvokeResultInstance(method);
-        //        }
-        //        var downResult = InvokeResultInstance(methodTearDown);
-
-        //        var success = upResult.Success & methodResult.Success & downResult.Success;
-        //        var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
-
-        //        test.Success = success;
-        //        test.Skipped = methodResult.Skipped;
-        //        test.Message = message;
-        //        test.Console = console.GetString();
-        //        test.Time = console.GetMillis();
-        //    }
-
-        //    return test;
-        //}
 
         /// <summary>
         /// NewTestModel
