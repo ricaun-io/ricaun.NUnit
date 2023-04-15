@@ -164,7 +164,7 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test(ExpectedResult = 13)]
-        public int TestAssembly_Explicit()
+        public int TestAssembly_Explicit_ShouldFail()
         {
             Console.WriteLine(fileName);
             TestEngineFilter.ExplicitEnabled = true;
@@ -218,7 +218,7 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestTask*", 8)]
         [TestCase("*AbstractTest?*", 3)]
         [TestCase("*Abstract*", 3)]
-        [TestCase("*", 48)]
+        [TestCase("*", 52)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

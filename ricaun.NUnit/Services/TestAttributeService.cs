@@ -199,17 +199,37 @@ namespace ricaun.NUnit.Services
         {
             if (attribute is TestCaseAttribute testCaseAttribute)
             {
-                var name = testCaseAttribute.TestName ?? $"{method.Name}({string.Join(",", testCaseAttribute.Arguments)})";
-                return name;
+                return testCaseAttribute.TestName ?? GetTestNameWithArguments(method, testCaseAttribute.Arguments);
             }
 
             var parameters = method.GetParameters();
             if (parameters.Any())
             {
-                return $"{method.Name}({string.Join(",", parameters.Select(e => e.ParameterType.Name))})";
+                return GetTestNameWithArguments(method, parameters);
             }
 
             return method.Name;
+        }
+
+        private string GetTestNameWithArguments(MethodInfo method, params object[] objects)
+        {
+            string ToArgumentName(object value)
+            {
+                if (value is null)
+                {
+                    return "null";
+                }
+                else if (value is string)
+                {
+                    return $"\"{value}\"";
+                }
+                else if (value is ParameterInfo parameter)
+                {
+                    return parameter.ParameterType.Name;
+                }
+                return $"{value}";
+            }
+            return $"{method.Name}({string.Join(",", objects.Select(ToArgumentName))})";
         }
 
         /// <summary>

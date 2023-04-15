@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.2.7] / 2023-04-15
+### Features
+- TestCase with string appear with `"` in the name.
+- TestCase with null appear with `null` in the name.
+### Fixed
+- Fix #21 issue with `Nullable` check.
+### Tests
+- Add `ShouldPass_Case` to test `Nullable` check.
+
 ## [1.2.6] / 2023-04-11
 ### Features
 - [x] Tests with abstract class works like a [Test] methods.
@@ -176,6 +185,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Test with Console Output
 
 [vNext]: ../../compare/1.0.0...HEAD
+[1.2.8]: ../../compare/1.2.7...1.2.8
+[1.2.7]: ../../compare/1.2.6...1.2.7
 [1.2.6]: ../../compare/1.2.5...1.2.6
 [1.2.5]: ../../compare/1.2.4...1.2.5
 [1.2.4]: ../../compare/1.2.3...1.2.4

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SampleTest.Tests
+namespace SampleTest.Tests.Explicits
 {
     [Explicit]
     public class TestsExplicit1_ShouldFail_Constructor
@@ -100,7 +100,7 @@ namespace SampleTest.Tests
     }
 
     [Explicit]
-    public class TestsExplicit_ShouldFail_Parameter
+    public class TestsExplicit7_ShouldFail_Parameter
     {
         [Test]
         public void TestParameterText(string value)
@@ -160,6 +160,27 @@ namespace SampleTest.Tests
         {
             Console.WriteLine($"Value is {value}");
             Assert.IsNotNull(value);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+    }
+
+    [Explicit]
+    public class TestsExplicit8_ShouldPass_Case
+    {
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void TestParameterCaseText(string value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(string.IsNullOrWhiteSpace(value));
+            Assert.Pass($"{value} {value?.GetType()}");
+        }
+
+        [TestCase(1)]
+        public void TestParameterCaseInteger(int value)
+        {
+            Console.WriteLine($"Value is {value}");
             Assert.Pass($"{value} {value.GetType()}");
         }
     }
