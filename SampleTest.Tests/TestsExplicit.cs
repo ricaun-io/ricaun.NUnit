@@ -170,11 +170,18 @@ namespace SampleTest.Tests.Explicits
         [TestCase(null)]
         [TestCase("")]
         [TestCase(" ")]
-        public void TestParameterText(string value)
+        public void TestParameterCaseText(string value)
         {
             Console.WriteLine($"Value is {value}");
             Assert.IsTrue(string.IsNullOrWhiteSpace(value));
             Assert.Pass($"{value} {value?.GetType()}");
+        }
+
+        [TestCase(1)]
+        public void TestParameterCaseInteger(int value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.Pass($"{value} {value.GetType()}");
         }
     }
 }
