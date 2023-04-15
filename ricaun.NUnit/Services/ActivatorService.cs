@@ -155,16 +155,23 @@ namespace ricaun.NUnit.Services
 
         private bool IsParameterTypeSimilar(ParameterInfo parameter, object parameterValue)
         {
-            if (parameter.ParameterType == typeof(object))
+            var parameterType = parameter.ParameterType;
+            if (parameterType == typeof(object))
                 return true;
 
+            if (parameterValue is null)
+            {
+                // Check if the parameter type is nullable
+                bool isNullable = !parameterType.IsValueType || Nullable.GetUnderlyingType(parameterType) != null;
+                return isNullable;
+            }
+
             var valueType = parameterValue.GetType();
-            bool canAssign = parameter.ParameterType.IsAssignableFrom(valueType);
+            bool canAssign = parameterType.IsAssignableFrom(valueType);
 
             System.Diagnostics.Debug.WriteLine($"{canAssign}:\t {valueType} >> {parameterValue.GetType()}");
 
             return canAssign;
-            //return parameterValue.GetType().Equals(parameter.ParameterType);
         }
 
         #endregion

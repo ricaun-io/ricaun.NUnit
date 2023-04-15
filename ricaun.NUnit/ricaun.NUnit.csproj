@@ -31,7 +31,7 @@
 
   <PropertyGroup>
     <PackageId>ricaun.NUnit</PackageId>
-    <Version>1.2.6</Version>
+    <Version>1.2.7</Version>
     <ProjectGuid>{EBDE7FEE-0D1E-4034-9B44-4C5F4E24F52A}</ProjectGuid>
   </PropertyGroup>
 
