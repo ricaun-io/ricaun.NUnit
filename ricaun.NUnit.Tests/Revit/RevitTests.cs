@@ -47,6 +47,7 @@ namespace ricaun.NUnit.Tests.Revit
                 Console.WriteLine($"{name}");
 
             Assert.AreEqual(4, names.Length);
+            Assert.IsTrue(names.Any(e => e.Contains("(*)")));
         }
 
         [TestCase(2021)]
@@ -64,6 +65,7 @@ namespace ricaun.NUnit.Tests.Revit
                 Console.WriteLine($"{name}");
 
             Assert.AreEqual(4, names.Length);
+            Assert.IsTrue(names.Any(e => e.Contains("(Application)")));
         }
     }
 }
