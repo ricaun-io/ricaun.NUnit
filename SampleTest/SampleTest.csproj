@@ -30,6 +30,7 @@
   <PropertyGroup Condition="$(Configuration.Contains('Debug'))">
     <Revision>$([MSBuild]::Divide($([System.DateTime]::get_Now().get_TimeOfDay().get_TotalSeconds()), 4).ToString('F0'))</Revision>
     <PackageAssemblyVersion>.Dev.$(Revision)</PackageAssemblyVersion>
+    <PackageAssemblyVersion></PackageAssemblyVersion>
   </PropertyGroup>
   
   <PropertyGroup>

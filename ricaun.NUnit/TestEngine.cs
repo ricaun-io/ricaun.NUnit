@@ -104,7 +104,7 @@ namespace ricaun.NUnit
                     var testAssembly = new TestAssemblyService(assemblyFile);
                     return testAssembly.GetTestFullNames().ToArray();
                 }
-                catch { }
+                catch (Exception ex) { Debug.WriteLine(ex); }
             }
             return new string[] { };
         }
