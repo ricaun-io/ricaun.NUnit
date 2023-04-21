@@ -42,16 +42,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Revit\2021\RevitTest1.dll">
+    <None Update="Revit\RevitTest.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Revit\2022\RevitTest1.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Revit\2023\RevitTest1.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Revit\2024\RevitTest1.dll">
+    <None Update="Revit\RevitTestDB.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

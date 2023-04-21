@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Update `GetTestName` with try..catch to change name to * when parameter reference not found.
 ### Tests
 - Add `RevitTests` with assembly sample to test for each version. [2021-2024]  
+- Update `RevitTests` with `UI` or `DB` assembly sample.
 
 ## [1.2.7] / 2023-04-15
 ### Features

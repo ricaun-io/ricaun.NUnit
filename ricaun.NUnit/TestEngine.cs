@@ -114,10 +114,11 @@ namespace ricaun.NUnit
         /// </summary>
         /// <param name="assemblyFile"></param>
         /// <param name="directoryResolver"></param>
+        /// <param name="includeSubDirectories"></param>
         /// <returns></returns>
-        public static string[] GetTestFullNames(string assemblyFile, string directoryResolver)
+        public static string[] GetTestFullNames(string assemblyFile, string directoryResolver, bool includeSubDirectories = false)
         {
-            using (new AssemblyResolveService(directoryResolver))
+            using (new AssemblyResolveService(directoryResolver, includeSubDirectories))
             {
                 return GetTestFullNames(assemblyFile);
             }
