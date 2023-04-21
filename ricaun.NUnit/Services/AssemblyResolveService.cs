@@ -60,7 +60,10 @@ namespace ricaun.NUnit.Services
                         return Assembly.LoadFile(assemblyFile);
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"AssemblyResolve: [Load Exception] {ex}");
+                }
             }
             return null;
         }
@@ -74,7 +77,7 @@ namespace ricaun.NUnit.Services
                 var assemblyName = assembly.GetName();
                 if (IsNameAndCultureEquals(assemblyName, name))
                 {
-                    Debug.WriteLine($"AssemblyResolve: [Loaded] {name}");
+                    Debug.WriteLine($"AssemblyResolve: [Loaded] {assemblyName}");
                     return assembly;
                 }
             }
@@ -89,7 +92,7 @@ namespace ricaun.NUnit.Services
 
         private string CultureToString(CultureInfo culture)
         {
-            if (culture == null) return "";
+            if (culture == null) return string.Empty;
             return culture.Name;
         }
 

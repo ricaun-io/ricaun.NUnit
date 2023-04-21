@@ -41,4 +41,13 @@
     <ProjectReference Include="..\SampleTest.Tests\SampleTest.Tests.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Revit\RevitTest.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Revit\RevitTestDB.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

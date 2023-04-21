@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.2.8] / 2023-04-21
+### Features
+- `GetTestFullNames` return tests with * parameter if reference not found.
+- `GetTestFullNames` ignore test cases with argument reference not found.
+### Updated
+- Update `AnyTestAttribute` with try..catch to ignore test cases with argument reference not found.
+- Update `GetTestName` with try..catch to change name to * when parameter reference not found.
+### Tests
+- Add `RevitTests` with assembly sample to test for each version. [2021-2024]  
+- Update `RevitTests` with `UI` or `DB` assembly sample.
+
 ## [1.2.7] / 2023-04-15
 ### Features
 - TestCase with string appear with `"` in the name.

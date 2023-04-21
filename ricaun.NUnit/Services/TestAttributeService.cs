@@ -19,7 +19,12 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public bool AnyTestAttribute(ICustomAttributeProvider customAttributeProvider)
         {
-            return AnyAttributeName<TestAttribute>(customAttributeProvider) || AnyAttributeName<TestCaseAttribute>(customAttributeProvider);
+            try
+            {
+                return AnyAttributeName<TestAttribute>(customAttributeProvider) || AnyAttributeName<TestCaseAttribute>(customAttributeProvider);
+            }
+            catch (Exception ex) { Debug.WriteLine(ex); }
+            return false;
         }
 
         /// <summary>
@@ -197,16 +202,20 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public string GetTestName(MethodInfo method, NUnitAttribute attribute)
         {
-            if (attribute is TestCaseAttribute testCaseAttribute)
+            try
             {
-                return testCaseAttribute.TestName ?? GetTestNameWithArguments(method, testCaseAttribute.Arguments);
-            }
+                if (attribute is TestCaseAttribute testCaseAttribute)
+                {
+                    return testCaseAttribute.TestName ?? GetTestNameWithArguments(method, testCaseAttribute.Arguments);
+                }
 
-            var parameters = method.GetParameters();
-            if (parameters.Any())
-            {
-                return GetTestNameWithArguments(method, parameters);
+                var parameters = method.GetParameters();
+                if (parameters.Any())
+                {
+                    return GetTestNameWithArguments(method, parameters);
+                }
             }
+            catch { return $"{method.Name}(*)"; }
 
             return method.Name;
         }
