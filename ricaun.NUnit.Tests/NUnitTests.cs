@@ -218,7 +218,7 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestTask*", 8)]
         [TestCase("*AbstractTest?*", 3)]
         [TestCase("*Abstract*", 3)]
-        [TestCase("*", 52)]
+        [TestCase("*", 55)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

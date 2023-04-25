@@ -177,6 +177,16 @@ namespace SampleTest.Tests.Explicits
             Assert.Pass($"{value} {value?.GetType()}");
         }
 
+        [TestCase("*")]
+        [TestCase(".")]
+        [TestCase("°C")]
+        public void TestParameterCaseText_IsNot(string value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(value));
+            Assert.Pass($"{value} {value?.GetType()}");
+        }
+
         [TestCase(1)]
         public void TestParameterCaseInteger(int value)
         {
