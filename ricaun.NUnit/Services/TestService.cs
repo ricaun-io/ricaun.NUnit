@@ -76,18 +76,26 @@ namespace ricaun.NUnit.Services
                 var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
                 var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
 
+                var methodOneTimeSetUps = methods.Where(AnyAttributeName<OneTimeSetUpAttribute>);
+                var methodOneTimeTearDowns = methods.Where(AnyAttributeName<OneTimeTearDownAttribute>).Reverse();
+
+                var methodSetUps = methods.Where(AnyAttributeName<SetUpAttribute>);
+                var methodTearDowns = methods.Where(AnyAttributeName<TearDownAttribute>).Reverse();
+
                 var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
                 var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
 
-                var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
-                if (upOneResult.Success)
+                //var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
+
+                var upOneResult = InvokeResultInstances(methodOneTimeSetUps);
+                if (upOneResult.IsValid())
                 {
                     foreach (var testMethod in testMethods)
                     {
                         foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                         {
                             if (!HasFilterTestMethod(type, testMethod, nUnitAttribute)) continue;
-                            var testModel = InvokeTestInstance(testType, testMethod, methodSetUp, methodTearDown, nUnitAttribute);
+                            var testModel = InvokeTestInstance(testType, testMethod, methodSetUps, methodTearDowns, nUnitAttribute);
 
                             //var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
                             testType.Tests.Add(testModel);
@@ -184,22 +192,6 @@ namespace ricaun.NUnit.Services
             return false;
         }
 
-        ///// <summary>
-        ///// NewTestModel
-        ///// </summary>
-        ///// <param name="method"></param>
-        ///// <param name="nUnitAttribute"></param>
-        ///// <returns></returns>
-        //private TestModel NewTestModel(MethodInfo method, NUnitAttribute nUnitAttribute)
-        //{
-        //    var test = new TestModel();
-        //    test.Name = method.Name;
-        //    test.Alias = GetTestName(method, nUnitAttribute);
-        //    test.FullName = GetTestFullName(method, nUnitAttribute);
-        //    test.Success = true;
-        //    return test;
-        //}
-
         /// <summary>
         /// NewTestModel with type to work with abstract tests
         /// </summary>
@@ -222,11 +214,11 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <param name="testType"></param>
         /// <param name="method"></param>
-        /// <param name="methodSetUp"></param>
-        /// <param name="methodTearDown"></param>
+        /// <param name="methodSetUps"></param>
+        /// <param name="methodTearDowns"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
-        private TestModel InvokeTestInstance(TestTypeModel testType, MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown, NUnitAttribute nUnitAttribute)
+        private TestModel InvokeTestInstance(TestTypeModel testType, MethodInfo method, IEnumerable<MethodInfo> methodSetUps, IEnumerable<MethodInfo> methodTearDowns, NUnitAttribute nUnitAttribute)
         {
             var testModel = NewTestModel(testType, method, nUnitAttribute);
 
@@ -241,29 +233,78 @@ namespace ricaun.NUnit.Services
                     return testModel;
                 }
 
-                var upResult = InvokeResultInstance(methodSetUp);
+                var upResult = InvokeResultInstances(methodSetUps);
                 var methodResult = upResult;
-                if (upResult.Success)
+                if (methodResult.IsValid())
                 {
                     if (nUnitAttribute is TestCaseAttribute testCaseAttribute)
-                        methodResult = InvokeResultInstanceTestCase(method, testCaseAttribute);
+                        methodResult += InvokeResultInstanceTestCase(method, testCaseAttribute);
                     else
-                        methodResult = InvokeResultInstance(method);
+                        methodResult += InvokeResultInstance(method);
                 }
-                var downResult = InvokeResultInstance(methodTearDown);
+                var downResult = InvokeResultInstances(methodTearDowns);
+                methodResult += downResult;
 
-                var success = upResult.Success & methodResult.Success & downResult.Success;
-                var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
+                //var success = upResult.Success & methodResult.Success & downResult.Success;
+                //var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
 
-                testModel.Success = success;
+                testModel.Success = methodResult.Success;
                 testModel.Skipped = methodResult.Skipped;
-                testModel.Message = message;
+                testModel.Message = methodResult.Message;
                 testModel.Console = console.GetString();
                 testModel.Time = console.GetMillis();
             }
 
             return testModel;
         }
+
+        ///// <summary>
+        ///// Invoke Test Instance and Add In <paramref name="testType"/>
+        ///// </summary>
+        ///// <param name="testType"></param>
+        ///// <param name="method"></param>
+        ///// <param name="methodSetUp"></param>
+        ///// <param name="methodTearDown"></param>
+        ///// <param name="nUnitAttribute"></param>
+        ///// <returns></returns>
+        //private TestModel InvokeTestInstance(TestTypeModel testType, MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown, NUnitAttribute nUnitAttribute)
+        //{
+        //    var testModel = NewTestModel(testType, method, nUnitAttribute);
+
+        //    using (var console = new ConsoleWriterDateTime())
+        //    {
+        //        if (IgnoreTestWithAttributes(method, out string messageIgnore))
+        //        {
+        //            testModel.Message = messageIgnore;
+        //            testModel.Console = console.GetString();
+        //            testModel.Time = console.GetMillis();
+        //            testModel.Skipped = true;
+        //            return testModel;
+        //        }
+
+        //        var upResult = InvokeResultInstance(methodSetUp);
+        //        var methodResult = upResult;
+        //        if (upResult.IsValid())
+        //        {
+        //            if (nUnitAttribute is TestCaseAttribute testCaseAttribute)
+        //                methodResult = InvokeResultInstanceTestCase(method, testCaseAttribute);
+        //            else
+        //                methodResult = InvokeResultInstance(method);
+        //        }
+        //        var downResult = InvokeResultInstance(methodTearDown);
+
+        //        var success = upResult.Success & methodResult.Success & downResult.Success;
+        //        var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
+
+        //        testModel.Success = success;
+        //        testModel.Skipped = methodResult.Skipped;
+        //        testModel.Message = message;
+        //        testModel.Console = console.GetString();
+        //        testModel.Time = console.GetMillis();
+        //    }
+
+        //    return testModel;
+        //}
 
         #endregion
 
@@ -274,6 +315,41 @@ namespace ricaun.NUnit.Services
             public bool Success { get; set; } = true;
             public bool Skipped { get; set; } = false;
             public string Message { get; set; }
+
+            /// <summary>
+            /// Is Success and Not Skipped
+            /// </summary>
+            /// <returns></returns>
+            public bool IsValid()
+            {
+                return Success && !Skipped;
+            }
+
+            /// <summary>
+            /// Join InvokeResult
+            /// </summary>
+            /// <param name="left"></param>
+            /// <param name="right"></param>
+            /// <returns></returns>
+            public static InvokeResult operator +(InvokeResult left, InvokeResult right)
+            {
+                left.Success = left.Success & right.Success;
+                left.Skipped = left.Skipped | right.Skipped;
+                left.Message = string.Join(Environment.NewLine, left.Message, right.Message).Trim();
+                return left;
+            }
+        }
+        private InvokeResult InvokeResultInstances(IEnumerable<MethodInfo> methods)
+        {
+            var result = new InvokeResult();
+            foreach (var method in methods)
+            {
+                var methodResult = InvokeResultInstance(method);
+                result += methodResult;
+                if (result.IsValid() == false)
+                    break;
+            }
+            return result;
         }
         private InvokeResult InvokeResultInstance(MethodInfo method)
         {

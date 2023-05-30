@@ -152,10 +152,12 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
-        public void TestAssembly()
+        public void TestAssembly_MultipleOrderTest()
         {
             Console.WriteLine(fileName);
+            TestEngineFilter.Add("*.MultipleOrderTest.Test?.Test?");
             var testModel = TestEngine.TestAssembly(pathFile);
+            TestEngineFilter.Reset();
             var text = testModel.AsString();
             Console.WriteLine(text);
             Console.WriteLine(testModel.Message);
@@ -179,6 +181,18 @@ namespace ricaun.NUnit.Tests
 
             //var failExplictTests = testModel.TestCount - (int)(testModel.TestCount * testModel.SuccessHate);
             return failExplictTests;
+        }
+
+        [Test]
+        public void TestAssembly()
+        {
+            Console.WriteLine(fileName);
+            var testModel = TestEngine.TestAssembly(pathFile);
+            var text = testModel.AsString();
+            Console.WriteLine(text);
+            Console.WriteLine(testModel.Message);
+            Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+            Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
         }
 
         class BaseCloneable : ICloneable
@@ -216,9 +230,10 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestCases(?)", 2)]
         [TestCase("*.TestSame?", 2)]
         [TestCase("*.TestTask*", 8)]
+        [TestCase("*.MultipleOrderTest*", 2)]
         [TestCase("*AbstractTest?*", 3)]
         [TestCase("*Abstract*", 3)]
-        [TestCase("*", 55)]
+        [TestCase("*", 57)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

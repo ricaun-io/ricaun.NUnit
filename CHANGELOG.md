@@ -8,9 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Features
 - Multiple `SetUp` and `TearDown` methods
 - Tests with `Order` attribute enable
+- Ignore works with `SetUp` and `TearDown` tests.
 ### Tests
 - Add `MultipleOrderTest` test
 - Add test `°C` string
+### Added
+- Add `IsValid` and `operator+` in `InvokeResult`
+- Add `OrderTestAttribute` in `TestAttributeService`
 
 ## [1.2.8] / 2023-04-21
 ### Features

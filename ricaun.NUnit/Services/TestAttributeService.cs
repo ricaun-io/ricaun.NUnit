@@ -28,6 +28,24 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
+        /// OrderTestAttribute number
+        /// </summary>
+        /// <param name="customAttributeProvider"></param>
+        /// <returns></returns>
+        public int OrderTestAttribute(ICustomAttributeProvider customAttributeProvider)
+        {
+            try
+            {
+                if (TryGetAttribute<OrderAttribute>(customAttributeProvider, out OrderAttribute orderAttribute))
+                {
+                    return orderAttribute.Order;
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine(ex); }
+            return 0;
+        }
+
+        /// <summary>
         /// AnyMethodWithTestAttribute
         /// </summary>
         /// <param name="type"></param>
@@ -44,7 +62,7 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public IEnumerable<MethodInfo> GetMethodWithTestAttribute(Type type)
         {
-            return type.GetMethods().Where(AnyTestAttribute).OrderBy(e => e.Name);
+            return type.GetMethods().Where(AnyTestAttribute).OrderBy(e => e.Name).OrderBy(OrderTestAttribute);
         }
 
         /// <summary>

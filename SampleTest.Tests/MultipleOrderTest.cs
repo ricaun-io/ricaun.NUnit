@@ -16,6 +16,16 @@ namespace SampleTest.Tests
         {
             Name += "b";
         }
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            Name += "c";
+        }
+        [OneTimeTearDown]
+        public void OneTimeTearDownTwo()
+        {
+            Name += "d";
+        }
         [SetUp]
         public void SetUp()
         {
@@ -25,6 +35,16 @@ namespace SampleTest.Tests
         public void SetUpTwo()
         {
             Name += "B";
+        }
+        [TearDown]
+        public void TearDownTwo()
+        {
+            Name += "D";
+        }
+        [TearDown]
+        public void TearDown()
+        {
+            Name += "C";
         }
         [Test]
         [Order(1)]
@@ -38,7 +58,7 @@ namespace SampleTest.Tests
         public void Test0()
         {
             Console.WriteLine(Name);
-            Assert.AreEqual("abABAB", Name);
+            Assert.AreEqual("abABCDAB", Name);
         }
     }
 }
