@@ -152,10 +152,46 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
-        public void TestAssembly()
+        public void TestAssembly_AbstractTest()
         {
             Console.WriteLine(fileName);
+            TestEngineFilter.Add("*Abstract*");
             var testModel = TestEngine.TestAssembly(pathFile);
+            TestEngineFilter.Reset();
+            var text = testModel.AsString();
+            Console.WriteLine(text);
+            Console.WriteLine(testModel.Message);
+            Console.WriteLine();
+            foreach (var test in testModel.Tests.SelectMany(e => e.Tests))
+            {
+                Console.WriteLine($"{test.Name}");
+                Console.WriteLine($"{test.Console}");
+            }
+            Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+            Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
+        }
+
+        [Test]
+        public void TestAssembly_MultipleTest()
+        {
+            Console.WriteLine(fileName);
+            TestEngineFilter.Add("*.MultipleTest.*");
+            var testModel = TestEngine.TestAssembly(pathFile);
+            TestEngineFilter.Reset();
+            var text = testModel.AsString();
+            Console.WriteLine(text);
+            Console.WriteLine(testModel.Message);
+            Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+            Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
+        }
+
+        [Test]
+        public void TestAssembly_OrderTest()
+        {
+            Console.WriteLine(fileName);
+            TestEngineFilter.Add("*.OrderTest.*");
+            var testModel = TestEngine.TestAssembly(pathFile);
+            TestEngineFilter.Reset();
             var text = testModel.AsString();
             Console.WriteLine(text);
             Console.WriteLine(testModel.Message);
@@ -179,6 +215,18 @@ namespace ricaun.NUnit.Tests
 
             //var failExplictTests = testModel.TestCount - (int)(testModel.TestCount * testModel.SuccessHate);
             return failExplictTests;
+        }
+
+        [Test]
+        public void TestAssembly()
+        {
+            Console.WriteLine(fileName);
+            var testModel = TestEngine.TestAssembly(pathFile);
+            var text = testModel.AsString();
+            Console.WriteLine(text);
+            Console.WriteLine(testModel.Message);
+            Assert.IsTrue(testModel.TestCount > 0, $"{fileName} with no Tests.");
+            Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
         }
 
         class BaseCloneable : ICloneable
@@ -216,9 +264,11 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestCases(?)", 2)]
         [TestCase("*.TestSame?", 2)]
         [TestCase("*.TestTask*", 8)]
-        [TestCase("*AbstractTest?*", 3)]
-        [TestCase("*Abstract*", 3)]
-        [TestCase("*", 52)]
+        [TestCase("*.OrderTest.*", 2)]
+        [TestCase("*.MultipleTest.*", 2)]
+        [TestCase("*AbstractTest?*", 4)]
+        [TestCase("*Abstract*", 4)]
+        [TestCase("*", 60)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

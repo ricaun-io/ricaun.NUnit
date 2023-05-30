@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.2.9] / 2023-05-29 - 2023-04-25
+### Features
+- Multiple `SetUp` and `TearDown` methods
+- Tests with `Order` attribute enable
+- Ignore works with `SetUp` and `TearDown` tests.
+### Tests
+- Add `MultipleOrderTest` test
+- Add test `°C` string
+### Added
+- Add `OrderByDeclaringType` in `TestService` to fix `SetUp` and `TearDown` Methods order.
+- Add `IsValid` and `operator+` in `InvokeResult`
+- Add `OrderTestAttribute` in `TestAttributeService`
+
 ## [1.2.8] / 2023-04-21
 ### Features
 - `GetTestFullNames` return tests with * parameter if reference not found.
@@ -196,6 +209,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Test with Console Output
 
 [vNext]: ../../compare/1.0.0...HEAD
+[1.3.0]: ../../compare/1.2.9...1.3.0
+[1.2.9]: ../../compare/1.2.8...1.2.9
 [1.2.8]: ../../compare/1.2.7...1.2.8
 [1.2.7]: ../../compare/1.2.6...1.2.7
 [1.2.6]: ../../compare/1.2.5...1.2.6
