@@ -3,7 +3,7 @@ using System;
 
 namespace SampleTest.Tests
 {
-    public class MultipleOrderTest
+    public class MultipleTest
     {
         string Name = "";
         [OneTimeSetUp]

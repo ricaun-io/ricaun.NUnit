@@ -72,20 +72,31 @@ namespace ricaun.NUnit.Services
                 return testType;
             }
 
+
+
             {
-                var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
-                var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
+                //var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
+                //var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
 
-                var methodOneTimeSetUps = methods.Where(AnyAttributeName<OneTimeSetUpAttribute>);
-                var methodOneTimeTearDowns = methods.Where(AnyAttributeName<OneTimeTearDownAttribute>).Reverse();
+                //var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
+                //var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
 
-                var methodSetUps = methods.Where(AnyAttributeName<SetUpAttribute>);
-                var methodTearDowns = methods.Where(AnyAttributeName<TearDownAttribute>).Reverse();
+                bool OrderByDeclaringType(MethodInfo method)
+                {
+                    return method.DeclaringType == type;
+                }
 
-                var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
-                var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
+                var methodOneTimeSetUps = methods.Where(AnyAttributeName<OneTimeSetUpAttribute>)
+                    .OrderBy(OrderByDeclaringType);
+                var methodOneTimeTearDowns = methods.Where(AnyAttributeName<OneTimeTearDownAttribute>)
+                    .OrderBy(OrderByDeclaringType)
+                    .Reverse();
 
-                //var upOneResult = InvokeResultInstance(methodOneTimeSetUp);
+                var methodSetUps = methods.Where(AnyAttributeName<SetUpAttribute>)
+                    .OrderBy(OrderByDeclaringType);
+                var methodTearDowns = methods.Where(AnyAttributeName<TearDownAttribute>)
+                    .OrderBy(OrderByDeclaringType)
+                    .Reverse();
 
                 var upOneResult = InvokeResultInstances(methodOneTimeSetUps);
                 if (upOneResult.IsValid())
@@ -103,7 +114,7 @@ namespace ricaun.NUnit.Services
                         }
                     }
                 }
-                var downOneResult = InvokeResultInstance(methodOneTimeTearDown);
+                var downOneResult = InvokeResultInstances(methodOneTimeTearDowns);
 
                 var success = upOneResult.Success & downOneResult.Success;
                 var skipped = upOneResult.Skipped & downOneResult.Skipped;
@@ -309,7 +320,6 @@ namespace ricaun.NUnit.Services
         #endregion
 
         #region InvokeResult
-
         private class InvokeResult
         {
             public bool Success { get; set; } = true;
@@ -344,8 +354,7 @@ namespace ricaun.NUnit.Services
             var result = new InvokeResult();
             foreach (var method in methods)
             {
-                var methodResult = InvokeResultInstance(method);
-                result += methodResult;
+                result += InvokeResultInstance(method);
                 if (result.IsValid() == false)
                     break;
             }
@@ -447,7 +456,6 @@ namespace ricaun.NUnit.Services
             }
             return result;
         }
-
         private bool IsValueExpectedResult(MethodInfo method, object value, out object expectedResult)
         {
             expectedResult = null;
@@ -460,7 +468,6 @@ namespace ricaun.NUnit.Services
             var equals = (value is not null) ? value.Equals(expectedResult) : expectedResult is null;
             return equals;
         }
-
         private bool IsValueExpectedResult(TestCaseAttribute testCase, object value, out object expectedResult)
         {
             expectedResult = null;
@@ -471,7 +478,6 @@ namespace ricaun.NUnit.Services
             var equals = (value is not null) ? value.Equals(expectedResult) : expectedResult is null;
             return equals;
         }
-
         #endregion
     }
 }

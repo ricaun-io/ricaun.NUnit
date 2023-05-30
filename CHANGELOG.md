@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add `MultipleOrderTest` test
 - Add test `°C` string
 ### Added
+- Add `OrderByDeclaringType` in `TestService` to fix `SetUp` and `TearDown` Methods order.
 - Add `IsValid` and `operator+` in `InvokeResult`
 - Add `OrderTestAttribute` in `TestAttributeService`
 
