@@ -22,6 +22,7 @@ The tests use the [NUnit](https://www.nuget.org/packages/NUnit/) Attributes `[Te
 * The attribute `[SetUp]` and `[TearDown]` is executed for each method with the attribute `[Test]`.
 * The attribute `[OneTimeSetUp]` and `[OneTimeTearDown]` is executed one time before each method with the attribute `[Test]`.
 * The attribute `[Ignore]` makes the class or method to be ignored.
+* The attribute `[Order]` makes the order that the test will run in.
 * The attribute `[Explicit]` works only if the `Filter` is enable.
 * The attribute `[TestCase]` disable the `Optional Parameters` 
 
