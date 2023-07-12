@@ -160,6 +160,20 @@ namespace ricaun.NUnit
         {
             return GetReferencedAssemblyNUnit(assemblyFile) is not null;
         }
+        /// <summary>
+        /// Check <paramref name="assemblyFile"/> assembly contain NUnit reference
+        /// </summary>
+        /// <remarks>
+        /// This method use <seealso cref="Assembly.ReflectionOnlyLoadFrom"/> 
+        /// </remarks>
+        /// <param name="assemblyFile"></param>
+        /// <param name="assemblyName"></param>
+        /// <returns></returns>
+        public static bool ContainNUnit(string assemblyFile, out AssemblyName assemblyName)
+        {
+            assemblyName = GetReferencedAssemblyNUnit(assemblyFile);
+            return assemblyName is not null;
+        }
         #endregion
 
         #region nunit.framework
@@ -209,7 +223,7 @@ namespace ricaun.NUnit
 
             if (nunitReference.Version != VersionNUnit)
             {
-                var message = $"'{NUNIT_ASSEMBLY}' version {nunitReference.Version} is not allow. Use the version {VersionNUnit}.";
+                var message = $"'{NUNIT_ASSEMBLY}' version {nunitReference.Version.ToString(3)} is not allow. Use the version {VersionNUnit.ToString(3)}.";
                 Debug.WriteLine(message);
                 throw new FileLoadException(message);
             }

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] / 2023-07-12
+### Features
+- `TestEngine.Fail` to create a fail `TestAssemblyModel` with exception.
+### Added
+- Add `ContainNUnit` with out `AssemblyName`
+
 ## [1.2.9] / 2023-05-29 - 2023-04-25
 ### Features
 - Multiple `SetUp` and `TearDown` methods

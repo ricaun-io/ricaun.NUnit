@@ -36,6 +36,15 @@ namespace ricaun.NUnit.Tests
         }
 
         [Test]
+        public void TestAssembly_ContainNUnit_Version()
+        {
+            Console.WriteLine(fileName);
+            Assert.IsTrue(TestEngine.ContainNUnit(pathFile, out AssemblyName assemblyName));
+            Console.WriteLine(assemblyName);
+            Assert.AreEqual(TestEngine.VersionNUnit, assemblyName.Version);
+        }
+
+        [Test]
         public void TestAssembly_Names()
         {
             var names = TestEngine.GetTestFullNames(pathFile);
@@ -45,6 +54,32 @@ namespace ricaun.NUnit.Tests
                 Console.WriteLine($"{name}");
             }
             Assert.IsNotEmpty(names);
+        }
+
+        [Test]
+        public void TestAssembly_Fail()
+        {
+            var names = TestEngine.GetTestFullNames(pathFile);
+            var model = TestEngine.Fail(pathFile, new Exception());
+            var tests = model.Tests.SelectMany(type => type.Tests).ToArray();
+            foreach (var test in tests)
+            {
+                Console.WriteLine(test);
+            }
+            Assert.AreEqual(names.Length, tests.Length);
+        }
+
+        [Test]
+        public void TestAssembly_Fail_Names()
+        {
+            var names = new[] { "Test", "Test2" };
+            var model = TestEngine.Fail(pathFile, new Exception(), names);
+            var tests = model.Tests.SelectMany(type => type.Tests).ToArray();
+            foreach (var test in tests)
+            {
+                Console.WriteLine(test);
+            }
+            Assert.AreEqual(names.Length, tests.Length);
         }
 
         [Test]
