@@ -158,6 +158,19 @@ var test = TestEngine.TestAssembly(location);
 TestEngine.Result = null;
 ```
 
+### Fail
+
+`Fail` allow to create a test with a custom `Exception` for each `testNames`.
+
+``` C#
+var exception = new Exception();
+var test = TestEngine.Fail(location, exception);
+```
+``` C#
+var testNames = new string[] { "Test1", "Test2" };
+var test = TestEngine.Fail(location, exception, testNames);
+```
+
 ### Optional Parameters
 
 Is possible to add optional parameters in the class or method tested. 
