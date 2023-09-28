@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFrameworks>net45;net6.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -32,13 +32,24 @@
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.13.3" />
+    <!--
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" IncludeAssets="build; compile" PrivateAssets="All" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" IncludeAssets="build; compile" PrivateAssets="All" />
+    -->
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ricaun.NUnit\ricaun.NUnit.csproj" />
     <ProjectReference Include="..\SampleTest.Tests\SampleTest.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
+    <Compile Remove="Revit\**" />
+    <EmbeddedResource Remove="Revit\**" />
+    <None Remove="Revit\**" />
+    <Page Remove="Revit\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -68,6 +68,9 @@ namespace ricaun.NUnit.Extensions
                     tcs.SetException(e);
                 }
             });
+#if NET
+if (OperatingSystem.IsWindows())
+#endif
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             return tcs.Task;
@@ -93,6 +96,9 @@ namespace ricaun.NUnit.Extensions
                     tcs.SetException(e);
                 }
             });
+#if NET
+if (OperatingSystem.IsWindows())
+#endif
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             return tcs.Task;
