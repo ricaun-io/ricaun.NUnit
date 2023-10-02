@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove `ReflectionOnlyLoadFrom` to work with `net6.0`.
 - Update `TaskSTA` to only `windows` when `NET`
 - Update `Extensions` classes to internal
-- Update `csproj` test adapters
+- Update `csproj` test adapters version
 ### Added
 - Add `ReferenceLoaderUtils` to read `Assembly` references with `NET` and `NETFRAMEWORK`.
 ### Tests
