@@ -1,17 +1,12 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ricaun.NUnit.Extensions
 {
     /// <summary>
     /// NUnitAttributeExtension
     /// </summary>
-    public static class NUnitAttributeExtension
+    internal static class NUnitAttributeExtension
     {
         private const string REASON_FIELD = "_reason";
 

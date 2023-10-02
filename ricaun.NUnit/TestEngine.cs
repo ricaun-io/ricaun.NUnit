@@ -185,10 +185,14 @@ namespace ricaun.NUnit
         /// <returns></returns>
         private static AssemblyName GetReferencedAssemblyNUnit(string assemblyFile)
         {
-            var assembly = ReflectionOnlyLoadFrom(assemblyFile);
+            //var assembly = ReflectionOnlyLoadFrom(assemblyFile);
 
-            if (assembly is null) return null;
-            AssemblyName nunitReference = GetNUnitReference(assembly);
+            //if (assembly is null) return null;
+            //AssemblyName nunitReference = GetNUnitReference(assembly);
+
+            var references = ReferenceLoaderUtils.GetReferencedAssemblies(assemblyFile);
+
+            var nunitReference = references.FirstOrDefault(e => e.Name.Equals(NUNIT_ASSEMBLY));
 
             return nunitReference;
         }
