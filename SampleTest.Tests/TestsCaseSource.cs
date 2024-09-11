@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SampleTest.Tests
@@ -40,13 +41,6 @@ namespace SampleTest.Tests
             Assert.True(i > 0);
         }
 
-        [TestCaseSource(typeof(AnotherClass), nameof(AnotherClass.CasesSource))]
-        public void CasesSourceAnotherClassTest(int i, int j, int k)
-        {
-            Assert.True(i > 0);
-            Assert.True(j > 0);
-            Assert.True(k > 0);
-        }
         public class AnotherClass
         {
             public static object[] CasesSource =
@@ -55,6 +49,29 @@ namespace SampleTest.Tests
                 new object[] { 2, 3, 4 },
                 new object[] { 3, 4, 5 }
             };
+        }
+        [TestCaseSource(typeof(AnotherClass), nameof(AnotherClass.CasesSource))]
+        public void CasesSourceAnotherClassTest(int i, int j, int k)
+        {
+            Assert.True(i > 0);
+            Assert.True(j > 0);
+            Assert.True(k > 0);
+        }
+
+        public static IEnumerable TestCaseDatas
+        {
+            get
+            {
+                yield return new TestCaseData(0).Returns(false);
+                yield return new TestCaseData(1).Returns(true);
+                yield return new TestCaseData(2).Returns(true);
+                yield return new TestCaseData(3).Returns(true);
+            }
+        }
+        [TestCaseSource(nameof(TestCaseDatas))]
+        public bool CasesSourceTestCaseDataTest(int i)
+        {
+            return i > 0;
         }
     }
 }

@@ -28,16 +28,24 @@ namespace ricaun.NUnit.Services
                 {
                     foreach (object item in source)
                     {
+                        var testCase = new TestCaseAttribute(item);
                         if (item is Array array)
                         {
                             var args = new object[array.Length];
                             for (var i = 0; i < array.Length; i++)
                                 args[i] = array.GetValue(i);
 
-                            attributes.Add(new TestCaseAttribute(args));
-                            continue;
+                            testCase = new TestCaseAttribute(args);
                         }
-                        attributes.Add(new TestCaseAttribute(item));
+                        else if (item is TestCaseData testCaseData)
+                        {
+                            testCase = new TestCaseAttribute(testCaseData.Arguments);
+
+                            if (testCaseData.HasExpectedResult)
+                                testCase.ExpectedResult = testCaseData.ExpectedResult;
+                        }
+
+                        attributes.Add(testCase);
                     }
                 }
             }
