@@ -5,8 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [1.4.0] / 2024-09-11
+### Features
+- Support `TestCaseSourceAttribute` with `IEnumerable` and `object[]` parameters.
 ### Updated
 - Update to support target `net48` and `net8.0`.
+- Update `TestAttributeService` to convert `TestCaseSourceAttribute` to `TestCaseAttribute`.
+### Added
+- Add `TestCaseSourceService` with `TestCaseSourceAttribute` implementation.
+### Tests
+- Add `TestsCaseSource` sample tests.
 
 ## [1.3.1] / 2023-09-28
 ### Features

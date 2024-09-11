@@ -21,7 +21,9 @@ namespace ricaun.NUnit.Services
         {
             try
             {
-                return AnyAttributeName<TestAttribute>(customAttributeProvider) || AnyAttributeName<TestCaseAttribute>(customAttributeProvider);
+                return AnyAttributeName<TestAttribute>(customAttributeProvider) ||
+                    AnyAttributeName<TestCaseAttribute>(customAttributeProvider) ||
+                    AnyAttributeName<TestCaseSourceAttribute>(customAttributeProvider);
             }
             catch (Exception ex) { Debug.WriteLine(ex); }
             return false;
@@ -271,6 +273,10 @@ namespace ricaun.NUnit.Services
             {
                 attributes.AddRange(testCases);
                 return testCases.OrderBy(e => GetTestName(method, e));
+            }
+            if (TryGetAttribute<TestCaseSourceAttribute>(method, out TestCaseSourceAttribute testCaseSource))
+            {
+                return TestCaseSourceService.GetTestCasesFromSource(method, testCaseSource);
             }
             var attribute = GetAttribute<TestAttribute>(method);
             if (attribute is not null) attributes.Add(attribute);
