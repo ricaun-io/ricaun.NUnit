@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.4.0] / 2024-09-11
 ### Features
-- Support `TestCaseSourceAttribute` with `IEnumerable` and `object[]` parameters.
+- Support `TestCaseSourceAttribute` with `IEnumerable` and `object[]` parameters. (Fix: #27)
 ### Updated
 - Update to support target `net48` and `net8.0`.
 - Update `TestAttributeService` to convert `TestCaseSourceAttribute` to `TestCaseAttribute`.
