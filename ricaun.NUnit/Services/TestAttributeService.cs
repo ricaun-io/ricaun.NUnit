@@ -21,9 +21,7 @@ namespace ricaun.NUnit.Services
         {
             try
             {
-                return AnyAttributeName<TestAttribute>(customAttributeProvider) ||
-                    AnyAttributeName<TestCaseAttribute>(customAttributeProvider) ||
-                    AnyAttributeName<TestCaseSourceAttribute>(customAttributeProvider);
+                return AnyAttributeName(customAttributeProvider, typeof(TestAttribute), typeof(TestCaseAttribute), typeof(TestCaseSourceAttribute));
             }
             catch (Exception ex) { Debug.WriteLine(ex); }
             return false;

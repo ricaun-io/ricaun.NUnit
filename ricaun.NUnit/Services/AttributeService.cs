@@ -15,6 +15,20 @@ namespace ricaun.NUnit.Services
         /// <summary>
         /// AnyAttributeName
         /// </summary>
+        /// <param name="customAttributeProvider"></param>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        public bool AnyAttributeName(ICustomAttributeProvider customAttributeProvider, params Type[] types)
+        {
+            var names = types.Select(e => e.Name);
+            return customAttributeProvider
+                .GetCustomAttributes(true)
+                .Any(e => names.Contains(e.GetType().Name));
+        }
+
+        /// <summary>
+        /// AnyAttributeName
+        /// </summary>
         /// <typeparam name="TCustomAttributeType"></typeparam>
         /// <param name="customAttributeProvider"></param>
         /// <returns></returns>
