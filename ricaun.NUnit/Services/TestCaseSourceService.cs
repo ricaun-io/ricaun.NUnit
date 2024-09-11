@@ -12,9 +12,15 @@ namespace ricaun.NUnit.Services
     /// </summary>
     internal static class TestCaseSourceService
     {
-        internal static IEnumerable<NUnitAttribute> GetTestCasesFromSource(MethodInfo method, TestCaseSourceAttribute testCaseSource)
+        /// <summary>
+        /// Get TestCaseAttribute from TestCaseSourceAttribute
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="testCaseSource"></param>
+        /// <returns></returns>
+        internal static IEnumerable<TestCaseAttribute> GetTestCasesFromSource(MethodInfo method, TestCaseSourceAttribute testCaseSource)
         {
-            var attributes = new List<NUnitAttribute>();
+            var attributes = new List<TestCaseAttribute>();
             try
             {
                 IEnumerable source = GetTestCaseSource(method, testCaseSource);
@@ -22,6 +28,15 @@ namespace ricaun.NUnit.Services
                 {
                     foreach (object item in source)
                     {
+                        if (item is Array array)
+                        {
+                            var args = new object[array.Length];
+                            for (var i = 0; i < array.Length; i++)
+                                args[i] = array.GetValue(i);
+
+                            attributes.Add(new TestCaseAttribute(args));
+                            continue;
+                        }
                         attributes.Add(new TestCaseAttribute(item));
                     }
                 }

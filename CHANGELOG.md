@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Updated
 - Update to support target `net48` and `net8.0`.
 - Update `TestAttributeService` to convert `TestCaseSourceAttribute` to `TestCaseAttribute`.
+- Update `TestCaseSourceService` to support multiple parameters.
 ### Added
 - Add `TestCaseSourceService` with `TestCaseSourceAttribute` implementation.
 ### Tests

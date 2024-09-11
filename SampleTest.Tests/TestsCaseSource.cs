@@ -39,5 +39,22 @@ namespace SampleTest.Tests
         {
             Assert.True(i > 0);
         }
+
+        [TestCaseSource(typeof(AnotherClass), nameof(AnotherClass.CasesSource))]
+        public void CasesSourceAnotherClassTest(int i, int j, int k)
+        {
+            Assert.True(i > 0);
+            Assert.True(j > 0);
+            Assert.True(k > 0);
+        }
+        public class AnotherClass
+        {
+            public static object[] CasesSource =
+            {
+                new object[] { 1, 2, 3 },
+                new object[] { 2, 3, 4 },
+                new object[] { 3, 4, 5 }
+            };
+        }
     }
 }
