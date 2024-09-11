@@ -212,7 +212,7 @@ public class TestParameterClass : IDisposable
 
 ## License
 
-This project is [licensed](LICENSE) under the [MIT Licence](https://en.wikipedia.org/wiki/MIT_License).
+This project is [licensed](LICENSE) under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 
 ---
 
