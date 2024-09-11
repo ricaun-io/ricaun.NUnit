@@ -203,6 +203,7 @@ namespace ricaun.NUnit
                 .FirstOrDefault(e => e.Name.Equals(NUNIT_ASSEMBLY));
         }
 
+        [Obsolete]
         private static Assembly ReflectionOnlyLoadFrom(string assemblyFile)
         {
             try

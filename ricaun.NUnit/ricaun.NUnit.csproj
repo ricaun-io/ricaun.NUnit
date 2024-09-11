@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;netstandard2.0;net5.0</TargetFrameworks>
+    <TargetFrameworks>net45;net48;netstandard2.0;net5.0;net8.0</TargetFrameworks>
     <NoWarn>$(NoWarn);NETSDK1138</NoWarn>
     <OutputType>Library</OutputType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,7 +31,6 @@
 
   <PropertyGroup>
     <PackageId>ricaun.NUnit</PackageId>
-    <Version>1.3.1</Version>
     <ProjectGuid>{EBDE7FEE-0D1E-4034-9B44-4C5F4E24F52A}</ProjectGuid>
   </PropertyGroup>
 
