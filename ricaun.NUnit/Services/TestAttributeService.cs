@@ -119,18 +119,6 @@ namespace ricaun.NUnit.Services
             return fullNameType + "." + method.Name;
         }
 
-        ///// <summary>
-        ///// GetTestFullName
-        ///// </summary>
-        ///// <param name="method"></param>
-        ///// <param name="nUnitAttribute"></param>
-        ///// <returns></returns>
-        //[Obsolete]
-        //public string GetTestFullName(MethodInfo method, NUnitAttribute nUnitAttribute)
-        //{
-        //    return GetMethodFullName(method) + "." + GetTestName(method, nUnitAttribute);
-        //}
-
         /// <summary>
         /// GetTestFullName
         /// </summary>
