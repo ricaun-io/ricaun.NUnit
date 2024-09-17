@@ -186,6 +186,26 @@ namespace ricaun.NUnit.Tests
             Assert.IsNotEmpty(typeMethods);
         }
 
+        [TestCase("InternalTests")]
+        public void TestAssembly_Service_UseExported(string testNameNotPublic)
+        {
+            var service = new Services.TestAssemblyService(pathFile);
+            var testFullNames = service.GetTestFullNames();
+            var exportedTestFullNames = service.GetTestFullNames(true);
+
+            Assert.IsNotEmpty(testFullNames);
+            Assert.IsNotEmpty(exportedTestFullNames);
+
+            Console.WriteLine($"Test Count: {testFullNames.Count()}");
+            Console.WriteLine($"Exported Count: {exportedTestFullNames.Count()}");
+
+            var containsTestName = testFullNames.Any(e => e.Contains(testNameNotPublic));
+            var notContatinsTestName = exportedTestFullNames.Any(e => e.Contains(testNameNotPublic));
+
+            Assert.IsTrue(containsTestName);
+            Assert.IsFalse(notContatinsTestName);
+        }
+
         [Test]
         public void TestAssembly_AbstractTest()
         {
@@ -304,7 +324,8 @@ namespace ricaun.NUnit.Tests
         [TestCase("*AbstractTest?*", 4)]
         [TestCase("*Abstract*", 4)]
         [TestCase("*.TestsCaseSource.*", 17)]
-        [TestCase("*", 77)]
+        [TestCase("*.InternalTests.*", 1)]
+        [TestCase("*", 78)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

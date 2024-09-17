@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add `TestCaseSourceService` with `TestCaseSourceAttribute` implementation.
 ### Tests
 - Add `TestsCaseSource` sample tests.
+- Add `InternalTests` to test `ExportedTypes` only.
 
 ## [1.3.1] / 2023-09-28
 ### Features
