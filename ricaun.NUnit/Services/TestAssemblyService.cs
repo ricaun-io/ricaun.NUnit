@@ -70,16 +70,6 @@ namespace ricaun.NUnit.Services
             return types.OrderBy(e => e.FullName);
         }
 
-        ///// <summary>
-        ///// GetTestTypeMethods
-        ///// </summary>
-        ///// <returns></returns>
-        //[Obsolete("Does not work with Abstract")]
-        //public IEnumerable<MethodInfo> GetTestTypeMethods()
-        //{
-        //    return GetTestTypes().SelectMany(e => e.GetMethods().Where(AnyTestAttribute)).OrderBy(e => GetMethodFullName(e));
-        //}
-
         /// <summary>
         /// GetTestDictionaryTypeMethods
         /// </summary>
@@ -118,16 +108,6 @@ namespace ricaun.NUnit.Services
                 }
             }
         }
-
-        ///// <summary>
-        ///// GetTestTypeMethods
-        ///// </summary>
-        ///// <param name="fullName"></param>
-        ///// <returns></returns>
-        //public MethodInfo GetTestTypeMethods(string fullName)
-        //{
-        //    return GetTestTypeMethods().FirstOrDefault(e => GetMethodFullName(e) == fullName);
-        //}
 
         /// <summary>
         /// Test
