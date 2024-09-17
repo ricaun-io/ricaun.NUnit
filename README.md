@@ -26,6 +26,7 @@ The tests use the [NUnit](https://www.nuget.org/packages/NUnit/) Attributes `[Te
 * The attribute `[Order]` makes the order that the test will run in.
 * The attribute `[Explicit]` works only if the `Filter` is enable.
 * The attribute `[TestCase]` disable the `Optional Parameters` 
+* The attribute `[TestCaseSource]` disable the `Optional Parameters` 
 
 ```C#
 public class TestSampleClass
@@ -85,6 +86,13 @@ public class TestSampleClass
     [TestCase(2)]
     [TestCase(3)]
     public void CasesTest(int i)
+    {
+        Assert.True(i > 0);
+    }
+
+    public static int[] CasesSource = new[] { 1, 2, 3 };
+    [TestCaseSource(nameof(CasesSource))]
+    public void CasesSourceTest(int i)
     {
         Assert.True(i > 0);
     }
