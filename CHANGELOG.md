@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Update `TestCaseSourceService` to support multiple parameters.
 - Update `TestCaseSourceService` to support `TestCaseData`.
 - Update `GetTestFullNames` to find tests using `ExportedTypes`.
+- Update `RunTests` to have `ExportedTypes` options.
 ### Added
 - Add `TestCaseSourceService` with `TestCaseSourceAttribute` implementation.
 ### Tests

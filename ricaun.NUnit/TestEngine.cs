@@ -51,6 +51,7 @@ namespace ricaun.NUnit
         /// <returns>The TestAssemblyModel object</returns>
         public static TestAssemblyModel TestAssembly(string assemblyFile, params object[] parameters)
         {
+            Exceptions.Clear();
             var testAssemblyModel = new TestAssemblyModel();
             using (var console = new ConsoleWriterDateTime())
             {
@@ -72,14 +73,32 @@ namespace ricaun.NUnit
 
                         ValidateTestAssemblyNUnitVersion(testAssembly.Assembly);
 
-                        var tests = testAssembly.RunTests();
+                        try
+                        {
+                            testAssemblyModel.Tests.AddRange(testAssembly.RunTests());
+                        }
+                        catch (Exception ex)
+                        {
+                            Exceptions.Add(ex);
+                            Debug.WriteLine(ex);
 
-                        testAssemblyModel.Tests.AddRange(tests);
+                            try
+                            {
+                                testAssemblyModel.Tests.AddRange(testAssembly.RunTests(true));
+                            }
+                            catch (Exception ex2)
+                            {
+                                Exceptions.Add(ex2);
+                                Debug.WriteLine(ex2);
+                            }
+                        }
+
                         testAssemblyModel.Success = !testAssemblyModel.Tests.Any(e => !e.Success);
                     }
                 }
                 catch (Exception ex)
                 {
+                    Exceptions.Add(ex);
                     if (string.IsNullOrEmpty(testAssemblyModel.Name))
                         testAssemblyModel.Name = ex.GetType().Name;
 
@@ -104,6 +123,7 @@ namespace ricaun.NUnit
         /// <returns>An array of test full names</returns>
         public static string[] GetTestFullNames(string assemblyFile)
         {
+            Exceptions.Clear();
             using (new AssemblyResolveCurrentDirectoryService(Path.GetDirectoryName(assemblyFile)))
             {
                 try

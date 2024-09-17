@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using ricaun.NUnit.Extensions;
+﻿using ricaun.NUnit.Extensions;
 using ricaun.NUnit.Models;
 using System;
 using System.Collections.Generic;
@@ -124,11 +123,12 @@ namespace ricaun.NUnit.Services
         /// <summary>
         /// RunTests
         /// </summary>
+        /// <param name="useExported">A flag indicating whether to use exported types only.</param>
         /// <returns></returns>
-        public IEnumerable<TestTypeModel> RunTests()
+        public IEnumerable<TestTypeModel> RunTests(bool useExported = false)
         {
             var result = new List<TestTypeModel>();
-            var types = GetTestTypes().Where(AnyMethodWithTestAttributeAndFilter);
+            var types = GetTestTypes(useExported).Where(AnyMethodWithTestAttributeAndFilter);
 
             foreach (var type in types)
             {
