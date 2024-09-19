@@ -6,10 +6,8 @@ ricaun.NUnit is a package to manage the Load and Test assemblies using the [NUni
 [![Nuke](https://img.shields.io/badge/Nuke-Build-blue)](https://nuke.build/)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Build](../../actions/workflows/Build.yml/badge.svg)](../../actions)
-[![.NET Framework 4.5](https://img.shields.io/badge/.NET%20Framework%204.5-blue.svg)](../..)
-[![.NET Standard 2.0](https://img.shields.io/badge/-.NET%20Standard%202.0-blue)](../..)
-[![.NET 5.0](https://img.shields.io/badge/-.NET%205.0-blue)](../..)
 [![NUnit](https://img.shields.io/badge/NUnit-3.13.3-blue)](https://www.nuget.org/packages/NUnit)
+[![nuget](https://img.shields.io/nuget/v/ricaun.NUnit?logo=nuget)](https://www.nuget.org/packages/ricaun.NUnit)
 
 ## Features
 ```C#
