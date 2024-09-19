@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{09BFC454-8566-456C-83F0-80E77F05BA14}"
 	ProjectSection(SolutionItems) = preProject
 		CHANGELOG.md = CHANGELOG.md
+		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
@@ -18,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ricaun.NUnit.Tests", "ricau
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleTest.Tests", "SampleTest.Tests\SampleTest.Tests.csproj", "{A3F8A436-6412-4092-9807-7DF6CF7E176F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleTest", "SampleTest\SampleTest.csproj", "{C9C3CE2D-3D95-49A4-9733-152D38646759}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleTest", "SampleTest\SampleTest.csproj", "{C9C3CE2D-3D95-49A4-9733-152D38646759}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

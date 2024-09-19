@@ -72,15 +72,7 @@ namespace ricaun.NUnit.Services
                 return testType;
             }
 
-
-
             {
-                //var methodOneTimeSetUp = methods.FirstOrDefault(AnyAttributeName<OneTimeSetUpAttribute>);
-                //var methodOneTimeTearDown = methods.FirstOrDefault(AnyAttributeName<OneTimeTearDownAttribute>);
-
-                //var methodSetUp = methods.FirstOrDefault(AnyAttributeName<SetUpAttribute>);
-                //var methodTearDown = methods.FirstOrDefault(AnyAttributeName<TearDownAttribute>);
-
                 bool OrderByDeclaringType(MethodInfo method)
                 {
                     return method.DeclaringType == type;
@@ -268,54 +260,6 @@ namespace ricaun.NUnit.Services
 
             return testModel;
         }
-
-        ///// <summary>
-        ///// Invoke Test Instance and Add In <paramref name="testType"/>
-        ///// </summary>
-        ///// <param name="testType"></param>
-        ///// <param name="method"></param>
-        ///// <param name="methodSetUp"></param>
-        ///// <param name="methodTearDown"></param>
-        ///// <param name="nUnitAttribute"></param>
-        ///// <returns></returns>
-        //private TestModel InvokeTestInstance(TestTypeModel testType, MethodInfo method, MethodInfo methodSetUp, MethodInfo methodTearDown, NUnitAttribute nUnitAttribute)
-        //{
-        //    var testModel = NewTestModel(testType, method, nUnitAttribute);
-
-        //    using (var console = new ConsoleWriterDateTime())
-        //    {
-        //        if (IgnoreTestWithAttributes(method, out string messageIgnore))
-        //        {
-        //            testModel.Message = messageIgnore;
-        //            testModel.Console = console.GetString();
-        //            testModel.Time = console.GetMillis();
-        //            testModel.Skipped = true;
-        //            return testModel;
-        //        }
-
-        //        var upResult = InvokeResultInstance(methodSetUp);
-        //        var methodResult = upResult;
-        //        if (upResult.IsValid())
-        //        {
-        //            if (nUnitAttribute is TestCaseAttribute testCaseAttribute)
-        //                methodResult = InvokeResultInstanceTestCase(method, testCaseAttribute);
-        //            else
-        //                methodResult = InvokeResultInstance(method);
-        //        }
-        //        var downResult = InvokeResultInstance(methodTearDown);
-
-        //        var success = upResult.Success & methodResult.Success & downResult.Success;
-        //        var message = string.Join(Environment.NewLine, upResult.Message, methodResult.Message, downResult.Message).Trim();
-
-        //        testModel.Success = success;
-        //        testModel.Skipped = methodResult.Skipped;
-        //        testModel.Message = message;
-        //        testModel.Console = console.GetString();
-        //        testModel.Time = console.GetMillis();
-        //    }
-
-        //    return testModel;
-        //}
 
         #endregion
 

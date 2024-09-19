@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] / 2024-09-11
+### Features
+- Support `TestCaseSourceAttribute` with `IEnumerable` and `object[]` parameters. (Fix: #27)
+### Updated
+- Update to support target `net48` and `net8.0`.
+- Update `TestAttributeService` to convert `TestCaseSourceAttribute` to `TestCaseAttribute`.
+- Update `TestCaseSourceService` to support multiple parameters.
+- Update `TestCaseSourceService` to support `TestCaseData`.
+- Update `GetTestFullNames` to find tests using `ExportedTypes`.
+- Update `RunTests` to have `ExportedTypes` options.
+### Added
+- Add `TestCaseSourceService` with `TestCaseSourceAttribute` implementation.
+### Tests
+- Add `TestsCaseSource` sample tests.
+- Add `InternalTests` to test `ExportedTypes` only.
+
 ## [1.3.1] / 2023-09-28
 ### Features
 - Enable to work with `net5.0` or greater
@@ -228,6 +244,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Test with Console Output
 
 [vNext]: ../../compare/1.0.0...HEAD
+[1.4.0]: ../../compare/1.3.1...1.4.0
 [1.3.1]: ../../compare/1.3.0...1.3.1
 [1.3.0]: ../../compare/1.2.9...1.3.0
 [1.2.9]: ../../compare/1.2.8...1.2.9

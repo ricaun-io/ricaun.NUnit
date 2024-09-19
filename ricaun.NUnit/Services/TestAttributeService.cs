@@ -21,7 +21,7 @@ namespace ricaun.NUnit.Services
         {
             try
             {
-                return AnyAttributeName<TestAttribute>(customAttributeProvider) || AnyAttributeName<TestCaseAttribute>(customAttributeProvider);
+                return AnyAttributeName(customAttributeProvider, typeof(TestAttribute), typeof(TestCaseAttribute), typeof(TestCaseSourceAttribute));
             }
             catch (Exception ex) { Debug.WriteLine(ex); }
             return false;
@@ -85,42 +85,6 @@ namespace ricaun.NUnit.Services
             return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type, m, a)));
         }
 
-        ///// <summary>
-        ///// GetFilterTestMethods
-        ///// </summary>
-        ///// <param name="type"></param>
-        ///// <returns></returns>
-        //[Obsolete]
-        //public IEnumerable<MethodInfo> GetFilterTestMethods(Type type)
-        //{
-        //    var methods = type.GetMethods().OrderBy(e => e.Name);
-        //    var testMethods = methods.Where(AnyTestAttribute);
-        //    var onlyTypeTests = testMethods.Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(m, a)));
-        //    //foreach (var testMethod in testMethods)
-        //    //{
-        //    //    //Debug.WriteLine($"{testMethod.Name} {testMethod.GetCustomAttributes(true).Count()}");
-        //    //    Debug.WriteLine($"{testMethod.Name} {string.Join(" ", testMethod.GetCustomAttributes(true).Select(e => e.GetType().Name))}");
-        //    //    Debug.WriteLine($"{testMethod.Name} {testMethod.GetCustomAttributes(true).OfType<TestAttribute>().Count()}");
-        //    //}
-        //    //Debug.WriteLine($"Debug:\t{type}:\t{string.Join(" ", onlyTypeTests.Select(e => e.Name))}");
-        //    return onlyTypeTests;
-        //}
-
-        ///// <summary>
-        ///// HasFilterTestMethod
-        ///// </summary>
-        ///// <param name="method"></param>
-        ///// <param name="nUnitAttribute"></param>
-        ///// <returns></returns>
-        //public bool HasFilterTestMethod(MethodInfo method, NUnitAttribute nUnitAttribute)
-        //{
-        //    return TestEngineFilter.HasName(GetTestFullName(method, nUnitAttribute));
-        //}
-        //public bool HasFilterTestMethod(string typeFullName, MethodInfo method, NUnitAttribute nUnitAttribute)
-        //{
-        //    return TestEngineFilter.HasName(GetTestFullName(typeFullName, method, nUnitAttribute));
-        //}
-
         /// <summary>
         /// HasFilterTestMethod
         /// </summary>
@@ -132,17 +96,6 @@ namespace ricaun.NUnit.Services
         {
             return TestEngineFilter.HasName(GetTestFullName(type, method, nUnitAttribute));
         }
-
-        ///// <summary>
-        ///// GetMethodFullName
-        ///// </summary>
-        ///// <param name="method"></param>
-        ///// <returns></returns>
-        //[Obsolete]
-        //public string GetMethodFullName(MethodInfo method)
-        //{
-        //    return GetMethodFullName(method.DeclaringType, method);
-        //}
 
         /// <summary>
         /// GetMethodFullName
@@ -165,18 +118,6 @@ namespace ricaun.NUnit.Services
         {
             return fullNameType + "." + method.Name;
         }
-
-        ///// <summary>
-        ///// GetTestFullName
-        ///// </summary>
-        ///// <param name="method"></param>
-        ///// <param name="nUnitAttribute"></param>
-        ///// <returns></returns>
-        //[Obsolete]
-        //public string GetTestFullName(MethodInfo method, NUnitAttribute nUnitAttribute)
-        //{
-        //    return GetMethodFullName(method) + "." + GetTestName(method, nUnitAttribute);
-        //}
 
         /// <summary>
         /// GetTestFullName
@@ -266,16 +207,19 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public IEnumerable<NUnitAttribute> GetTestAttributes(MethodInfo method)
         {
-            var attributes = new List<NUnitAttribute>();
             if (TryGetAttributes<TestCaseAttribute>(method, out IEnumerable<TestCaseAttribute> testCases))
             {
-                attributes.AddRange(testCases);
                 return testCases.OrderBy(e => GetTestName(method, e));
             }
-            var attribute = GetAttribute<TestAttribute>(method);
-            if (attribute is not null) attributes.Add(attribute);
-
-            return attributes;
+            if (TryGetAttribute<TestCaseSourceAttribute>(method, out TestCaseSourceAttribute testCaseSource))
+            {
+                return TestCaseSourceService.GetTestCasesFromSource(method, testCaseSource);
+            }
+            if (GetAttribute<TestAttribute>(method) is TestAttribute attribute)
+            {
+                return new[] { attribute };
+            }
+            return Enumerable.Empty<NUnitAttribute>();
         }
     }
 }

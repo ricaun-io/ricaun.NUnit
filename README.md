@@ -2,14 +2,12 @@
 
 ricaun.NUnit is a package to manage the Load and Test assemblies using the [NUnit](https://www.nuget.org/packages/NUnit/) Attributes as patterns.
 
-[![Visual Studio 2022](https://img.shields.io/badge/Visual%20Studio-2022-blue)](../..)
+[![Visual Studio 2022](https://img.shields.io/badge/Visual%20Studio-2022-blue)](https://github.com/ricaun-io/ricaun.NUnit)
 [![Nuke](https://img.shields.io/badge/Nuke-Build-blue)](https://nuke.build/)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Build](../../actions/workflows/Build.yml/badge.svg)](../../actions)
-[![.NET Framework 4.5](https://img.shields.io/badge/.NET%20Framework%204.5-blue.svg)](../..)
-[![.NET Standard 2.0](https://img.shields.io/badge/-.NET%20Standard%202.0-blue)](../..)
-[![.NET 5.0](https://img.shields.io/badge/-.NET%205.0-blue)](../..)
+[![Build](https://github.com/ricaun-io/ricaun.NUnit/actions/workflows/Build.yml/badge.svg)](https://github.com/ricaun-io/ricaun.NUnit/actions)
 [![NUnit](https://img.shields.io/badge/NUnit-3.13.3-blue)](https://www.nuget.org/packages/NUnit)
+[![nuget](https://img.shields.io/nuget/v/ricaun.NUnit?logo=nuget)](https://www.nuget.org/packages/ricaun.NUnit)
 
 ## Features
 ```C#
@@ -26,6 +24,7 @@ The tests use the [NUnit](https://www.nuget.org/packages/NUnit/) Attributes `[Te
 * The attribute `[Order]` makes the order that the test will run in.
 * The attribute `[Explicit]` works only if the `Filter` is enable.
 * The attribute `[TestCase]` disable the `Optional Parameters` 
+* The attribute `[TestCaseSource]` disable the `Optional Parameters` 
 
 ```C#
 public class TestSampleClass
@@ -85,6 +84,13 @@ public class TestSampleClass
     [TestCase(2)]
     [TestCase(3)]
     public void CasesTest(int i)
+    {
+        Assert.True(i > 0);
+    }
+
+    public static int[] CasesSource = new[] { 1, 2, 3 };
+    [TestCaseSource(nameof(CasesSource))]
+    public void CasesSourceTest(int i)
     {
         Assert.True(i > 0);
     }
@@ -208,12 +214,12 @@ public class TestParameterClass : IDisposable
 
 ## Release
 
-* [Latest release](../../releases/latest)
+* [Latest release](https://github.com/ricaun-io/ricaun.NUnit/releases/latest)
 
 ## License
 
-This project is [licensed](LICENSE) under the [MIT Licence](https://en.wikipedia.org/wiki/MIT_License).
+This project is [licensed](LICENSE) under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 
 ---
 
-Do you like this project? Please [star this project on GitHub](../../stargazers)!
+Do you like this project? Please [star this project on GitHub](https://github.com/ricaun-io/ricaun.NUnit/stargazers)!
