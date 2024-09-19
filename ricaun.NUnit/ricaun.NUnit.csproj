@@ -45,7 +45,8 @@
   <PropertyGroup>
     <Company>ricaun</Company>
     <Authors>Luiz Henrique Cassettari</Authors>
-    <Description>Package $(PackageId).</Description>
+    <Description>TestEngine to execute NUnit test assembly file.</Description>
+    <PackageTags>test;testadapter;nunit;dotnet</PackageTags>
     <CopyrightYears>$([System.DateTime]::Now.ToString('yyyy'))</CopyrightYears>
   </PropertyGroup>
 
