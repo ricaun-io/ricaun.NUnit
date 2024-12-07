@@ -167,6 +167,16 @@ namespace ricaun.NUnit
         }
 
         /// <summary>
+        /// Get the metadata attributes of an assembly
+        /// </summary>
+        /// <param name="assemblyFile">The assembly location</param>
+        /// <returns>An array of AssemblyMetadataAttribute</returns>
+        public static AssemblyMetadataAttribute[] GetAssemblyMetadataAttributes(string assemblyFile)
+        {
+            return ReferenceLoaderUtils.GetAssemblyMetadataAttributes(assemblyFile);
+        }
+
+        /// <summary>
         /// Get the full name of a test
         /// </summary>
         /// <param name="testType">The test type model</param>

@@ -11,8 +11,31 @@
     /// </summary>
     internal static partial class ReferenceLoaderUtils
     {
+        public static AssemblyMetadataAttribute[] GetAssemblyMetadataAttributes(string assemblyPath)
+        {
+            //var result = new AssemblyMetadataAttribute[] { };
+
+            //var assembly = Assembly.Load(File.ReadAllBytes(assemblyPath));
+            //result = assembly.GetCustomAttributes<AssemblyMetadataAttribute>().ToArray();
+
+            var settings = new AppDomainSetup
+            {
+                ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
+            };
+            var childDomain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, settings);
+
+            var loader = childDomain.CreateReferenceLoader();
+
+            //This operation is executed in the new AppDomain
+            var result = loader.GetAssemblyMetadataAttributes(assemblyPath);
+
+            AppDomain.Unload(childDomain);
+
+            return result.Select(e=>e.GetAssemblyMetadataAttribute()).ToArray();
+        }
+
         /// <summary>
-        /// Get references of the <paramref name="assemblyPath"/> using a diferent AppDomain
+        /// Get references of the <paramref name="assemblyPath"/> using a different AppDomain
         /// </summary>
         /// <param name="assemblyPath"></param>
         /// <returns></returns>
@@ -86,6 +109,30 @@
                 var assemblyNames = assembly.GetReferencedAssemblies().ToArray();
                 return assemblyNames;
             }
+
+            public AssemblyMetadataSerializable[] GetAssemblyMetadataAttributes(string assemblyPath)
+            {
+                var assembly = Assembly.LoadFrom(assemblyPath);
+                return assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .Select(e => new AssemblyMetadataSerializable(e))
+                    .ToArray();
+            }
+        }
+
+        [Serializable]
+        public class AssemblyMetadataSerializable
+        {
+            public AssemblyMetadataSerializable(AssemblyMetadataAttribute assemblyMetadataAttribute)
+            {
+                Key = assemblyMetadataAttribute.Key;
+                Value = assemblyMetadataAttribute.Value;
+            }
+            public AssemblyMetadataAttribute GetAssemblyMetadataAttribute()
+            {
+                return new AssemblyMetadataAttribute(Key, Value);
+            }
+            public string Key { get; }
+            public string Value { get; }
         }
     }
 #endif
