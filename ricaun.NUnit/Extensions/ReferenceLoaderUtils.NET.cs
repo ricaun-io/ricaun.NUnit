@@ -19,13 +19,15 @@
         /// <returns></returns>
         public static AssemblyMetadataAttribute[] GetAssemblyMetadataAttributes(string assemblyPath)
         {
-            var result = new AssemblyMetadataAttribute[] { };
+            var result = new AssemblyMetadataSerializable[] { };
             SimpleLoadContextUtil.LoadAndUnload(assemblyPath, (assembly) =>
             {
-                result = assembly.GetCustomAttributes<AssemblyMetadataAttribute>().ToArray();
+                result = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .Select(AssemblyMetadataSerializable.Create)
+                    .ToArray();
             });
 
-            return result;
+            return result.Select(e=>e.GetAssemblyMetadataAttribute()).ToArray();
         }
 
         /// <summary>

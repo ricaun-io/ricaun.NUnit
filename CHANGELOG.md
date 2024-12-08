@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.4.1] / 2024-12-07
 ### Updates
 - Add `TestEngine.GetAssemblyMetadataAttributes` to get `AssemblyMetadataAttribute` from `assemblyFile`.
+- Add `AssemblyMetadataSerializable` to serialize `AssemblyMetadataAttribute` to `AssemblyMetadataSerializable`.
+- Add `AppDomainDisposable` internal class to create a new `AppDomain` and dispose it.
 
 ## [1.4.0] / 2024-09-11
 ### Features

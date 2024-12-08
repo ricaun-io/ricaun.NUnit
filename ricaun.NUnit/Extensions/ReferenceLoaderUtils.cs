@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -56,6 +57,26 @@ namespace ricaun.NUnit.Extensions
         {
             var assembly = Assembly.Load(File.ReadAllBytes(assemblyPath));
             return assembly.GetCustomAttributes<AssemblyMetadataAttribute>().ToArray();
+        }
+
+        [Serializable]
+        public class AssemblyMetadataSerializable
+        {
+            public static AssemblyMetadataSerializable Create(AssemblyMetadataAttribute assemblyMetadataAttribute)
+            {
+                return new AssemblyMetadataSerializable(assemblyMetadataAttribute);
+            }
+            public AssemblyMetadataSerializable(AssemblyMetadataAttribute assemblyMetadataAttribute)
+            {
+                Key = assemblyMetadataAttribute.Key;
+                Value = assemblyMetadataAttribute.Value;
+            }
+            public AssemblyMetadataAttribute GetAssemblyMetadataAttribute()
+            {
+                return new AssemblyMetadataAttribute(Key, Value);
+            }
+            public string Key { get; }
+            public string Value { get; }
         }
     }
 }

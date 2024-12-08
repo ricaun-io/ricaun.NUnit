@@ -1,10 +1,11 @@
 ﻿using NUnit.Framework;
 using ricaun.NUnit.Extensions;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
-[assembly: AssemblyMetadata("Tests", "Tests")]
+[assembly: AssemblyMetadata("Custom", "Custom")]
 
 namespace ricaun.NUnit.Tests
 {
@@ -47,18 +48,23 @@ namespace ricaun.NUnit.Tests
             Assert.Zero(endWith - startWith);
         }
 
-        [Test]
-        public void ReferenceLoaderUtils_Tests_GetMetadataAttributes_Assemblies()
+        [TestCase("ricaun.NUnit.Tests")]
+        [TestCase("SampleMetadata")] // Test custom attribute in SampleMetadataAttribute
+        [TestCase("SampleMetadataAttribute")]
+        public void ReferenceLoaderUtils_Tests_GetMetadataAttributes(string filePath)
         {
-            var assemblyFile = Assembly.GetExecutingAssembly().Location;
-            var startWith = AppDomain.CurrentDomain.GetAssemblies().Length;
+            var location = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
+            var assemblyFile = Directory.GetFiles(location, $"{filePath}*.dll", SearchOption.AllDirectories).FirstOrDefault();
+            Console.WriteLine(Path.GetFileName(assemblyFile));
+
+            var startWith = AppDomain.CurrentDomain.GetAssemblies().Length;
             var assemblyMetadataAttributes = ReferenceLoaderUtils.GetAssemblyMetadataAttributes(assemblyFile);
             foreach (var assemblyMetadataAttribute in assemblyMetadataAttributes)
             {
                 Console.WriteLine($"{assemblyMetadataAttribute.Key}: {assemblyMetadataAttribute.Value}");
             }
-            Assert.IsNotNull(assemblyMetadataAttributes.FirstOrDefault(e => e.Key.Equals("Tests")));
+            Assert.NotZero(assemblyMetadataAttributes.Length);
 
             var endWith = AppDomain.CurrentDomain.GetAssemblies().Length;
             Assert.Zero(endWith - startWith);

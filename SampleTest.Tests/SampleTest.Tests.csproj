@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SampleTest\SampleTest.csproj" />
+    <ProjectReference Include="..\SampleMetadata\SampleMetadata.csproj" />
   </ItemGroup>
 
 </Project>
