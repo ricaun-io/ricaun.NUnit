@@ -147,6 +147,10 @@ namespace ricaun.NUnit.Services
             {
                 object o = possibleParamsTemp.FirstOrDefault(e => IsParameterTypeSimilar(parameter, e));
                 possibleParamsTemp.Remove(o);
+
+                // Try to Convert to the parameter type
+                TryChangeType(o, parameter.ParameterType, out o);
+
                 result.Add(o);
             }
 
@@ -171,7 +175,24 @@ namespace ricaun.NUnit.Services
 
             System.Diagnostics.Debug.WriteLine($"{canAssign}:\t {valueType} >> {parameterValue.GetType()}");
 
-            return canAssign;
+            if (canAssign)
+            {
+                return true;
+            }
+
+            return TryChangeType(parameterValue, parameterType, out _);
+        }
+
+        private static bool TryChangeType(object value, Type type, out object result)
+        {
+            try
+            {
+                result = Convert.ChangeType(value, type);
+                return true;
+            }
+            catch { }
+            result = value;
+            return false;
         }
 
         #endregion

@@ -112,6 +112,22 @@ namespace SampleTest.Tests.Explicits
         }
 
         [Test]
+        public void TestParameterByte(byte value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(value > 0);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterShort(short value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(value > 0);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
         public void TestParameterInteger(int value)
         {
             Console.WriteLine($"Value is {value}");
@@ -121,6 +137,14 @@ namespace SampleTest.Tests.Explicits
 
         [Test]
         public void TestParameterLong(long value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(value > 0);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterDouble(double value)
         {
             Console.WriteLine($"Value is {value}");
             Assert.IsTrue(value > 0);
@@ -191,6 +215,18 @@ namespace SampleTest.Tests.Explicits
         public void TestParameterCaseInteger(int value)
         {
             Console.WriteLine($"Value is {value}");
+            Assert.Greater(value, 0);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [TestCase(1)]
+        [TestCase(1.1)]
+        [TestCase(1.1f)]
+        [TestCase("1.1")]
+        public void TestParameterCaseDouble(double value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.Greater(value, 0);
             Assert.Pass($"{value} {value.GetType()}");
         }
     }
