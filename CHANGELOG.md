@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [1.4.1] / 2024-12-07
+### Features
+- Support `GetAssemblyMetadataAttributes` to get `AssemblyMetadataAttribute` from `assemblyFile`.
 ### Updates
 - Add `TestEngine.GetAssemblyMetadataAttributes` to get `AssemblyMetadataAttribute` from `assemblyFile`.
 - Add `AssemblyMetadataSerializable` to serialize `AssemblyMetadataAttribute` to `AssemblyMetadataSerializable`.
