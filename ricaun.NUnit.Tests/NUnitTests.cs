@@ -254,7 +254,7 @@ namespace ricaun.NUnit.Tests
             Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
         }
 
-        [Test(ExpectedResult = 13)]
+        [Test(ExpectedResult = 16)]
         public int TestAssembly_Explicit_ShouldFail()
         {
             Console.WriteLine(fileName);
