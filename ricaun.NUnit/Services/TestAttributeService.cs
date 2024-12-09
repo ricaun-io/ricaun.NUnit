@@ -191,9 +191,26 @@ namespace ricaun.NUnit.Services
                 {
                     return $"\"{value}\"";
                 }
+                else if (value is Type type)
+                {
+                    try
+                    {
+                        if (type.IsGenericType)
+                        {
+                            var genericTypeName = type.Name.Split('`')[0];
+                            var genericArgs = type
+                                .GetGenericArguments()
+                                .Select(ToArgumentName);
+                            return $"{genericTypeName}<{string.Join(",", genericArgs)}>";
+                        }
+                    }
+                    catch { }
+                    return type.Name;
+                }
                 else if (value is ParameterInfo parameter)
                 {
-                    return parameter.ParameterType.Name;
+                    var parameterType = parameter.ParameterType;                    
+                    return ToArgumentName(parameterType);
                 }
                 return $"{value}";
             }

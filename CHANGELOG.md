@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add `AssemblyMetadataSerializable` to serialize `AssemblyMetadataAttribute` to `AssemblyMetadataSerializable`.
 - Add `AppDomainDisposable` internal class to create a new `AppDomain` and dispose it.
 - Add `TryChangeType` to try to convert `object` to `ParameterType`.
+- Update `GetTestNameWithArguments` to support generic types.
 ### Tests
 - Add `SampleMetadata` and `SampleMetadataAttribute` test project.
 - Add `TestParameterCaseDouble` to test parameter with `double` type and parameter `int`. (Fix: #29)
