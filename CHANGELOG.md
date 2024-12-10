@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] / 2024-12-07
+### Features
+- Support `GetAssemblyMetadataAttributes` to get `AssemblyMetadataAttribute` from `assemblyFile`.
+### Updates
+- Add `TestEngine.GetAssemblyMetadataAttributes` to get `AssemblyMetadataAttribute` from `assemblyFile`.
+- Add `AssemblyMetadataSerializable` to serialize `AssemblyMetadataAttribute` to `AssemblyMetadataSerializable`.
+- Add `AppDomainDisposable` internal class to create a new `AppDomain` and dispose it.
+- Add `TryChangeType` to try to convert `object` to `ParameterType`. (Fix: #29)
+- Update `GetTestNameWithArguments` to support generic types. (Fix: #30)
+- Update `ValueToArgumentName` to support `float` with `f`.
+### Tests
+- Add `SampleMetadata` and `SampleMetadataAttribute` test project.
+- Add `TestParameterCaseDouble` to test parameter with `double` type and parameter `int`. (Fix: #29)
+- Add `TestParameterByte`, `TestParameterShort` and `TestParameterDouble` tests for parameter converter.
+
 ## [1.4.0] / 2024-09-11
 ### Features
 - Support `TestCaseSourceAttribute` with `IEnumerable` and `object[]` parameters. (Fix: #27)
@@ -236,7 +251,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.0] / 2022-08-18
 ### Features
-- Test Assembly with diferent NUnit Version with LoadFile
+- Test Assembly with different NUnit Version with LoadFile
 - Test Methods with Attribute Name
 - Test if Assembly contain the same NUnit Version
 - Test Method with custom parameters
@@ -244,6 +259,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Test with Console Output
 
 [vNext]: ../../compare/1.0.0...HEAD
+[1.4.1]: ../../compare/1.4.0...1.4.1
 [1.4.0]: ../../compare/1.3.1...1.4.0
 [1.3.1]: ../../compare/1.3.0...1.3.1
 [1.3.0]: ../../compare/1.2.9...1.3.0

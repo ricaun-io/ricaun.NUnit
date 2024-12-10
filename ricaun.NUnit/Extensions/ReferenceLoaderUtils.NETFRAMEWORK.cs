@@ -11,27 +11,46 @@
     /// </summary>
     internal static partial class ReferenceLoaderUtils
     {
+        internal class AppDomainDisposable : IDisposable
+        {
+            private readonly AppDomain _appDomain;
+            public AppDomain AppDomain => _appDomain;
+            public AppDomainDisposable(string assemblyPath = null)
+            {
+                var settings = new AppDomainSetup
+                {
+                    ApplicationBase = AppDomain.CurrentDomain.BaseDirectory
+                };
+                _appDomain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, settings);
+            }
+            public void Dispose()
+            {
+                AppDomain.Unload(_appDomain);
+            }
+        }
+
+        public static AssemblyMetadataAttribute[] GetAssemblyMetadataAttributes(string assemblyPath)
+        {
+            using (var domain = new AppDomainDisposable())
+            {
+                var loader = domain.AppDomain.CreateReferenceLoader();
+                var result = loader.GetAssemblyMetadataAttributes(assemblyPath);
+                return result.Select(e => e.GetAssemblyMetadataAttribute()).ToArray();
+            }
+        }
+
         /// <summary>
-        /// Get references of the <paramref name="assemblyPath"/> using a diferent AppDomain
+        /// Get references of the <paramref name="assemblyPath"/> using a different AppDomain
         /// </summary>
         /// <param name="assemblyPath"></param>
         /// <returns></returns>
         public static AssemblyName[] GetReferencedAssemblies(string assemblyPath)
         {
-            var settings = new AppDomainSetup
+            using (var domain = new AppDomainDisposable())
             {
-                ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
-            };
-            var childDomain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, settings);
-
-            var loader = childDomain.CreateReferenceLoader();
-
-            //This operation is executed in the new AppDomain
-            var assemblyNames = loader.LoadReferences(assemblyPath);
-
-            AppDomain.Unload(childDomain);
-
-            return assemblyNames;
+                var loader = domain.AppDomain.CreateReferenceLoader();
+                return loader.LoadReferences(assemblyPath);
+            }
         }
 
         private static ReferenceLoader CreateReferenceLoader(this AppDomain domain)
@@ -85,6 +104,20 @@
                 var assembly = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
                 var assemblyNames = assembly.GetReferencedAssemblies().ToArray();
                 return assemblyNames;
+            }
+
+            /// <summary>
+            /// Get the metadata attributes of the specified assembly.
+            /// </summary>
+            /// <param name="assemblyPath">The path of the assembly.</param>
+            /// <returns>An array of AssemblyMetadataSerializable objects representing the metadata attributes.</returns>
+            /// <remarks><see cref="AssemblyMetadataAttribute"/> can not be use because does not have <see cref="SerializableAttribute"/></remarks>
+            public AssemblyMetadataSerializable[] GetAssemblyMetadataAttributes(string assemblyPath)
+            {
+                var assembly = Assembly.LoadFrom(assemblyPath);
+                return assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .Select(AssemblyMetadataSerializable.Create)
+                    .ToArray();
             }
         }
     }

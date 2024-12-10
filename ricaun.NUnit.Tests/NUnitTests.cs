@@ -254,7 +254,7 @@ namespace ricaun.NUnit.Tests
             Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
         }
 
-        [Test(ExpectedResult = 13)]
+        [Test(ExpectedResult = 16)]
         public int TestAssembly_Explicit_ShouldFail()
         {
             Console.WriteLine(fileName);
@@ -325,7 +325,7 @@ namespace ricaun.NUnit.Tests
         [TestCase("*Abstract*", 4)]
         [TestCase("*.TestsCaseSource.*", 17)]
         [TestCase("*.InternalTests.*", 1)]
-        [TestCase("*", 78)]
+        [TestCase("*", 85)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

@@ -179,25 +179,46 @@ namespace ricaun.NUnit.Services
             return method.Name;
         }
 
-        private string GetTestNameWithArguments(MethodInfo method, params object[] objects)
+        static string GetTestNameWithArguments(MethodInfo method, params object[] objects)
         {
-            string ToArgumentName(object value)
+            return $"{method.Name}({string.Join(",", objects.Select(ValueToArgumentName))})";
+        }
+        static string ValueToArgumentName(object value)
+        {
+            if (value is null)
             {
-                if (value is null)
-                {
-                    return "null";
-                }
-                else if (value is string)
-                {
-                    return $"\"{value}\"";
-                }
-                else if (value is ParameterInfo parameter)
-                {
-                    return parameter.ParameterType.Name;
-                }
-                return $"{value}";
+                return "null";
             }
-            return $"{method.Name}({string.Join(",", objects.Select(ToArgumentName))})";
+            else if (value is string)
+            {
+                return $"\"{value}\"";
+            }
+            else if (value is float)
+            {
+                return $"{value}f";
+            }
+            else if (value is Type type)
+            {
+                try
+                {
+                    if (type.IsGenericType)
+                    {
+                        var genericTypeName = type.Name.Split('`')[0];
+                        var genericArgs = type
+                            .GetGenericArguments()
+                            .Select(ValueToArgumentName);
+                        return $"{genericTypeName}<{string.Join(",", genericArgs)}>";
+                    }
+                }
+                catch { }
+                return type.Name;
+            }
+            else if (value is ParameterInfo parameter)
+            {
+                var parameterType = parameter.ParameterType;                    
+                return ValueToArgumentName(parameterType);
+            }
+            return $"{value}";
         }
 
         /// <summary>

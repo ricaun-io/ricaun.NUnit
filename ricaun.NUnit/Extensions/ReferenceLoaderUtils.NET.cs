@@ -13,6 +13,24 @@
     internal static partial class ReferenceLoaderUtils
     {
         /// <summary>
+        /// GetAssemblyMetadataAttributes by Load Assembly with <see cref="ReferenceLoaderUtils.SimpleLoadContextUtil"/>
+        /// </summary>
+        /// <param name="assemblyPath"></param>
+        /// <returns></returns>
+        public static AssemblyMetadataAttribute[] GetAssemblyMetadataAttributes(string assemblyPath)
+        {
+            var result = new AssemblyMetadataSerializable[] { };
+            SimpleLoadContextUtil.LoadAndUnload(assemblyPath, (assembly) =>
+            {
+                result = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .Select(AssemblyMetadataSerializable.Create)
+                    .ToArray();
+            });
+
+            return result.Select(e=>e.GetAssemblyMetadataAttribute()).ToArray();
+        }
+
+        /// <summary>
         /// GetReferencedAssemblies by Load Assembly with <see cref="ReferenceLoaderUtils.SimpleLoadContextUtil"/>
         /// </summary>
         /// <param name="assemblyPath"></param>
