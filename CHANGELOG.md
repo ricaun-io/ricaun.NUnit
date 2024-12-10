@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add `TestEngine.GetAssemblyMetadataAttributes` to get `AssemblyMetadataAttribute` from `assemblyFile`.
 - Add `AssemblyMetadataSerializable` to serialize `AssemblyMetadataAttribute` to `AssemblyMetadataSerializable`.
 - Add `AppDomainDisposable` internal class to create a new `AppDomain` and dispose it.
-- Add `TryChangeType` to try to convert `object` to `ParameterType`.
-- Update `GetTestNameWithArguments` to support generic types.
+- Add `TryChangeType` to try to convert `object` to `ParameterType`. (Fix: #29)
+- Update `GetTestNameWithArguments` to support generic types. (Fix: #30)
 - Update `ValueToArgumentName` to support `float` with `f`.
 ### Tests
 - Add `SampleMetadata` and `SampleMetadataAttribute` test project.
