@@ -193,10 +193,6 @@ namespace ricaun.NUnit.Services
             {
                 return $"\"{value}\"";
             }
-            else if (value is double)
-            {
-                return $"{value}d";
-            }
             else if (value is float)
             {
                 return $"{value}f";
