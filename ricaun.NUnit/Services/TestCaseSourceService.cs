@@ -18,7 +18,7 @@ namespace ricaun.NUnit.Services
         /// <param name="method"></param>
         /// <param name="testCaseSource"></param>
         /// <returns></returns>
-        internal static IEnumerable<TestCaseAttribute> GetTestCasesFromSource(MethodInfo method, TestCaseSourceAttribute testCaseSource)
+        public static IEnumerable<TestCaseAttribute> GetTestCasesFromSource(MethodInfo method, TestCaseSourceAttribute testCaseSource)
         {
             var attributes = new List<TestCaseAttribute>();
             try

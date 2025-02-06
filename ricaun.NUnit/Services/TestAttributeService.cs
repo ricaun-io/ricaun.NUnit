@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ricaun.NUnit.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -70,9 +71,20 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
+        [Obsolete]
         public bool AnyMethodWithTestAttributeAndFilter(Type type)
         {
             return GetMethodWithTestAttributeAndFilter(type).Any();
+        }
+
+        public bool AnyMethodWithTestAttributeAndFilter(TypeInstance type)
+        {
+            return GetMethodWithTestAttributeAndFilter(type).Any();
+        }
+
+        public IEnumerable<MethodInfo> GetMethodWithTestAttributeAndFilter(TypeInstance type)
+        {
+            return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type.FullName, m, a)));
         }
 
         /// <summary>
@@ -80,6 +92,7 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
+        [Obsolete]
         public IEnumerable<MethodInfo> GetMethodWithTestAttributeAndFilter(Type type)
         {
             return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type, m, a)));
@@ -92,9 +105,15 @@ namespace ricaun.NUnit.Services
         /// <param name="method"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
+        [Obsolete]
         public bool HasFilterTestMethod(Type type, MethodInfo method, NUnitAttribute nUnitAttribute)
         {
             return TestEngineFilter.HasName(GetTestFullName(type, method, nUnitAttribute));
+        }
+
+        public bool HasFilterTestMethod(string fullName, MethodInfo method, NUnitAttribute nUnitAttribute)
+        {
+            return TestEngineFilter.HasName(GetTestFullName(fullName, method, nUnitAttribute));
         }
 
         /// <summary>
@@ -103,9 +122,20 @@ namespace ricaun.NUnit.Services
         /// <param name="declaringType"></param>
         /// <param name="method"></param>
         /// <returns></returns>
+        [Obsolete]
         public string GetMethodFullName(Type declaringType, MethodInfo method)
         {
             return GetMethodFullName(declaringType.FullName, method);
+        }
+
+        public string GetMethodFullName(TypeInstance typeInstance, MethodInfo method)
+        {
+            return typeInstance + "." + method.Name;
+        }
+
+        public string GetTestFullName(TypeInstance typeInstance, MethodInfo method, NUnitAttribute nUnitAttribute)
+        {
+            return GetMethodFullName(typeInstance, method) + "." + GetTestName(method, nUnitAttribute);
         }
 
         /// <summary>
@@ -126,6 +156,7 @@ namespace ricaun.NUnit.Services
         /// <param name="method"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
+        [Obsolete]
         public string GetTestFullName(Type type, MethodInfo method, NUnitAttribute nUnitAttribute)
         {
             return GetMethodFullName(type, method) + "." + GetTestName(method, nUnitAttribute);
@@ -181,44 +212,7 @@ namespace ricaun.NUnit.Services
 
         static string GetTestNameWithArguments(MethodInfo method, params object[] objects)
         {
-            return $"{method.Name}({string.Join(",", objects.Select(ValueToArgumentName))})";
-        }
-        static string ValueToArgumentName(object value)
-        {
-            if (value is null)
-            {
-                return "null";
-            }
-            else if (value is string)
-            {
-                return $"\"{value}\"";
-            }
-            else if (value is float)
-            {
-                return $"{value}f";
-            }
-            else if (value is Type type)
-            {
-                try
-                {
-                    if (type.IsGenericType)
-                    {
-                        var genericTypeName = type.Name.Split('`')[0];
-                        var genericArgs = type
-                            .GetGenericArguments()
-                            .Select(ValueToArgumentName);
-                        return $"{genericTypeName}<{string.Join(",", genericArgs)}>";
-                    }
-                }
-                catch { }
-                return type.Name;
-            }
-            else if (value is ParameterInfo parameter)
-            {
-                var parameterType = parameter.ParameterType;                    
-                return ValueToArgumentName(parameterType);
-            }
-            return $"{value}";
+            return $"{method.Name}{objects.ToArgumentName()}";
         }
 
         /// <summary>
@@ -241,6 +235,24 @@ namespace ricaun.NUnit.Services
                 return new[] { attribute };
             }
             return Enumerable.Empty<NUnitAttribute>();
+        }
+
+        /// <summary>
+        /// Retrieves the test fixture attributes for a given type.
+        /// </summary>
+        /// <param name="type">The type to retrieve the test fixture attributes from.</param>
+        /// <returns>An enumerable of <see cref="TestFixtureAttribute"/> instances.</returns>
+        public IEnumerable<TestFixtureAttribute> GetTestFixtureAttributes(Type type)
+        {
+            if (TryGetAttributes<TestFixtureAttribute>(type, out IEnumerable<TestFixtureAttribute> testFixtures))
+            {
+                return testFixtures;
+            }
+            if (TryGetAttribute<TestFixtureSourceAttribute>(type, out TestFixtureSourceAttribute testFixtureSource))
+            {
+                return TestFixtureSourceService.GetTestFixtureFromSource(type, testFixtureSource);
+            }
+            return new[] { new TestFixtureAttribute() };
         }
     }
 }

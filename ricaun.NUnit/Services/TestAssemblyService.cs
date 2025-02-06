@@ -70,6 +70,23 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
+        /// Get TypeInstance for to run tests
+        /// </summary>
+        /// <param name="useExported"></param>
+        /// <returns></returns>
+        private IEnumerable<TypeInstance> GetTestTypeInstances(bool useExported = false)
+        {
+            var types = GetTestTypes(useExported);
+            foreach (var type in types)
+            {
+                foreach (var testFixture in GetTestFixtureAttributes(type))
+                {
+                    yield return new TypeInstance(type, testFixture.Arguments);
+                }
+            }
+        }
+
+        /// <summary>
         /// Get the types from the specified assembly.
         /// </summary>
         /// <param name="useExported">A flag indicating whether to use exported types only.</param>
@@ -84,13 +101,29 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <param name="useExported">A flag indicating whether to use exported types only.</param>
         /// <returns></returns>
-        public IReadOnlyDictionary<Type, MethodInfo[]> GetTestDictionaryTypeMethods(bool useExported = false)
+        [Obsolete("Use GetTestTypeMethods instead.")]
+        public IReadOnlyDictionary<Type, MethodInfo[]> GetTestDictionaryTypeMethodsO(bool useExported = false)
         {
             var result = new Dictionary<Type, MethodInfo[]>();
             var types = GetTestTypes(useExported);
             foreach (var type in types)
             {
                 var methods = GetMethodWithTestAttribute(type).ToArray();
+                if (methods.Any())
+                {
+                    result.Add(type, methods);
+                }
+            }
+            return result;
+        }
+
+        public IReadOnlyDictionary<TypeInstance, MethodInfo[]> GetTestDictionaryTypeMethods(bool useExported = false)
+        {
+            var result = new Dictionary<TypeInstance, MethodInfo[]>();
+            var types = GetTestTypeInstances(useExported);
+            foreach (var type in types)
+            {
+                var methods = GetMethodWithTestAttribute(type.Type).ToArray();
                 if (methods.Any())
                 {
                     result.Add(type, methods);
@@ -108,7 +141,7 @@ namespace ricaun.NUnit.Services
         {
             foreach (var typeMethod in GetTestDictionaryTypeMethods(useExported))
             {
-                Type type = typeMethod.Key;
+                var type = typeMethod.Key;
                 MethodInfo[] methods = typeMethod.Value;
                 foreach (MethodInfo method in methods)
                 {
@@ -128,7 +161,8 @@ namespace ricaun.NUnit.Services
         public IEnumerable<TestTypeModel> RunTests(bool useExported = false)
         {
             var result = new List<TestTypeModel>();
-            var types = GetTestTypes(useExported).Where(AnyMethodWithTestAttributeAndFilter);
+            //var types = GetTestTypes(useExported).Where(AnyMethodWithTestAttributeAndFilter);
+            var types = GetTestTypeInstances(useExported).Where(AnyMethodWithTestAttributeAndFilter);
 
             foreach (var type in types)
             {
@@ -137,6 +171,10 @@ namespace ricaun.NUnit.Services
                     var testTypeModel = new TestTypeModel();
                     try
                     {
+                        var parameters = type.Parameters;
+                        if (parameters.Length == 0)
+                            parameters = this.parameters;
+
                         using (var test = new TestService(type, parameters))
                         {
                             testTypeModel = test.TestInstance();
