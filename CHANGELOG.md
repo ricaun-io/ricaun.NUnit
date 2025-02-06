@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add `TestFixtureSourceService` to support `TestFixtureSourceAttribute`.
 - Add `TypeInstance` to support `TestFixture` tests.
 - Obsolete methods with `Type`, the `TypeInstance` methods should be used.
+### Tests
+- Add `TestsFixture` sample tests.
+- Add `TestsFixtureSource` sample tests.
 
 ## [1.4.1] / 2024-12-07
 ### Features
