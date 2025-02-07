@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Tests
 - Add `TestsFixture` sample tests.
 - Add `TestsFixtureSource` sample tests.
+- Add tests with custom `Parameter` and `TestFixture`
 
 ## [1.4.1] / 2024-12-07
 ### Features

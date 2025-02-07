@@ -254,7 +254,7 @@ namespace ricaun.NUnit.Tests
             Assert.IsTrue(testModel.Success, $"{fileName} Failed.");
         }
 
-        [Test(ExpectedResult = 16)]
+        [Test(ExpectedResult = 26)]
         public int TestAssembly_Explicit_ShouldFail()
         {
             Console.WriteLine(fileName);
@@ -328,7 +328,7 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestsFixture(*", 3)]
         [TestCase("*.TestsFixtureSource(*", 3)]
         [TestCase("*.TestsFixtureSourceAnother(*", 3)]
-        [TestCase("*", 94)]
+        [TestCase("*", 105)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

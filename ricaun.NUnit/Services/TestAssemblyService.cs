@@ -171,11 +171,7 @@ namespace ricaun.NUnit.Services
                     var testTypeModel = new TestTypeModel();
                     try
                     {
-                        var parameters = type.Parameters;
-                        if (parameters.Length == 0)
-                            parameters = this.parameters;
-
-                        using (var test = new TestService(type, parameters))
+                        using (var test = new TestService(type, this.parameters))
                         {
                             testTypeModel = test.TestInstance();
                         }

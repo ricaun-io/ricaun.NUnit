@@ -34,10 +34,7 @@ namespace ricaun.NUnit.Services
         public TestService(TypeInstance typeInstance, params object[] parameters)
         {
             this.type = typeInstance.Type;
-
-            this.parameters = typeInstance.Parameters;
-            if (this.parameters.Length == 0) this.parameters = parameters;
-
+            this.parameters = parameters;
             this.typeInstance = typeInstance;
         }
 
@@ -74,7 +71,11 @@ namespace ricaun.NUnit.Services
 
             try
             {
-                this.instance = CreateInstance(this.type, this.parameters);
+                var instanceParameters = this.typeInstance.Parameters;
+                if (instanceParameters.Length == 0)
+                    instanceParameters = this.parameters;
+
+                this.instance = CreateInstance(this.type, instanceParameters);
             }
             catch (Exception ex)
             {
