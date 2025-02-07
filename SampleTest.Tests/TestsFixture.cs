@@ -40,4 +40,21 @@ namespace SampleTest.Tests
             Assert.NotZero(value);
         }
     }
+
+    [TestFixtureSource(typeof(TestsFixtureSource), nameof(TestsFixtureSource.FixtureArgs))]
+    public class TestsFixtureSourceAnother
+    {
+        private int value;
+
+        public TestsFixtureSourceAnother(int value)
+        {
+            this.value = value;
+        }
+        [Test]
+        public void TestValue()
+        {
+            Console.WriteLine(value);
+            Assert.NotZero(value);
+        }
+    }
 }

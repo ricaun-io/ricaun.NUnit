@@ -51,15 +51,17 @@ namespace ricaun.NUnit.Services
         /// <summary>
         /// GetTestFixtureSource
         /// </summary>
-        /// <param name="sourceType"></param>
+        /// <param name="type"></param>
         /// <param name="attribute"></param>
         /// <returns></returns>
         /// <remarks>
         /// Based: GetTestFixtureSource method from NUnit.Framework.Internal.TestFixtureSourceAttribute
         /// https://github.com/nunit/nunit/blob/v3.13/src/NUnitFramework/framework/Attributes/TestFixtureSourceAttribute.cs
         /// </remarks>
-        internal static IEnumerable GetTestFixtureSource(Type sourceType, TestFixtureSourceAttribute attribute)
+        internal static IEnumerable GetTestFixtureSource(Type type, TestFixtureSourceAttribute attribute)
         {
+            Type sourceType = attribute.SourceType ?? type;
+
             // Handle Type implementing IEnumerable separately
             if (attribute.SourceName is null)
                 return Reflect.Construct(sourceType) as IEnumerable;
