@@ -1,8 +1,6 @@
 ﻿using ricaun.NUnit.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -25,7 +23,7 @@ namespace ricaun.NUnit.Services
         /// <returns></returns>
         public object CreateInstance(Type type, params object[] possibleParams)
         {
-            var constructor = type.GetConstructors().FirstOrDefault();
+            var constructor = GetConstructorFitParameters(type, possibleParams);
             return constructor.Invoke(GetMethodOrderParameters(constructor, possibleParams));
         }
 
@@ -132,13 +130,51 @@ namespace ricaun.NUnit.Services
         #endregion
 
         #region Order Parameters
+        private static ConstructorInfo GetConstructorFitParameters(Type type, object[] possibleParams)
+        {
+            var constructorBase = type.GetConstructors().FirstOrDefault();
+            var validConstructors = type.GetConstructors()
+                .Where(e => IsConstructorValidParameters(e, possibleParams))
+                .OrderByDescending(e => ConstructorFitParameters(e, possibleParams));
+
+            var constructor = validConstructors.FirstOrDefault() ?? constructorBase;
+
+            return constructor;
+        }
+
+        private static bool IsConstructorValidParameters(ConstructorInfo constructorInfo, object[] possibleParams)
+        {
+            var parameters = constructorInfo.GetParameters();
+            if (parameters.Length == possibleParams.Length)
+            {
+                return parameters.All(e => IsParameterTypeSimilar(e, possibleParams[e.Position]));
+            }
+            return false;
+        }
+
+        private static int ConstructorFitParameters(ConstructorInfo constructorInfo, object[] possibleParams)
+        {
+            var value = 0;
+            var parameters = constructorInfo.GetParameters();
+            if (parameters.Length == possibleParams.Length)
+            {
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    if (possibleParams[i].GetType() == parameters[i].ParameterType)
+                        value += 1;
+                }
+                return value;
+            }
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// GetMethodOrderParameters
         /// </summary>
         /// <param name="methodBase"></param>
         /// <param name="possibleParams"></param>
         /// <returns></returns>
-        private object[] GetMethodOrderParameters(MethodBase methodBase, params object[] possibleParams)
+        private static object[] GetMethodOrderParameters(MethodBase methodBase, params object[] possibleParams)
         {
             var result = new List<object>();
             var possibleParamsTemp = possibleParams.ToList();
@@ -157,7 +193,7 @@ namespace ricaun.NUnit.Services
             return result.ToArray();
         }
 
-        private bool IsParameterTypeSimilar(ParameterInfo parameter, object parameterValue)
+        private static bool IsParameterTypeSimilar(ParameterInfo parameter, object parameterValue)
         {
             var parameterType = parameter.ParameterType;
             if (parameterType == typeof(object))

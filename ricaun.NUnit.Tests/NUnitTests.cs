@@ -328,7 +328,8 @@ namespace ricaun.NUnit.Tests
         [TestCase("*.TestsFixture(*", 3)]
         [TestCase("*.TestsFixtureSource(*", 3)]
         [TestCase("*.TestsFixtureSourceAnother(*", 3)]
-        [TestCase("*", 105)]
+        [TestCase("*.TestsFixtureParameterized(*", 12)]
+        [TestCase("*", 117)]
         public void TestAssembly_Filter(string testName, int numberOfTests)
         {
             TestEngineFilter.Add(testName);

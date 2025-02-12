@@ -13,10 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add `TestFixtureSourceService` to support `TestFixtureSourceAttribute`.
 - Add `TypeInstance` to support `TestFixture` tests.
 - Obsolete methods with `Type`, the `TypeInstance` methods should be used.
+- Update `ActivatorService` to support multiple constructors.
 ### Tests
 - Add `TestsFixture` sample tests.
 - Add `TestsFixtureSource` sample tests.
 - Add tests with custom `Parameter` and `TestFixture`
+- Add `TestsFixtureParameterized` to support multiple constructors.
 
 ## [1.4.1] / 2024-12-07
 ### Features
