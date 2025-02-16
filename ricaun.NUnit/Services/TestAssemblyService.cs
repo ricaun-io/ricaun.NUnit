@@ -145,7 +145,6 @@ namespace ricaun.NUnit.Services
         public IEnumerable<TestTypeModel> RunTests(bool useExported = false)
         {
             var result = new List<TestTypeModel>();
-            //var types = GetTestTypes(useExported).Where(AnyMethodWithTestAttributeAndFilter);
             var types = GetTestTypeInstances(useExported).Where(AnyMethodWithTestAttributeAndFilter);
 
             foreach (var type in types)

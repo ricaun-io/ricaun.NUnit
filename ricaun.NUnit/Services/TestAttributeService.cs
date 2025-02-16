@@ -67,20 +67,20 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
-        /// AnyMethodWithTestAttributeAndFilter
+        /// Determines if any method within the specified type has a test attribute and passes the filter.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">The type to check for methods with test attributes.</param>
+        /// <returns>True if any method has a test attribute and passes the filter; otherwise, false.</returns>
         public bool AnyMethodWithTestAttributeAndFilter(TypeInstance type)
         {
             return GetMethodWithTestAttributeAndFilter(type).Any();
         }
 
         /// <summary>
-        /// GetMethodWithTestAttributeAndFilter
+        /// Retrieves methods with test attributes and applies a filter.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="type">The type to retrieve methods from.</param>
+        /// <returns>An enumerable of <see cref="MethodInfo"/> instances that have test attributes and pass the filter.</returns>
         public IEnumerable<MethodInfo> GetMethodWithTestAttributeAndFilter(TypeInstance type)
         {
             return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type.FullName, m, a)));
@@ -99,16 +99,23 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
-        /// GetMethodFullName
+        /// Constructs the full method name using the type instance and method.
         /// </summary>
-        /// <param name="typeInstance"></param>
-        /// <param name="method"></param>
-        /// <returns></returns>
+        /// <param name="typeInstance">The instance of the type containing the method.</param>
+        /// <param name="method">The method for which the full name is being constructed.</param>
+        /// <returns>The full method name as a string.</returns>
         public string GetMethodFullName(TypeInstance typeInstance, MethodInfo method)
         {
             return typeInstance + "." + method.Name;
         }
 
+        /// <summary>
+        /// Constructs the full test name using the type instance, method, and NUnit attribute.
+        /// </summary>
+        /// <param name="typeInstance">The instance of the type containing the method.</param>
+        /// <param name="method">The method for which the test name is being constructed.</param>
+        /// <param name="nUnitAttribute">The NUnit attribute applied to the method.</param>
+        /// <returns>The full test name as a string.</returns>
         public string GetTestFullName(TypeInstance typeInstance, MethodInfo method, NUnitAttribute nUnitAttribute)
         {
             return GetMethodFullName(typeInstance, method) + "." + GetTestName(method, nUnitAttribute);
@@ -179,10 +186,10 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
-        /// GetMethodTestAttributes
+        /// Retrieves the NUnit test attributes applied to the specified method.
         /// </summary>
-        /// <param name="method"></param>
-        /// <returns></returns>
+        /// <param name="method">The method to retrieve the test attributes from.</param>
+        /// <returns>An enumerable of <see cref="NUnitAttribute"/> instances applied to the method.</returns>
         public IEnumerable<NUnitAttribute> GetTestAttributes(MethodInfo method)
         {
             if (TryGetAttributes<TestCaseAttribute>(method, out IEnumerable<TestCaseAttribute> testCases))
