@@ -71,20 +71,9 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        [Obsolete]
-        public bool AnyMethodWithTestAttributeAndFilter(Type type)
-        {
-            return GetMethodWithTestAttributeAndFilter(type).Any();
-        }
-
         public bool AnyMethodWithTestAttributeAndFilter(TypeInstance type)
         {
             return GetMethodWithTestAttributeAndFilter(type).Any();
-        }
-
-        public IEnumerable<MethodInfo> GetMethodWithTestAttributeAndFilter(TypeInstance type)
-        {
-            return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type.FullName, m, a)));
         }
 
         /// <summary>
@@ -92,25 +81,18 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        [Obsolete]
-        public IEnumerable<MethodInfo> GetMethodWithTestAttributeAndFilter(Type type)
+        public IEnumerable<MethodInfo> GetMethodWithTestAttributeAndFilter(TypeInstance type)
         {
-            return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type, m, a)));
+            return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type.FullName, m, a)));
         }
 
         /// <summary>
         /// HasFilterTestMethod
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="fullName"></param>
         /// <param name="method"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
-        [Obsolete]
-        public bool HasFilterTestMethod(Type type, MethodInfo method, NUnitAttribute nUnitAttribute)
-        {
-            return TestEngineFilter.HasName(GetTestFullName(type, method, nUnitAttribute));
-        }
-
         public bool HasFilterTestMethod(string fullName, MethodInfo method, NUnitAttribute nUnitAttribute)
         {
             return TestEngineFilter.HasName(GetTestFullName(fullName, method, nUnitAttribute));
@@ -119,15 +101,9 @@ namespace ricaun.NUnit.Services
         /// <summary>
         /// GetMethodFullName
         /// </summary>
-        /// <param name="declaringType"></param>
+        /// <param name="typeInstance"></param>
         /// <param name="method"></param>
         /// <returns></returns>
-        [Obsolete]
-        public string GetMethodFullName(Type declaringType, MethodInfo method)
-        {
-            return GetMethodFullName(declaringType.FullName, method);
-        }
-
         public string GetMethodFullName(TypeInstance typeInstance, MethodInfo method)
         {
             return typeInstance + "." + method.Name;
@@ -147,19 +123,6 @@ namespace ricaun.NUnit.Services
         public string GetMethodFullName(string fullNameType, MethodInfo method)
         {
             return fullNameType + "." + method.Name;
-        }
-
-        /// <summary>
-        /// GetTestFullName
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="method"></param>
-        /// <param name="nUnitAttribute"></param>
-        /// <returns></returns>
-        [Obsolete]
-        public string GetTestFullName(Type type, MethodInfo method, NUnitAttribute nUnitAttribute)
-        {
-            return GetMethodFullName(type, method) + "." + GetTestName(method, nUnitAttribute);
         }
 
         /// <summary>

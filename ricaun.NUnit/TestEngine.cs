@@ -244,21 +244,6 @@ namespace ricaun.NUnit
                 .FirstOrDefault(e => e.Name.Equals(NUNIT_ASSEMBLY));
         }
 
-        [Obsolete]
-        private static Assembly ReflectionOnlyLoadFrom(string assemblyFile)
-        {
-            try
-            {
-                return Assembly.ReflectionOnlyLoadFrom(assemblyFile);
-            }
-            catch
-            {
-                var assemblyName = AssemblyName.GetAssemblyName(assemblyFile);
-                return AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
-                    .FirstOrDefault(e => e.GetName().ToString().Equals(assemblyName.ToString()));
-            }
-        }
-
         private static void ValidateTestAssemblyNUnitVersion(Assembly assembly)
         {
             var nunitReference = GetNUnitReference(assembly);

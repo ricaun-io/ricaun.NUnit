@@ -101,22 +101,6 @@ namespace ricaun.NUnit.Services
         /// </summary>
         /// <param name="useExported">A flag indicating whether to use exported types only.</param>
         /// <returns></returns>
-        [Obsolete("Use GetTestTypeMethods instead.")]
-        public IReadOnlyDictionary<Type, MethodInfo[]> GetTestDictionaryTypeMethodsO(bool useExported = false)
-        {
-            var result = new Dictionary<Type, MethodInfo[]>();
-            var types = GetTestTypes(useExported);
-            foreach (var type in types)
-            {
-                var methods = GetMethodWithTestAttribute(type).ToArray();
-                if (methods.Any())
-                {
-                    result.Add(type, methods);
-                }
-            }
-            return result;
-        }
-
         public IReadOnlyDictionary<TypeInstance, MethodInfo[]> GetTestDictionaryTypeMethods(bool useExported = false)
         {
             var result = new Dictionary<TypeInstance, MethodInfo[]>();
