@@ -25,6 +25,8 @@ The tests use the [NUnit](https://www.nuget.org/packages/NUnit/) Attributes `[Te
 * The attribute `[Explicit]` works only if the `Filter` is enable.
 * The attribute `[TestCase]` disable the `Optional Parameters` 
 * The attribute `[TestCaseSource]` disable the `Optional Parameters` 
+* The attribute `[TestFixture]` disable the `Optional Parameters` in the constructor.
+* The attribute `[TestFixtureSource]` disable the `Optional Parameters` in the constructor.
 
 ```C#
 public class TestSampleClass
