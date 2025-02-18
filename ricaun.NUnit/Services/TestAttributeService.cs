@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ricaun.NUnit.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -66,46 +67,58 @@ namespace ricaun.NUnit.Services
         }
 
         /// <summary>
-        /// AnyMethodWithTestAttributeAndFilter
+        /// Determines if any method within the specified type has a test attribute and passes the filter.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public bool AnyMethodWithTestAttributeAndFilter(Type type)
+        /// <param name="type">The type to check for methods with test attributes.</param>
+        /// <returns>True if any method has a test attribute and passes the filter; otherwise, false.</returns>
+        public bool AnyMethodWithTestAttributeAndFilter(TypeInstance type)
         {
             return GetMethodWithTestAttributeAndFilter(type).Any();
         }
 
         /// <summary>
-        /// GetMethodWithTestAttributeAndFilter
+        /// Retrieves methods with test attributes and applies a filter.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public IEnumerable<MethodInfo> GetMethodWithTestAttributeAndFilter(Type type)
+        /// <param name="type">The type to retrieve methods from.</param>
+        /// <returns>An enumerable of <see cref="MethodInfo"/> instances that have test attributes and pass the filter.</returns>
+        public IEnumerable<MethodInfo> GetMethodWithTestAttributeAndFilter(TypeInstance type)
         {
-            return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type, m, a)));
+            return GetMethodWithTestAttribute(type).Where(m => GetTestAttributes(m).Any(a => HasFilterTestMethod(type.FullName, m, a)));
         }
 
         /// <summary>
         /// HasFilterTestMethod
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="fullName"></param>
         /// <param name="method"></param>
         /// <param name="nUnitAttribute"></param>
         /// <returns></returns>
-        public bool HasFilterTestMethod(Type type, MethodInfo method, NUnitAttribute nUnitAttribute)
+        public bool HasFilterTestMethod(string fullName, MethodInfo method, NUnitAttribute nUnitAttribute)
         {
-            return TestEngineFilter.HasName(GetTestFullName(type, method, nUnitAttribute));
+            return TestEngineFilter.HasName(GetTestFullName(fullName, method, nUnitAttribute));
         }
 
         /// <summary>
-        /// GetMethodFullName
+        /// Constructs the full method name using the type instance and method.
         /// </summary>
-        /// <param name="declaringType"></param>
-        /// <param name="method"></param>
-        /// <returns></returns>
-        public string GetMethodFullName(Type declaringType, MethodInfo method)
+        /// <param name="typeInstance">The instance of the type containing the method.</param>
+        /// <param name="method">The method for which the full name is being constructed.</param>
+        /// <returns>The full method name as a string.</returns>
+        public string GetMethodFullName(TypeInstance typeInstance, MethodInfo method)
         {
-            return GetMethodFullName(declaringType.FullName, method);
+            return typeInstance + "." + method.Name;
+        }
+
+        /// <summary>
+        /// Constructs the full test name using the type instance, method, and NUnit attribute.
+        /// </summary>
+        /// <param name="typeInstance">The instance of the type containing the method.</param>
+        /// <param name="method">The method for which the test name is being constructed.</param>
+        /// <param name="nUnitAttribute">The NUnit attribute applied to the method.</param>
+        /// <returns>The full test name as a string.</returns>
+        public string GetTestFullName(TypeInstance typeInstance, MethodInfo method, NUnitAttribute nUnitAttribute)
+        {
+            return GetMethodFullName(typeInstance, method) + "." + GetTestName(method, nUnitAttribute);
         }
 
         /// <summary>
@@ -117,18 +130,6 @@ namespace ricaun.NUnit.Services
         public string GetMethodFullName(string fullNameType, MethodInfo method)
         {
             return fullNameType + "." + method.Name;
-        }
-
-        /// <summary>
-        /// GetTestFullName
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="method"></param>
-        /// <param name="nUnitAttribute"></param>
-        /// <returns></returns>
-        public string GetTestFullName(Type type, MethodInfo method, NUnitAttribute nUnitAttribute)
-        {
-            return GetMethodFullName(type, method) + "." + GetTestName(method, nUnitAttribute);
         }
 
         /// <summary>
@@ -181,51 +182,14 @@ namespace ricaun.NUnit.Services
 
         static string GetTestNameWithArguments(MethodInfo method, params object[] objects)
         {
-            return $"{method.Name}({string.Join(",", objects.Select(ValueToArgumentName))})";
-        }
-        static string ValueToArgumentName(object value)
-        {
-            if (value is null)
-            {
-                return "null";
-            }
-            else if (value is string)
-            {
-                return $"\"{value}\"";
-            }
-            else if (value is float)
-            {
-                return $"{value}f";
-            }
-            else if (value is Type type)
-            {
-                try
-                {
-                    if (type.IsGenericType)
-                    {
-                        var genericTypeName = type.Name.Split('`')[0];
-                        var genericArgs = type
-                            .GetGenericArguments()
-                            .Select(ValueToArgumentName);
-                        return $"{genericTypeName}<{string.Join(",", genericArgs)}>";
-                    }
-                }
-                catch { }
-                return type.Name;
-            }
-            else if (value is ParameterInfo parameter)
-            {
-                var parameterType = parameter.ParameterType;                    
-                return ValueToArgumentName(parameterType);
-            }
-            return $"{value}";
+            return $"{method.Name}{objects.ToArgumentName()}";
         }
 
         /// <summary>
-        /// GetMethodTestAttributes
+        /// Retrieves the NUnit test attributes applied to the specified method.
         /// </summary>
-        /// <param name="method"></param>
-        /// <returns></returns>
+        /// <param name="method">The method to retrieve the test attributes from.</param>
+        /// <returns>An enumerable of <see cref="NUnitAttribute"/> instances applied to the method.</returns>
         public IEnumerable<NUnitAttribute> GetTestAttributes(MethodInfo method)
         {
             if (TryGetAttributes<TestCaseAttribute>(method, out IEnumerable<TestCaseAttribute> testCases))
@@ -241,6 +205,24 @@ namespace ricaun.NUnit.Services
                 return new[] { attribute };
             }
             return Enumerable.Empty<NUnitAttribute>();
+        }
+
+        /// <summary>
+        /// Retrieves the test fixture attributes for a given type.
+        /// </summary>
+        /// <param name="type">The type to retrieve the test fixture attributes from.</param>
+        /// <returns>An enumerable of <see cref="TestFixtureAttribute"/> instances.</returns>
+        public IEnumerable<TestFixtureAttribute> GetTestFixtureAttributes(Type type)
+        {
+            if (TryGetAttributes<TestFixtureAttribute>(type, out IEnumerable<TestFixtureAttribute> testFixtures))
+            {
+                return testFixtures;
+            }
+            if (TryGetAttribute<TestFixtureSourceAttribute>(type, out TestFixtureSourceAttribute testFixtureSource))
+            {
+                return TestFixtureSourceService.GetTestFixtureFromSource(type, testFixtureSource);
+            }
+            return new[] { new TestFixtureAttribute() };
         }
     }
 }

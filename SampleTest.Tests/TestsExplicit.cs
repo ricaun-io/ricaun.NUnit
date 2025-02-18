@@ -230,4 +230,109 @@ namespace SampleTest.Tests.Explicits
             Assert.Pass($"{value} {value.GetType()}");
         }
     }
+
+    [Explicit]
+    [TestFixture(1)]
+    public class TestsExplicit9_ShouldFail_Parameter
+    {
+        private int local;
+
+        public TestsExplicit9_ShouldFail_Parameter(int local)
+        {
+            this.local = local;
+        }
+
+        [Test]
+        public void TestParameterLocal()
+        {
+            Console.WriteLine($"Value is {local}");
+            Assert.IsTrue(local > 0);
+            Assert.Pass($"{local} {local.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterText(string value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsNotNull(value);
+            Assert.IsNotEmpty(value);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterByte(byte value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(value > 0);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterShort(short value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(value > 0);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterInteger(int value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(value > 0);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterLong(long value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(value > 0);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterDouble(double value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsTrue(value > 0);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterMultiple(int value, long value2)
+        {
+            Console.WriteLine($"Value is {value}");
+            Console.WriteLine($"Value2 is {value2}");
+            Assert.IsTrue(value > 0);
+            Assert.IsTrue(value2 > 0);
+            Assert.Pass($"{value} {value2}");
+        }
+
+        [Test]
+        public void TestParameterArray(string[] value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsNotNull(value);
+            Assert.IsNotEmpty(value);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterIEnumerable(IEnumerable<string> value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsNotNull(value);
+            Assert.IsNotEmpty(value);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+
+        [Test]
+        public void TestParameterInterface(ICloneable value)
+        {
+            Console.WriteLine($"Value is {value}");
+            Assert.IsNotNull(value);
+            Assert.Pass($"{value} {value.GetType()}");
+        }
+    }
 }

@@ -107,6 +107,9 @@
   "allOf": [
     {
       "properties": {
+        "EnableForkedRepository": {
+          "type": "boolean"
+        },
         "Folder": {
           "type": "string"
         },
@@ -117,11 +120,11 @@
         "MainName": {
           "type": "string"
         },
-        "NugetApiKey": {
+        "NuGetApiKey": {
           "type": "string",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
-        "NugetApiUrl": {
+        "NuGetApiUrl": {
           "type": "string",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
@@ -156,6 +159,9 @@
           "type": "string"
         },
         "TestResults": {
+          "type": "boolean"
+        },
+        "UnlistNuGet": {
           "type": "boolean"
         }
       }

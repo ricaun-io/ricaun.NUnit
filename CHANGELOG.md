@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] / 2025-02-06 - 2025-02-16
+### Features
+- Support `TestFixture` and `TestFixtureSource`. (Fix: #32)
+### Updates
+- Update `TestAssemblyService` to use `TypeInstance`
+- Update `TestAttributeService` to use `TypeInstance`
+- Add `TestFixtureSourceService` to support `TestFixtureSourceAttribute`.
+- Add `TypeInstance` to support `TestFixture` tests.
+- Obsolete methods with `Type`, the `TypeInstance` methods should be used.
+- Update `ActivatorService` to support multiple constructors.
+### Tests
+- Add `TestsFixture` sample tests.
+- Add `TestsFixtureSource` sample tests.
+- Add tests with custom `Parameter` and `TestFixture`
+- Add `TestsFixtureParameterized` to support multiple constructors.
+
 ## [1.4.1] / 2024-12-07
 ### Features
 - Support `GetAssemblyMetadataAttributes` to get `AssemblyMetadataAttribute` from `assemblyFile`.
@@ -259,6 +275,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Test with Console Output
 
 [vNext]: ../../compare/1.0.0...HEAD
+[1.5.0]: ../../compare/1.4.1...1.5.0
 [1.4.1]: ../../compare/1.4.0...1.4.1
 [1.4.0]: ../../compare/1.3.1...1.4.0
 [1.3.1]: ../../compare/1.3.0...1.3.1

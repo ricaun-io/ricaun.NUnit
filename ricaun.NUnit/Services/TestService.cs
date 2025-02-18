@@ -13,6 +13,7 @@ namespace ricaun.NUnit.Services
     /// </summary>
     internal class TestService : ActivatorService, IDisposable
     {
+        private readonly TypeInstance typeInstance;
         private readonly Type type;
         private readonly object[] parameters;
         private object instance;
@@ -27,6 +28,14 @@ namespace ricaun.NUnit.Services
         {
             this.type = type;
             this.parameters = parameters;
+            this.typeInstance = new TypeInstance(type);
+        }
+
+        public TestService(TypeInstance typeInstance, params object[] parameters)
+        {
+            this.type = typeInstance.Type;
+            this.parameters = parameters;
+            this.typeInstance = typeInstance;
         }
 
         /// <summary>
@@ -48,9 +57,9 @@ namespace ricaun.NUnit.Services
             TestExecutionContextUtils.Clear();
 
             var methods = type.GetMethods();
-            var testType = NewTestTypeModel(type);
+            var testType = NewTestTypeModel();
 
-            var testMethods = GetMethodWithTestAttributeAndFilter(type);
+            var testMethods = GetMethodWithTestAttributeAndFilter(typeInstance);
 
             if (IgnoreTestWithAttributes(type, out string ignoreMessage))
             {
@@ -62,7 +71,11 @@ namespace ricaun.NUnit.Services
 
             try
             {
-                this.instance = CreateInstance(this.type, this.parameters);
+                var instanceParameters = this.typeInstance.Parameters;
+                if (instanceParameters.Length == 0)
+                    instanceParameters = this.parameters;
+
+                this.instance = CreateInstance(this.type, instanceParameters);
             }
             catch (Exception ex)
             {
@@ -97,7 +110,7 @@ namespace ricaun.NUnit.Services
                     {
                         foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                         {
-                            if (!HasFilterTestMethod(type, testMethod, nUnitAttribute)) continue;
+                            if (!HasFilterTestMethod(typeInstance.FullName, testMethod, nUnitAttribute)) continue;
                             var testModel = InvokeTestInstance(testType, testMethod, methodSetUps, methodTearDowns, nUnitAttribute);
 
                             //var testModel = InvokeTestInstance(testMethod, methodSetUp, methodTearDown, nUnitAttribute);
@@ -138,14 +151,12 @@ namespace ricaun.NUnit.Services
         /// <summary>
         /// NewTestTypeModel
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        private TestTypeModel NewTestTypeModel(Type type)
+        private TestTypeModel NewTestTypeModel()
         {
             var testType = new TestTypeModel();
-            testType.Alias = type.FullName;
-            testType.FullName = type.FullName;
-            testType.Name = type.FullName;
+            testType.Alias = typeInstance.FullName;
+            testType.FullName = typeInstance.FullName;
+            testType.Name = typeInstance.FullName;
             testType.Success = true;
             return testType;
         }
@@ -156,7 +167,7 @@ namespace ricaun.NUnit.Services
             {
                 foreach (var nUnitAttribute in GetTestAttributes(testMethod))
                 {
-                    if (!HasFilterTestMethod(type, testMethod, nUnitAttribute)) continue;
+                    if (!HasFilterTestMethod(typeInstance.FullName, testMethod, nUnitAttribute)) continue;
                     var testModel = NewTestModel(testType, testMethod, nUnitAttribute);
                     testModel.Message = testType.Message;
                     testModel.Success = testType.Success;
